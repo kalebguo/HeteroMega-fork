@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Summarize repeated bench_ffn_ablation runs: the spread over rounds, and each variant against hm.
 
-Usage: python3 summarize_bench.py ablation.csv [more.csv ...] [--metric total_ms]
+Usage: python3 summarize_bench.py ablation.csv [more.csv ...] [--metric total_ms] [--skip-rounds 0]
 
 Lines that are not CSV rows of the header (for example the GEMM autotune messages) are skipped.
 Ratios are taken per round (same round, same M and s), then summarized, so that slow drift between rounds cancels.
+--skip-rounds N drops rounds 0 .. N-1. On the HX 370 the first ~50 s of a run had another power state
+(package 51-53 W, GPU clock ~2.3 GHz) than the rest (44-45 W, 2.6-2.85 GHz), so round 0 was up to 10 % slower.
 """
 import argparse
 import csv
@@ -43,8 +45,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("csv", nargs="+")
     ap.add_argument("--metric", default="total_ms")
+    ap.add_argument("--skip-rounds", type=int, default=0)
     args = ap.parse_args()
-    rows = read_rows(args.csv)
+    rows = [r for r in read_rows(args.csv) if int(r["round"]) >= args.skip_rounds]
     if not rows:
         sys.exit("no rows")
 

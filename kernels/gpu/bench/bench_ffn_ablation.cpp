@@ -8,7 +8,7 @@
 //
 // Each round runs every (s, M) once, with the variants in a new random order, so that clock and temperature drift
 // do not favor the variant that runs first. Report the spread over rounds (tools/summarize_bench.py).
-// Before round 0, a GEMM runs for --clock-warmup seconds so that the GPU clock is up.
+// Before round 0, a GEMM runs for --clock-warmup seconds so that the GPU clock is up from idle.
 //
 // Usage: bench_ffn_ablation [--m 1,128,512,2048,4096] [--s 10240,14336] [--variants hm,merged,fused,gemv,dense]
 //                           [--rounds 5] [--iters 30] [--warmup 5] [--seed 1] [--clock-warmup 3]
@@ -96,7 +96,8 @@ int main(int argc, char **argv) {
         std::fprintf(stderr, "no GPU hwmon sensors found: sclk, power and temp columns are -1\n");
     }
 
-    // Without this, round 0 ran at about 2.1 GHz and the later rounds at about 2.6 GHz.
+    // Brings the GPU clock up from idle. It does not remove the other power state of the first ~50 s of a run
+    // (round 0 still ran at ~2.3 GHz, the later rounds at 2.6-2.85 GHz): see summarize_bench.py --skip-rounds.
     if (clock_warmup > 0 && !weights.empty()) {
         const auto &w = weights.back();
         const int64_t m = std::min<int64_t>(512, *std::max_element(ms.begin(), ms.end()));

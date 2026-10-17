@@ -1,5 +1,35 @@
 # HeteroMega progress
 
+## 2026-10-17: GPU P0/P1 work (`kernels/gpu/`, branch `gpu-p0p1`)
+
+All runs on the AUP cloud (HX 370, Radeon 890M `gfx1150`, ROCm 7.2, Torch 2.11).
+Details and tables: [kernels/gpu/README.md](../kernels/gpu/README.md#results-2026-10-17-hx-370).
+
+- **Executed, pass:** `test_gpu_ffn` quick and full, 0 failed. New checks:
+  `slice_packed_ffn` byte-equal to `pack_ffn_slice` (20 cases), `GpuFfnModel`
+  bit-equal to the prefix path, prefix GEMM/GEMV blocks vs fp32.
+- **Repeated measurements (G1):** `bench_ffn_ablation` 5 rounds, shuffled order,
+  GPU clock/power/temperature per row. Per-round ratio to HeteroMosaic's order:
+  fused SiLU-and-multiply about −2 % at every M; merged gate/up GEMM 0 % at
+  M ≥ 128; `gemv_w4a16` −13 to −14 % of the decode FFN. Round 0 of each run was
+  up to 10 % slower (package 51 to 53 W, GPU about 2.3 GHz, for about 50 s).
+- **Bandwidth (G2, CPU as the second agent):** GPU alone 95.9 GB/s; GPU + 8 CPU
+  threads 67.6 + 27.1 GB/s. The sum stays at 93 to 97 GB/s. **Not measured with
+  the NPU** (needs the NPU side).
+- **One weight copy, two split points (G3):** `kInterleaved` gate/up layout and
+  `FfnSliceWeights::prefix`; same latency as a separately packed slice.
+- **GEMM (G4, step 1):** AUTOTUNE kept `generic` in all 24 FFN shapes, so it gives
+  no gain. `generic` is compute-bound at 9.1 to 9.5 TFLOPS from M = 128.
+- **Decode GEMV (G5):** new `gemv_w4a16` (fp32 accumulation): per layer at
+  s = 14336, 1.090 → 0.979 ms; 93 to 96 GB/s.
+- **Model integration (G6):** `slice_packed_ffn`, `GpuFfnModel`, and a switch in
+  `forward_llama3_with_scratch` (CMake `-DHETEROMEGA_GPU_FFN=ON`, environment
+  `HETEROMEGA_GPU_FFN=1`). **Not built or run in the model yet:** this AUP
+  instance has no model weights, XDNA headers or `HeteroMosaic-baseline` copy.
+- `src/hipkernels/w4a16_gemm_packed.cu`: new `w4a16_gemm_fused_packed_tiles`
+  entry point, K-loop bound fix for K prefixes in the K2048 kernel, `#ifndef`
+  guard on `AUTOTUNE`. Existing entry points are unchanged in behavior.
+
 ## 2026-10-16: GPU FFN-slice module proposed (`kernels/gpu/`)
 
 - Added `kernels/gpu/`, a separate CMake project for the GPU half of the
