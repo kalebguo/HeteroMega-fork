@@ -84,4 +84,41 @@ void gpu_ffn_slice_forward(const FfnSliceWeights &w, const torch::Tensor &x_norm
     packed_linear(y, act, w.down, n, h, stream, down_opt);
 }
 
+void GpuFfnModel::add_layer(const torch::Tensor &gate, const torch::Tensor &up, const torch::Tensor &down, int64_t hidden,
+                            int64_t inter) {
+    TORCH_CHECK(layers_.empty() || (layers_.front().hidden == hidden && layers_.front().stored_channels() == inter),
+                "GpuFfnModel::add_layer: all layers must have the same shape");
+    layers_.push_back(slice_packed_ffn(gate, up, down, hidden, inter, 0, inter, GateUpLayout::kInterleaved));
+    if (s_prefill_ == 0) {
+        s_prefill_ = s_decode_ = inter;
+    }
+}
+
+void GpuFfnModel::set_split(int64_t s_prefill, int64_t s_decode) {
+    TORCH_CHECK(!layers_.empty(), "GpuFfnModel::set_split: add the layers first");
+    const int64_t inter = layers_.front().stored_channels();
+    for (int64_t s : {s_prefill, s_decode}) {
+        TORCH_CHECK(s > 0 && s <= inter && s % kTileK == 0, "GpuFfnModel::set_split: channels must be a multiple of 128 in (0, ",
+                    inter, "], got ", s);
+    }
+    s_prefill_ = s_prefill;
+    s_decode_ = s_decode;
+}
+
+void GpuFfnModel::forward(int64_t layer, const torch::Tensor &x_norm, torch::Tensor &y, hipStream_t stream) {
+    TORCH_CHECK(0 <= layer && layer < layers(), "GpuFfnModel::forward: no layer ", layer);
+    const FfnSliceWeights &all = layers_[layer];
+    const int64_t m = x_norm.size(0);
+    GpuFfnBuffers *buf = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        GpuFfnBuffers &b = buffers_[stream];
+        if (!b.x_pad.defined() || b.x_pad.size(0) < padded_rows(m)) {
+            b = GpuFfnBuffers::allocate(m, all.stored_channels(), all.hidden, x_norm.device());
+        }
+        buf = &b; // unordered_map keeps element addresses when it grows
+    }
+    gpu_ffn_slice_forward(all.prefix(channels(m)), x_norm, *buf, y, stream);
+}
+
 } // namespace heteromega

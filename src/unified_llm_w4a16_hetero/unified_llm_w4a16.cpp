@@ -33,8 +33,12 @@
 #include "hipkernels/w4a16_gemm_packed.hpp"
 #include "hipkernels/w4a16_gemm_unpacked.hpp" // Added for Unpacked GEMM fallback
 #include "hipkernels/w4a16_gemv_unpacked.hpp"
+#include <cstdio>
 #include <unistd.h>
 #include <vector>
+#ifdef HETEROMEGA_GPU_FFN
+#include "heteromega/gpu_ffn.hpp"
+#endif
 
 // #define FA2_HIP_KERNEL 1 // Removed as per refactor instructions
 
@@ -2295,6 +2299,45 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3(torch::Tensor x, int64_t start
                                        nullptr, nullptr, effective_chunk_id, -1);
 }
 
+// HeteroMega GPU FFN (kernels/gpu) for forward_llama3_with_scratch. Off unless the library is built with
+// -DHETEROMEGA_GPU_FFN=ON and the environment variable HETEROMEGA_GPU_FFN=1 is set. Built at the first forward pass,
+// from the loaded packed gate/up/down weights.
+// HETEROMEGA_GPU_FFN_SPLIT=<s_prefill>,<s_decode> keeps only the first channels of each phase on the GPU. The other
+// channels are the NPU's share, which this path does not compute yet, so use it to time the GPU share only.
+heteromega::GpuFfnModel *UnifiedLLMW4A16Impl::heteromega_gpu_ffn() {
+#ifdef HETEROMEGA_GPU_FFN
+    static std::mutex mutex;
+    std::lock_guard<std::mutex> lock(mutex);
+    if (!heteromega_ffn_checked_) {
+        heteromega_ffn_checked_ = true;
+        const char *on = std::getenv("HETEROMEGA_GPU_FFN");
+        if (on != nullptr && std::string(on) == "1") {
+            TORCH_CHECK(arch_type_ == ArchitectureType::LLAMA3, "HETEROMEGA_GPU_FFN: only Llama 3 is supported");
+            auto model = std::make_shared<heteromega::GpuFfnModel>();
+            for (int64_t i = 0; i < num_hidden_layers_; ++i) {
+                model->add_layer(gate_layers[i]->get_packed_params(), up_layers[i]->get_packed_params(),
+                                 down_layers[i]->get_packed_params(), hidden_size_, intermediate_size_);
+            }
+            if (const char *split = std::getenv("HETEROMEGA_GPU_FFN_SPLIT")) {
+                long long s_prefill = 0, s_decode = 0;
+                TORCH_CHECK(std::sscanf(split, "%lld,%lld", &s_prefill, &s_decode) == 2,
+                            "HETEROMEGA_GPU_FFN_SPLIT must be <s_prefill>,<s_decode>, got ", split);
+                model->set_split(s_prefill, s_decode);
+                std::cout << "HeteroMega GPU FFN: HETEROMEGA_GPU_FFN_SPLIT is set, the NPU channels are not computed and the "
+                             "outputs are wrong (timing only)"
+                          << std::endl;
+            }
+            std::cout << "HeteroMega GPU FFN: " << model->layers() << " layers, " << model->channels(2) << " prefill and "
+                      << model->channels(1) << " decode channels of " << intermediate_size_ << " on the GPU" << std::endl;
+            heteromega_ffn_ = model;
+        }
+    }
+    return heteromega_ffn_.get();
+#else
+    return nullptr;
+#endif
+}
+
 torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
     torch::Tensor x, int64_t start_pos, bool return_logits, bool last_token_only, torch::Tensor &queries_buffer_base,
     torch::Tensor &keys_buffer_base, torch::Tensor &values_buffer_base, torch::Tensor &attn_output_buffer_base,
@@ -2333,6 +2376,9 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
     auto up_buf = up_buffer_base.narrow(0, 0, bsz).narrow(1, 0, seq_len);
     auto out_buf = output_buffer_base.narrow(0, 0, bsz).narrow(1, 0, seq_len);
     auto normed = norm_buffer_base.narrow(0, 0, bsz).narrow(1, 0, seq_len);
+#ifdef HETEROMEGA_GPU_FFN
+    heteromega::GpuFfnModel *gpu_ffn = heteromega_gpu_ffn();
+#endif
 
     for (int64_t i = 0; i < num_hidden_layers_; ++i) {
         auto g1_trace = begin_stage_trace(chunk_id, slot_id, i, "G1", start_pos, seq_len);
@@ -2545,6 +2591,21 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
         // RMSNorm (write to norm_buffer)
         // Slice x and normed to logical size to ensure correct Mean calculation
         post_attn_norms[i]->forward_out(normed.slice(-1, 0, hidden_size_), x.slice(-1, 0, hidden_size_));
+
+#ifdef HETEROMEGA_GPU_FFN
+        if (gpu_ffn != nullptr) {
+            // HeteroMega GPU FFN: one gate_up GEMM (GEMV for one token), one SiLU-and-multiply kernel, the down GEMM.
+            const int64_t rows = bsz * seq_len;
+            const auto xn = normed.slice(-1, 0, hidden_size_);
+            const auto xn_2d = (xn.is_contiguous() ? xn : xn.contiguous()).view({rows, hidden_size_});
+            const auto y = out_buf.slice(-1, 0, hidden_size_);
+            auto y_2d = y.is_contiguous() ? y.view({rows, hidden_size_}) : torch::empty({rows, hidden_size_}, y.options());
+            gpu_ffn->forward(i, xn_2d, y_2d, c10::hip::getCurrentHIPStream().stream());
+            x.add_(y_2d.view({bsz, seq_len, hidden_size_}));
+            end_stage_trace(std::move(g2_trace));
+            continue;
+        }
+#endif
 
         // QKV Projections
         // Input to q/k/v_proj: Slice normed to Padded K (1536 -> 2048) and use Padded Buffer

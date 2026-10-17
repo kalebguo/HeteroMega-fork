@@ -5,8 +5,9 @@
 //            (gate_up: n of 2 * 14336 columns; down: k of 14336 rows), as FfnSliceWeights::prefix() uses it
 //   dense    torch::mm with bf16 weights
 //
-// Usage: bench_gemv [--s 10240,14336] [--iters 200] [--warmup 20]
+// Usage: bench_gemv [--s 10240,14336] [--iters 200] [--warmup 20] [--clock-warmup 3]
 // Output: CSV on stdout. weight_GBps = bytes of the weights the kernel reads / time.
+// Before the first kernel, a GEMV runs for --clock-warmup seconds so that the GPU clock is up.
 #include "bench_common.hpp"
 #include "bench_weights.hpp"
 #include "heteromega/gpu_ffn.hpp"
@@ -29,6 +30,7 @@ int main(int argc, char **argv) {
     const auto splits = bench::parse_list(bench::arg(argc, argv, "--s", "10240,14336"));
     const int iters = std::stoi(bench::arg(argc, argv, "--iters", "200"));
     const int warmup = std::stoi(bench::arg(argc, argv, "--warmup", "20"));
+    const double clock_warmup = std::stod(bench::arg(argc, argv, "--clock-warmup", "3"));
 
     const torch::Device dev(torch::kCUDA, 0);
     const hipStream_t stream = c10::hip::getCurrentHIPStream().stream();
@@ -36,6 +38,13 @@ int main(int argc, char **argv) {
     const auto full_gate_up = bench::random_packed(kHidden, 2 * kInter, dev);
     const auto full_down = bench::random_packed(kInter, kHidden, dev);
     bench::SensorSampler sensors;
+
+    // Without this, the first kernel ran at about 840 MHz.
+    if (clock_warmup > 0) {
+        const auto x = torch::randn({1, kHidden}, torch::TensorOptions().device(dev)).to(torch::kBFloat16);
+        auto y = torch::empty({1, 2 * kInter}, bf16);
+        bench::warm_up_clock(stream, clock_warmup, [&] { gemv_w4a16(y, x, full_gate_up, kHidden, 2 * kInter, kHidden, 2 * kInter, 0, stream); });
+    }
 
     std::printf("matrix,s,k,n,kernel,ms,weight_GBps,sclk_MHz_median\n");
     for (int64_t s : splits) {

@@ -5,10 +5,15 @@
 #include <cstdint>
 #include <future>
 #include <hip/hip_runtime.h>
+#include <memory>
 #include <string>
 #include <torch/torch.h>
 #include <utility>
 #include <vector>
+
+namespace heteromega {
+class GpuFfnModel; // kernels/gpu/include/heteromega/gpu_ffn.hpp
+}
 
 // Attention mechanism selection:
 // 0 = Manual matmul, 1 = PyTorch SDPA, 2 = Custom HIP kernel
@@ -263,6 +268,12 @@ class UnifiedLLMW4A16Impl : public torch::nn::Module {
     // but the variable names in UnifiedLLM.cpp were llama_gate_layers etc. vs gate_layers for Gemma/Qwen.
     // I can reuse gate_layers/up_layers/down_layers for all architectures if I map them correctly during init and
     // weight loading.) Let's reuse the existing vectors to keep it simple, but we need to know which is which.
+
+    // HeteroMega GPU FFN (kernels/gpu): built with -DHETEROMEGA_GPU_FFN=ON, used by forward_llama3_with_scratch when
+    // the environment variable HETEROMEGA_GPU_FFN=1 is set. heteromega_gpu_ffn() returns nullptr otherwise.
+    std::shared_ptr<heteromega::GpuFfnModel> heteromega_ffn_;
+    bool heteromega_ffn_checked_ = false;
+    heteromega::GpuFfnModel *heteromega_gpu_ffn();
 
     // Normalization layers
     std::vector<RMSNorm> input_norms;

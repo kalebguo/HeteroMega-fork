@@ -9,6 +9,9 @@
 #include <torch/torch.h>
 
 #include <cstdint>
+#include <mutex>
+#include <unordered_map>
+#include <vector>
 
 namespace heteromega {
 
@@ -72,6 +75,16 @@ struct FfnSliceWeights {
 FfnSliceWeights pack_ffn_slice(const FfnLayerQuant &layer, int64_t begin, int64_t end,
                                GateUpLayout layout = GateUpLayout::kBlocked);
 
+// Position of tile (tile column c, tile row r) in a packed matrix of tiles_k x tiles_n tiles (order: see pack_w4a16).
+int64_t packed_tile_index(int64_t c, int64_t r, int64_t tiles_k, int64_t tiles_n);
+
+// pack_ffn_slice from matrices that are already packed, as HeteroMosaic's QuantizedLinear holds them (packed_params_,
+// padPackedWeights off). Copies whole tiles on the tensors' device and gives the same bytes as pack_ffn_slice.
+//   gate, up: packed [hidden, inter]; down: packed [inter, hidden]
+// begin and end must be multiples of 128. For [0, inter) the result's down is `down` itself, not a copy.
+FfnSliceWeights slice_packed_ffn(const torch::Tensor &gate, const torch::Tensor &up, const torch::Tensor &down, int64_t hidden,
+                                 int64_t inter, int64_t begin, int64_t end, GateUpLayout layout = GateUpLayout::kBlocked);
+
 // ---- GPU kernels -------------------------------------------------------------
 
 // act[m, j] = SiLU(gate[m, j]) * up[m, j] for j < n, where gate and up are columns of gate_up in `layout` order.
@@ -129,5 +142,36 @@ struct LinearOptions {
 // For M > 1, in's storage must hold padded_rows(M) rows; the extra rows can hold any values.
 void packed_linear(torch::Tensor &out, const torch::Tensor &in, const torch::Tensor &packed, int64_t k, int64_t n,
                    hipStream_t stream, const LinearOptions &opt = {});
+
+// ---- Model integration -------------------------------------------------------
+
+// The GPU FFN of every layer of a model, for the model's forward loop.
+// Each layer keeps one packed copy of all its channels (gate/up kInterleaved). A forward pass uses the first
+// s_prefill channels when M > 1 and the first s_decode channels when M == 1 (FfnSliceWeights::prefix, no copy).
+// The other channels are the NPU's share. This class does not compute them.
+class GpuFfnModel {
+  public:
+    // Adds the next layer from HeteroMosaic's packed gate [H, I], up [H, I] and down [I, H] (see slice_packed_ffn).
+    // Copies gate and up into one interleaved gate_up tensor. Uses down as it is.
+    void add_layer(const torch::Tensor &gate, const torch::Tensor &up, const torch::Tensor &down, int64_t hidden, int64_t inter);
+
+    // GPU channels for prefill (M > 1) and decode (M == 1). Multiples of 128 in (0, I]. Default: all I channels.
+    void set_split(int64_t s_prefill, int64_t s_decode);
+
+    int64_t layers() const { return static_cast<int64_t>(layers_.size()); }
+    int64_t channels(int64_t m) const { return m > 1 ? s_prefill_ : s_decode_; }
+
+    // y = the GPU share of FFN layer `layer` for x_norm. x_norm and y: bf16 [M, H], contiguous.
+    // Enqueues 3 kernels on `stream` and does not synchronize. Pass the current stream: the scratch buffers come
+    // from the caching allocator on it. Threads with different streams get different scratch buffers.
+    void forward(int64_t layer, const torch::Tensor &x_norm, torch::Tensor &y, hipStream_t stream);
+
+  private:
+    std::vector<FfnSliceWeights> layers_;
+    int64_t s_prefill_ = 0;
+    int64_t s_decode_ = 0;
+    std::mutex mutex_;
+    std::unordered_map<hipStream_t, GpuFfnBuffers> buffers_;
+};
 
 } // namespace heteromega

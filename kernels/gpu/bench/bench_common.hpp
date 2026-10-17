@@ -67,6 +67,18 @@ inline double median(std::vector<double> v) {
     return n % 2 ? v[n / 2] : 0.5 * (v[n / 2 - 1] + v[n / 2]);
 }
 
+// Runs `work` (GPU work enqueued on `stream`) again and again for `seconds`, so that the GPU clock is up before
+// timing. From idle the HX 370's GPU clock takes seconds to climb from about 600 MHz to about 2.7 GHz.
+template <class Work> void warm_up_clock(hipStream_t stream, double seconds, Work &&work) {
+    const auto start = std::chrono::steady_clock::now();
+    while (std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count() < seconds) {
+        for (int i = 0; i < 10; ++i) {
+            work();
+        }
+        hip_check(hipStreamSynchronize(stream), "warm_up_clock");
+    }
+}
+
 // Records events on a stream and returns the elapsed milliseconds between two marks.
 // Record all marks first and call ms() after the loop. A sync inside the loop leaves the GPU idle
 // at the next mark, so the host launch time gets counted as kernel time.

@@ -8,9 +8,10 @@
 //
 // Each round runs every (s, M) once, with the variants in a new random order, so that clock and temperature drift
 // do not favor the variant that runs first. Report the spread over rounds (tools/summarize_bench.py).
+// Before round 0, a GEMM runs for --clock-warmup seconds so that the GPU clock is up.
 //
 // Usage: bench_ffn_ablation [--m 1,128,512,2048,4096] [--s 10240,14336] [--variants hm,merged,fused,gemv,dense]
-//                           [--rounds 5] [--iters 30] [--warmup 5] [--seed 1]
+//                           [--rounds 5] [--iters 30] [--warmup 5] [--seed 1] [--clock-warmup 3]
 // Output: CSV on stdout.
 //   gemm_TFLOPS  2*M*K*N of both matmuls over gemm1_ms + down_ms
 //   weight_GBps  weight bytes read by both matmuls over gemm1_ms + down_ms (the decode metric)
@@ -58,6 +59,7 @@ int main(int argc, char **argv) {
     const int iters = std::stoi(bench::arg(argc, argv, "--iters", "30"));
     const int warmup = std::stoi(bench::arg(argc, argv, "--warmup", "5"));
     std::mt19937 rng(std::stoul(bench::arg(argc, argv, "--seed", "1")));
+    const double clock_warmup = std::stod(bench::arg(argc, argv, "--clock-warmup", "3"));
 
     const torch::Device dev(torch::kCUDA, 0);
     const hipStream_t stream = c10::hip::getCurrentHIPStream().stream();
@@ -92,6 +94,15 @@ int main(int argc, char **argv) {
     bench::SensorSampler sensors;
     if (!sensors.available()) {
         std::fprintf(stderr, "no GPU hwmon sensors found: sclk, power and temp columns are -1\n");
+    }
+
+    // Without this, round 0 ran at about 2.1 GHz and the later rounds at about 2.6 GHz.
+    if (clock_warmup > 0 && !weights.empty()) {
+        const auto &w = weights.back();
+        const int64_t m = std::min<int64_t>(512, *std::max_element(ms.begin(), ms.end()));
+        const auto x = randn_bf16(padded_rows(m), kHidden, 0.5).narrow(0, 0, m);
+        auto out = leading(gate_up_flat, m, 2 * w.s);
+        bench::warm_up_clock(stream, clock_warmup, [&] { packed_linear(out, x, w.gate_up, kHidden, 2 * w.s, stream); });
     }
 
     std::printf("round,pos,variant,M,s,gemm1_ms,act_ms,down_ms,total_ms,gemm_TFLOPS,weight_GBps,act_GBps,"

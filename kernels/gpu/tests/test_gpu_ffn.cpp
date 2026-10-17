@@ -1,7 +1,8 @@
 // Correctness tests for the GPU side of the FFN split.
 //   Level 1: each kernel against an fp32 reference (random signed inputs, nonuniform weights, scales and zeros).
+//            slice_packed_ffn must give the bytes of pack_ffn_slice.
 //   Level 2: Y_G + Y_N of two channel slices against the unsplit fp32 FFN, with the GPU slice packed on its own
-//            and as a prefix of all channels (FfnSliceWeights::prefix).
+//            and as a prefix of all channels (FfnSliceWeights::prefix). GpuFfnModel must give the prefix's bytes.
 // Run on the AUP cloud in the environment of docs/cloud-baseline.md:
 //   ./test_gpu_ffn          (full: M in {1, 37, 128, 512, 2048}, s in {512, 7168, 10240, 13824})
 //   ./test_gpu_ffn --quick  (M in {1, 37, 128}, s = 7168)
@@ -41,6 +42,15 @@ void check(const std::string &name, const torch::Tensor &got, const torch::Tenso
     const double cos = (torch::dot(g, r) / (g.norm() * r.norm() + 1e-30)).item<double>();
     const bool ok = max_rel <= tol.max_rel && rel_l2 <= tol.rel_l2 && cos >= tol.cos;
     std::printf("%-52s %s  max_rel=%.2e  rel_l2=%.2e  cos=%.7f\n", name.c_str(), ok ? "PASS" : "FAIL", max_rel, rel_l2, cos);
+    if (!ok) {
+        ++g_failures;
+    }
+}
+
+// Bitwise equality, for two paths that must give the same bytes.
+void check_equal(const std::string &name, const torch::Tensor &got, const torch::Tensor &ref) {
+    const bool ok = got.sizes() == ref.sizes() && torch::equal(got.cpu(), ref.cpu());
+    std::printf("%-52s %s  (bitwise)\n", name.c_str(), ok ? "PASS" : "FAIL");
     if (!ok) {
         ++g_failures;
     }
@@ -155,6 +165,29 @@ void test_packed_prefix(const torch::Device &dev, hipStream_t stream, const std:
     }
 }
 
+// Level 1: slice_packed_ffn (tile gather from packed whole matrices) gives the bytes of pack_ffn_slice.
+// hidden / 64 = 18 and inter / 64 = 46 tile columns are not multiples of 8, so the column groups differ in size.
+void test_slice_packed(const torch::Device &dev) {
+    const int64_t hidden = 1152, inter = 2944;
+    FfnLayerQuant layer;
+    const Quant g = random_quant(hidden, inter), u = random_quant(hidden, inter), d = random_quant(inter, hidden);
+    layer.gate_q = g.q, layer.gate_s = g.s, layer.gate_z = g.z;
+    layer.up_q = u.q, layer.up_s = u.s, layer.up_z = u.z;
+    layer.down_q = d.q, layer.down_s = d.s, layer.down_z = d.z;
+    const auto pg = pack_w4a16(g.q, g.s, g.z).to(dev), pu = pack_w4a16(u.q, u.s, u.z).to(dev), pd = pack_w4a16(d.q, d.s, d.z).to(dev);
+    const int64_t ranges[][2] = {{0, inter}, {0, 512}, {512, 1920}, {1280, inter}, {128, 256}};
+    for (const auto &rg : ranges) {
+        for (auto layout : {GateUpLayout::kBlocked, GateUpLayout::kInterleaved}) {
+            const auto got = slice_packed_ffn(pg, pu, pd, hidden, inter, rg[0], rg[1], layout);
+            const auto ref = pack_ffn_slice(layer, rg[0], rg[1], layout);
+            const std::string tag = " [" + std::to_string(rg[0]) + ", " + std::to_string(rg[1]) + ")" +
+                                    (layout == GateUpLayout::kBlocked ? " blocked" : " interleaved");
+            check_equal("L1 slice_packed_ffn gate_up" + tag, got.gate_up, ref.gate_up);
+            check_equal("L1 slice_packed_ffn down" + tag, got.down, ref.down);
+        }
+    }
+}
+
 // Level 1: SiLU-and-multiply.
 void test_silu_mul(const torch::Device &dev, hipStream_t stream) {
     for (int64_t m : {1L, 37L, 2048L}) {
@@ -217,6 +250,10 @@ void test_ffn_split(const torch::Device &dev, hipStream_t stream, const std::vec
     // All channels packed once with interleaved gate/up. Each split's GPU part is a prefix of it.
     const auto all = pack_ffn_slice(layer, 0, kInter, GateUpLayout::kInterleaved).to(dev);
     auto all_buf = GpuFfnBuffers::allocate(max_m, kInter, kHidden, dev);
+    // The model path: GpuFfnModel built from the packed whole matrices, as HeteroMosaic's QuantizedLinear holds them.
+    GpuFfnModel model;
+    model.add_layer(pack_w4a16(g.q, g.s, g.z).to(dev), pack_w4a16(u.q, u.s, u.z).to(dev), pack_w4a16(d.q, d.s, d.z).to(dev), kHidden,
+                    kInter);
 
     for (int64_t s : splits) {
         const auto gpu_part = pack_ffn_slice(layer, 0, s).to(dev);
@@ -243,6 +280,14 @@ void test_ffn_split(const torch::Device &dev, hipStream_t stream, const std::vec
             residual_add2(x_out, y_g, y_n, stream);
             auto x_out_prefix = torch::zeros({m, kHidden}, x.options());
             residual_add2(x_out_prefix, y_prefix, y_n, stream);
+
+            // GpuFfnModel with s channels, then with s for this M's phase only (s_prefill for M > 1, s_decode for M == 1).
+            auto y_model = torch::empty({m, kHidden}, x.options());
+            auto y_phase = torch::empty({m, kHidden}, x.options());
+            model.set_split(s, s);
+            model.forward(0, x, y_model, stream);
+            model.set_split(m > 1 ? s : kInter, m > 1 ? kInter : s);
+            model.forward(0, x, y_phase, stream);
             sync();
 
             const std::string tag = " s=" + std::to_string(s) + " M=" + std::to_string(m);
@@ -250,6 +295,8 @@ void test_ffn_split(const torch::Device &dev, hipStream_t stream, const std::vec
             check("L2 prefix split Y_G + Y_N vs fp32 FFN" + tag, x_out_prefix, ref, kLevel);
             check("L2 prefix Y_G vs separately packed Y_G" + tag, y_prefix, y_g, kExact);
             check("L2 unsplit GPU FFN vs fp32 FFN" + tag, y_full, ref, kLevel);
+            check_equal("L2 GpuFfnModel vs prefix Y_G" + tag, y_model, y_prefix);
+            check_equal("L2 GpuFfnModel phase split vs prefix Y_G" + tag, y_phase, y_prefix);
         }
     }
 }
@@ -276,6 +323,7 @@ int main(int argc, char **argv) {
     test_packed_linear(dev, stream, ms);
     test_gemv(dev, stream);
     test_packed_prefix(dev, stream, ms);
+    test_slice_packed(dev);
     test_silu_mul(dev, stream);
     test_residual_add2(dev, stream);
     test_ffn_split(dev, stream, ms, splits);

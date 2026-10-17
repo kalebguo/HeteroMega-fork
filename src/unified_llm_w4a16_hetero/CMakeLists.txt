@@ -49,6 +49,30 @@ if(OpenMP_CXX_FOUND)
     target_link_libraries(unified_llm_w4a16_hetero_lib PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
+# HeteroMega GPU FFN (kernels/gpu). With -DHETEROMEGA_GPU_FFN=ON, forward_llama3_with_scratch runs the FFN through
+# heteromega::GpuFfnModel when the environment variable HETEROMEGA_GPU_FFN=1 is set. A separate library, so that
+# this library's -march=native does not reach the HIP device compiler.
+option(HETEROMEGA_GPU_FFN "Build the HeteroMega GPU FFN path into the model library" OFF)
+if(HETEROMEGA_GPU_FFN)
+    set(HM_GPU_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../kernels/gpu)
+    set(HM_GPU_HIP_SOURCES ${HM_GPU_DIR}/src/silu_mul.cu ${HM_GPU_DIR}/src/residual_add.cu ${HM_GPU_DIR}/src/gemv_w4a16.cu)
+    set_source_files_properties(${HM_GPU_HIP_SOURCES} PROPERTIES LANGUAGE HIP)
+    add_library(heteromega_gpu_ffn STATIC
+        ${HM_GPU_HIP_SOURCES}
+        ${HM_GPU_DIR}/src/gpu_ffn.cpp
+        ${HM_GPU_DIR}/src/pack_w4a16.cpp
+        ${HM_GPU_DIR}/src/residual_add_cpu.cpp)
+    set_target_properties(heteromega_gpu_ffn PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON POSITION_INDEPENDENT_CODE ON)
+    target_include_directories(heteromega_gpu_ffn PUBLIC ${HM_GPU_DIR}/include)
+    target_compile_options(heteromega_gpu_ffn PRIVATE
+        $<$<COMPILE_LANGUAGE:HIP>:-O3> $<$<COMPILE_LANGUAGE:HIP>:-ffast-math> $<$<COMPILE_LANGUAGE:CXX>:-O3>)
+    target_compile_definitions(heteromega_gpu_ffn PUBLIC __HIP_PLATFORM_AMD__=1)
+    target_link_libraries(heteromega_gpu_ffn PUBLIC hipkernels "${TORCH_LIBRARIES}" hip::host OpenMP::OpenMP_CXX)
+    target_link_libraries(unified_llm_w4a16_hetero_lib PUBLIC heteromega_gpu_ffn)
+    target_compile_definitions(unified_llm_w4a16_hetero_lib PRIVATE HETEROMEGA_GPU_FFN=1)
+    message(STATUS "HeteroMega GPU FFN: ON (runtime switch HETEROMEGA_GPU_FFN=1)")
+endif()
+
 set_target_properties(unified_llm_w4a16_hetero_lib PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
