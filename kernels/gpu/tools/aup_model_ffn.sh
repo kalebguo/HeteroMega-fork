@@ -8,8 +8,9 @@
 # working tree. Revert it with: git checkout -- CMakeLists.txt src/unified_llm_w4a16_hetero/CMakeLists.txt
 # Environment: OUT (results), MODEL_DIR, HOME_LIBS (xdna-driver parent), JOBS, REPS, NEW_TOKENS.
 #   DUMMY=1               run with the backend's seeded random weights: no model download, timing only
-#   SYSTEM_XDNA_HEADER=1  build against the installed XDNA 2.26 UAPI header instead of the pinned xdna-driver clone.
-#                         Only for GPU-only runs (heterogeneity=gpu); the NPU path needs the pinned headers.
+#   SYSTEM_XDNA_HEADER=1  build against the installed XDNA 2.26 UAPI header (plus aliases for the renamed context
+#                         names) instead of the pinned xdna-driver clone. Only for GPU-only runs (heterogeneity=gpu):
+#                         the NPU code compiles but is not tested with this header.
 set -euo pipefail
 
 OUT=${OUT:-/notebooks/hm-results/g6}
@@ -48,9 +49,21 @@ fetch() {
 build() {
     git sparse-checkout list | grep -qx py || git sparse-checkout add py
     local uapi=$HOME_LIBS/xdna-driver-05-19-25/src/include/uapi/drm_local
-    if [ "${SYSTEM_XDNA_HEADER:-0}" = 1 ] && [ ! -e "$uapi/amdxdna_accel.h" ]; then
+    if [ "${SYSTEM_XDNA_HEADER:-0}" = 1 ]; then
+        # XDNA 2.26 renamed the context names (CTX -> HWCTX); the fields that the source uses are unchanged.
         mkdir -p "$uapi"
-        ln -s /usr/src/xrt-amdxdna-2.26.0/include/uapi/drm/amdxdna_accel.h "$uapi/amdxdna_accel.h"
+        rm -f "$uapi/amdxdna_accel.h"
+        cat > "$uapi/amdxdna_accel.h" <<'H'
+// GPU-only build: the installed XDNA 2.26 UAPI header plus the 2025 names used by src/npu_matmul_func.
+#pragma once
+#include "/usr/src/xrt-amdxdna-2.26.0/include/uapi/drm/amdxdna_accel.h"
+#define amdxdna_drm_create_ctx amdxdna_drm_create_hwctx
+#define amdxdna_drm_config_ctx amdxdna_drm_config_hwctx
+#define amdxdna_ctx_param_config_cu amdxdna_hwctx_param_config_cu
+#define DRM_IOCTL_AMDXDNA_CREATE_CTX DRM_IOCTL_AMDXDNA_CREATE_HWCTX
+#define DRM_IOCTL_AMDXDNA_CONFIG_CTX DRM_IOCTL_AMDXDNA_CONFIG_HWCTX
+#define DRM_AMDXDNA_CTX_CONFIG_CU DRM_AMDXDNA_HWCTX_CONFIG_CU
+H
     fi
     git --no-pager show "HEAD:$RUNS/torch211-hip-compat.hpp" > "$OUT/torch211-hip-compat.hpp"
     if git diff --quiet -- CMakeLists.txt src/unified_llm_w4a16_hetero/CMakeLists.txt; then
