@@ -7,7 +7,7 @@ The handoff's proposed feasibility split, 4096 NPU / 10240 GPU channels, is `s =
 
 > **Status (2026-10-17):** built and run on the AUP cloud (Ryzen AI 9 HX 370, Radeon 890M `gfx1150`, ROCm 7.2, Torch 2.11).
 > `test_gpu_ffn` passes, quick and full (0 failed). Measurements are in [Results](#results-2026-10-17-hx-370).
-> The model switch (`HETEROMEGA_GPU_FFN`) is written but **not yet built or run in the model** (see [Model integration](#model-integration)).
+> The model switch (`HETEROMEGA_GPU_FFN`) is built and runs end to end, so far with seeded random weights only (see [Model integration](#model-integration)).
 > The NPU half is not part of this directory.
 
 ```mermaid
@@ -40,6 +40,9 @@ flowchart LR
 | `tools/summarize_bench.py` | Spread over rounds and per-round ratio against `hm` for `bench_ffn_ablation` output |
 | `tools/isa_loop_stats.py` | Instruction mix of the loops of a kernel, from an `llvm-objdump` / `roc-obj -d` disassembly |
 | `tools/summarize_rocprof.py` | Per-kernel means of `rocprofv3 --pmc` CSVs (see the `rocprofv3` note in Results) |
+| `tools/aup_model_ffn.sh` | AUP: build the model with the switch, run it with and without (see [End-to-end runs](#end-to-end-runs-aup)) |
+| `tools/run_model_ffn.py` | One end-to-end process: prefill time, decode rate, tokens vs the reference |
+| `tools/summarize_model_runs.py` | ON vs OFF summary of `run_model_ffn.py` results |
 | `tools/check_packing.py` | CPU check of the layout and the split math (numpy only) |
 
 ## GPU branch contract
@@ -163,7 +166,32 @@ The HeteroMosaic model calls it from `forward_llama3_with_scratch` (`src/unified
 
 Otherwise the model path is unchanged. `HETEROMEGA_GPU_FFN_SPLIT=<s_prefill>,<s_decode>` keeps only those channels on the GPU. The NPU share is not computed in this path yet, so the outputs are then wrong: use it to time the GPU share only.
 
-**Not executed yet:** the root build with this option and an end-to-end model run need the model weights and the XDNA headers on the AUP instance (see [cloud-baseline.md](../../docs/cloud-baseline.md)).
+### End-to-end runs (AUP)
+
+`tools/aup_model_ffn.sh` builds the root project with the switch and runs the model 4 times: `HETEROMEGA_GPU_FFN` = 0, 1, 1, 0. Each run is one process (`tools/run_model_ffn.py`): load the model, one warm-up generation, then 3 pairs of `generate(1 token)` (prefill time) and `generate(64 tokens)` (decode rate) on the fixed 1024-token prompt of [cloud-baseline.md](../../docs/cloud-baseline.md). The driver needs no `transformers`: it reads the prompt IDs and the reference tokens from `docs/runs/2026-10-12-aup/gpu-model-result.json`.
+
+```bash
+export OUT=/notebooks/hm-results/$(date +%F)/g6 HOME_LIBS=/notebooks/hm-libs-sys SYSTEM_XDNA_HEADER=1
+kernels/gpu/tools/aup_model_ffn.sh build
+DUMMY=1 kernels/gpu/tools/aup_model_ffn.sh run          # seeded random weights, no download
+python3 kernels/gpu/tools/summarize_model_runs.py $OUT/run?-ffn?.json
+kernels/gpu/tools/aup_model_ffn.sh fetch                # real weights: about 5.4 GB from Hugging Face
+kernels/gpu/tools/aup_model_ffn.sh run                  # also compares the 8 greedy tokens with the reference
+```
+
+Result with seeded random weights (2026-10-17, GPU-only, 2 processes × 3 repetitions per mode, median [min, max]):
+
+| | `HETEROMEGA_GPU_FFN=0` (HeteroMosaic FFN) | `HETEROMEGA_GPU_FFN=1` | ON / OFF |
+|---|---|---|---|
+| Prefill, 1024 tokens | 1.739 s [1.706, 1.851] | 1.712 s [1.699, 1.720] | 0.985 |
+| Decode | 16.86 tokens/s [16.83, 17.23] | 18.14 tokens/s [18.11, 18.28] | 1.076 |
+| Peak GPU allocation | 6.68 GiB | 8.21 GiB | +1.53 GiB |
+
+- The gains match the FFN benchmarks: about 2 % of the prefill FFN (fused SiLU-and-multiply) and 10 % of the decode FFN (`gemv_w4a16`).
+- Random weights give degenerate tokens (`[102368, 0, 0, …]`) in both modes. This run checks timing and stability only. **The real-weight run (same greedy tokens) is not done yet.**
+- Two build details of the AUP image, both in the script:
+  - `SYSTEM_XDNA_HEADER=1` generates `amdxdna_accel.h` from the installed XDNA 2.26 header under the 2025 names (`CTX` → `HWCTX` renames only). This is for GPU-only runs. The NPU path needs the pinned headers (`aup_model_ffn.sh xdna`).
+  - The Python extension is a MODULE library, so the runbook's `CMAKE_SHARED_LINKER_FLAGS` do not reach it. Without ROCm's `-L` in `CMAKE_MODULE_LINKER_FLAGS`, it linked HIP 5.7 from `/lib/x86_64-linux-gnu` next to HIP 7.2 and crashed at start (or found no device).
 
 ## Design notes
 
@@ -244,7 +272,7 @@ Nothing else should use the GPU, or many CPU cores, while a benchmark runs.
 
 ## Next steps
 
-1. Build the HeteroMosaic model with `-DHETEROMEGA_GPU_FFN=ON` and run it with and without `HETEROMEGA_GPU_FFN=1` (TTFT, tokens/s, the same greedy tokens).
+1. Run the model with real weights with and without `HETEROMEGA_GPU_FFN=1` (`aup_model_ffn.sh fetch`, then `run`): the same 8 greedy tokens as the reference, TTFT and tokens/s.
 2. Measure the GPU share of DRAM bandwidth next to an NPU load (needs the NPU side).
 3. Make the W4A16 GEMM faster for prefill: the two changes in [GEMM kernel variants](#gemm-kernel-variants--dheteromega_gemm_autotuneon) (integer weights into WMMA, B-fragment order in LDS). Check each with `isa_loop_stats.py` and `bench_ffn_ablation`.
 4. Stretch: fuse SiLU-and-multiply into the gate/up GEMM epilogue.

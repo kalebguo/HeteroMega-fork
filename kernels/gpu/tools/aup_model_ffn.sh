@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # End-to-end Llama 3.1 8B runs with and without the HeteroMega GPU FFN, on the AUP cloud image
 # (Ryzen AI 9 HX 370 / gfx1150, ROCm 7.2.0, a Torch 2.11 ROCm venv). Run from the repo root:
-#   kernels/gpu/tools/aup_model_ffn.sh fetch   model shards (about 5.4 GB) and the pinned xdna-driver headers
+#   kernels/gpu/tools/aup_model_ffn.sh fetch   model shards from Hugging Face (about 5.4 GB); not needed with DUMMY=1
+#   kernels/gpu/tools/aup_model_ffn.sh xdna    the pinned xdna-driver UAPI headers; not needed with SYSTEM_XDNA_HEADER=1
 #   kernels/gpu/tools/aup_model_ffn.sh build   root project with -DHETEROMEGA_GPU_FFN=ON into build-model/
 #   kernels/gpu/tools/aup_model_ffn.sh run     4 processes, HETEROMEGA_GPU_FFN = 0, 1, 1, 0 (run_model_ffn.py)
+# Then: python3 kernels/gpu/tools/summarize_model_runs.py $OUT/run?-ffn?.json
 # The build applies docs/runs/2026-10-12-aup/cloud-build.patch (ROCm 7.2 paths, Torch 2.11 HIP type names) to the
 # working tree. Revert it with: git checkout -- CMakeLists.txt src/unified_llm_w4a16_hetero/CMakeLists.txt
 # Environment: OUT (results), MODEL_DIR, HOME_LIBS (xdna-driver parent), JOBS, REPS, NEW_TOKENS.
@@ -36,7 +38,9 @@ fetch() {
         fi
     done
     (cd "$MODEL_DIR" && sha256sum $shards) | tee "$OUT/model-sha256.txt"
+}
 
+xdna() {
     local xdna=$HOME_LIBS/xdna-driver-05-19-25
     if [ ! -d "$xdna/.git" ]; then
         git clone --filter=blob:none --no-checkout https://github.com/amd/xdna-driver.git "$xdna"
@@ -109,9 +113,9 @@ run() {
 }
 
 case "${1:-}" in
-fetch | build | run) "$1" ;;
+fetch | xdna | build | run) "$1" ;;
 *)
-    echo "usage: aup_model_ffn.sh fetch|build|run" >&2
+    echo "usage: aup_model_ffn.sh fetch|xdna|build|run" >&2
     exit 2
     ;;
 esac
