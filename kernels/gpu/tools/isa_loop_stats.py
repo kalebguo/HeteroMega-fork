@@ -3,7 +3,7 @@
 
 Usage:
   /opt/rocm/bin/roc-obj -d -o isa build/gpu/bin/bench_ffn_ablation   # writes isa/*.s (one per code object)
-  python3 kernels/gpu/tools/isa_loop_stats.py isa/<file>.s [kernel-name-substring]
+  python3 kernels/gpu/tools/isa_loop_stats.py isa/<file>.s [kernel-name-substring] [--hist]
 
 A loop is the address range from the target of a backward branch to the branch. For each loop of each matching
 kernel it prints the static instruction counts per class, for one pass through the loop body:
@@ -13,6 +13,7 @@ kernel it prints the static instruction counts per class, for one pass through t
   smem   s_load_* / s_buffer_load_*    salu  other s_* (without s_waitcnt, s_nop and branches)
   wait   s_waitcnt*                    nop   s_nop
 Nested loops are listed separately; an outer loop's counts include its inner loops once.
+--hist also prints the mnemonic counts of the largest loop of each matching kernel.
 """
 import re
 import sys
@@ -71,7 +72,9 @@ def parse(path):
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
-    want = sys.argv[2] if len(sys.argv) > 2 else ""
+    args = [a for a in sys.argv[2:] if a != "--hist"]
+    want = args[0] if args else ""
+    hist = "--hist" in sys.argv
     classes = ["wmma", "valu", "lds", "vmem", "smem", "salu", "wait", "nop", "branch"]
     print("kernel,loop_start,loop_end,insns," + ",".join(classes) + ",valu_per_wmma")
     for name, (_, insns) in parse(sys.argv[1]).items():
@@ -80,13 +83,19 @@ def main():
         label = name.replace(",", ";")
         total = Counter(classify(m) for _, m, _ in insns)
         print(f"{label},whole,kernel,{len(insns)}," + ",".join(str(total[c]) for c in classes) + ",")
+        largest = []
         for addr, _, target in insns:
             if target is None or target > addr:
                 continue
             body = [m for a, m, _ in insns if target <= a <= addr]
+            largest = max(largest, body, key=len)
             c = Counter(classify(m) for m in body)
             ratio = f"{c['valu'] / c['wmma']:.2f}" if c["wmma"] else ""
             print(f"{label},{target:x},{addr:x},{len(body)}," + ",".join(str(c[k]) for k in classes) + f",{ratio}")
+        if hist and largest:
+            print(f"# {label}: mnemonics of the largest loop ({len(largest)} instructions)")
+            for m, n in Counter(largest).most_common():
+                print(f"#   {n:5d} {m}")
 
 
 if __name__ == "__main__":
