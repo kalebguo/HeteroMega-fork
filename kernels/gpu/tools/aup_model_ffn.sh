@@ -80,8 +80,15 @@ build() {
         "-DCMAKE_CXX_FLAGS=-isystem $ROCM/include" \
         "-DCMAKE_HIP_FLAGS=-isystem $ROCM/include --hip-path=$ROCM --rocm-path=$ROCM" \
         "-DCMAKE_EXE_LINKER_FLAGS=-L$ROCM/lib -Wl,-rpath,$ROCM/lib" \
-        "-DCMAKE_SHARED_LINKER_FLAGS=-L$ROCM/lib -Wl,-rpath,$ROCM/lib" 2>&1 | tee "$OUT/configure.log"
+        "-DCMAKE_SHARED_LINKER_FLAGS=-L$ROCM/lib -Wl,-rpath,$ROCM/lib" \
+        "-DCMAKE_MODULE_LINKER_FLAGS=-L$ROCM/lib -Wl,-rpath,$ROCM/lib" 2>&1 | tee "$OUT/configure.log"
+    # The Python extension is a MODULE library. Without ROCm's -L in its own flags, the HIP driver's -lamdhip64 finds
+    # HIP 5.7 in /lib/x86_64-linux-gnu, the module needs libamdhip64.so.5 and .so.7, and HIP calls fail or crash.
     cmake --build build-model -j"${JOBS:-4}" --target unified_llm_w4a16_hetero_libtorch 2>&1 | tee "$OUT/build.log"
+    if readelf -d build-model/py/unified_llm_w4a16/*.so | grep -q 'libamdhip64.so.5'; then
+        echo "error: the extension links HIP 5.7 (libamdhip64.so.5)" >&2
+        exit 1
+    fi
 }
 
 run() {
