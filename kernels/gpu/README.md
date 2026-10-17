@@ -38,6 +38,8 @@ flowchart LR
 | `bench/bench_bandwidth.cpp` | GPU streaming-read bandwidth, alone or next to CPU reader threads or an NPU load |
 | `tools/run_gpu_suite.sh` | Runs all benchmarks above in sequence, one CSV each |
 | `tools/summarize_bench.py` | Spread over rounds and per-round ratio against `hm` for `bench_ffn_ablation` output |
+| `tools/isa_loop_stats.py` | Instruction mix of the loops of a kernel, from an `llvm-objdump` / `roc-obj -d` disassembly |
+| `tools/summarize_rocprof.py` | Per-kernel means of `rocprofv3 --pmc` CSVs (see the `rocprofv3` note in Results) |
 | `tools/check_packing.py` | CPU check of the layout and the split math (numpy only) |
 
 ## GPU branch contract
@@ -111,7 +113,24 @@ HeteroMosaic's GEMM has 3 variants for K ≥ 2048: `generic` (128 × 128 output 
 - In all 24 FFN shapes (M ∈ {128, 512, 2048, 4096}, gate, up, gate_up and down for s ∈ {10240, 14336}) it kept `generic`. `k2048` and `n64` were 12 to 37 % slower.
 - So the AUTOTUNE build runs the same kernel as the default build: `bench_ffn_ablation` (3 rounds, `hm`, `fused`, `dense`) gave the same ratios within 1 %.
 - `generic` runs at 9.1 to 9.5 TFLOPS for every M from 128 to 4096. At M = 128 it reads the weights at only 19 GB/s. So the GEMM is compute-bound (int4 unpacking plus WMMA) from M = 128, not bandwidth-bound. hipBLASLt's dense bf16 GEMM reaches about 11.4 TFLOPS at M = 512.
-- Kernel variant selection has no headroom. A faster prefill GEMM needs a new kernel design, for example a 256-row M tile so that each unpacked weight tile serves more rows.
+- Kernel variant selection has no headroom. A faster prefill GEMM needs a new kernel design.
+
+Where the `generic` kernel spends its instructions: static count of its K loop, per wave and per K step of 128 (`tools/isa_loop_stats.py --hist` on the `roc-obj -d` disassembly):
+
+| Class | Count | What |
+|---|---|---|
+| `v_wmma_f32_16x16x16_bf16` | 64 | the matrix work |
+| other VALU | 756 | about 10 per unpacked weight: nibble extract (`v_bfe_u32` 144), `q − z`, int → fp32, × scale, then a software fp32 → bf16 round-to-nearest-even (`v_cmp_u_f32`, `v_add3_u32`, `v_cndmask_b32`, `v_or_b32`, 64 each). gfx1150 has no bf16 convert instruction |
+| LDS | 487 | building B fragments from the row-major `smem_B`: 256 16-bit loads and 192 `ds_swizzle_b32` |
+| global loads | 23 | A fragments (16), packed weights, scales, zeros |
+| `s_waitcnt` | 135 | |
+
+So the loop issues 11.8 other VALU and 7.6 LDS instructions per WMMA. Two changes would remove most of them (design, **not implemented**):
+
+1. Give WMMA exact integer weights and apply zero and scale in fp32 once per K step. `bf16(128 + q)` has the bit pattern `0x4300 | q`, so unpacking is 2 bit operations per weight pair and needs no rounding. With `P = Σ_k x_k · (128 + q_k)` from WMMA: `acc += s_n · (P − (128 + z_n) · Σ_k x_k)`. This is also more accurate: the weights are not rounded to bf16 after scaling.
+2. Store the unpacked tile in LDS in B-fragment order, so that each lane reads its 16 K values with 2 `ds_load_b128` instead of 16-bit loads and swizzles.
+
+Hardware counters were not available: `rocprofv3` (ROCm 7.2) aborts in the first Torch kernel of the benchmarks, also when Torch's own HSA runtime is aliased for it. A Torch-free GEMM driver is needed for counters.
 
 ### Shared DRAM bandwidth (`bench_bandwidth`, medians of 1 s windows)
 
@@ -227,5 +246,5 @@ Nothing else should use the GPU, or many CPU cores, while a benchmark runs.
 
 1. Build the HeteroMosaic model with `-DHETEROMEGA_GPU_FFN=ON` and run it with and without `HETEROMEGA_GPU_FFN=1` (TTFT, tokens/s, the same greedy tokens).
 2. Measure the GPU share of DRAM bandwidth next to an NPU load (needs the NPU side).
-3. Make the W4A16 GEMM faster for prefill. Variant selection gives nothing (see above). Profile the `generic` kernel with `rocprofv3` (unpacking vs WMMA vs LDS time), then try a 256-row M tile.
+3. Make the W4A16 GEMM faster for prefill: the two changes in [GEMM kernel variants](#gemm-kernel-variants--dheteromega_gemm_autotuneon) (integer weights into WMMA, B-fragment order in LDS). Check each with `isa_loop_stats.py` and `bench_ffn_ablation`.
 4. Stretch: fuse SiLU-and-multiply into the gate/up GEMM epilogue.

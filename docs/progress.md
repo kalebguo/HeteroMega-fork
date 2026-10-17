@@ -18,8 +18,13 @@ Details and tables: [kernels/gpu/README.md](../kernels/gpu/README.md#results-202
   the NPU** (needs the NPU side).
 - **One weight copy, two split points (G3):** `kInterleaved` gate/up layout and
   `FfnSliceWeights::prefix`; same latency as a separately packed slice.
-- **GEMM (G4, step 1):** AUTOTUNE kept `generic` in all 24 FFN shapes, so it gives
-  no gain. `generic` is compute-bound at 9.1 to 9.5 TFLOPS from M = 128.
+- **GEMM (G4):** AUTOTUNE kept `generic` in all 24 FFN shapes, so it gives
+  no gain. `generic` is compute-bound at 9.1 to 9.5 TFLOPS from M = 128. Static
+  ISA count of its K loop: 64 WMMA, 756 other VALU (about 10 per unpacked
+  weight, incl. a software fp32 → bf16 rounding) and 487 LDS instructions per
+  wave per K step. Proposed fix (not implemented): exact integer weights
+  `0x4300 | q` into WMMA with zero/scale applied per K step, and B-fragment order
+  in LDS. `rocprofv3` aborts with Torch in the process, so no counters.
 - **Decode GEMV (G5):** new `gemv_w4a16` (fp32 accumulation): per layer at
   s = 14336, 1.090 → 0.979 ms; 93 to 96 GB/s.
 - **Model integration (G6):** `slice_packed_ffn`, `GpuFfnModel`, and a switch in
