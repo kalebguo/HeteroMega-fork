@@ -17,6 +17,9 @@ Usage, from the repo root (HETEROMEGA_GPU_FFN selects the FFN path; the binary i
 Per process: load the model once, run one warm-up generation with as many tokens as the reference and compare its
 tokens, then run --reps pairs of generate(1 token) and generate(--new-tokens). The warm-up also builds the GPU FFN
 weights. prefill_s is the wall time of generate(1). decode_tok_s = (new_tokens - 1) / (wall(new_tokens) - wall(1)).
+
+--dummy uses the backend's seeded random weights (initialize_dummy_weights, seed 42) instead of --model: no download,
+same timing work, but the tokens are not meaningful. Compare the tokens of the ON and OFF runs with each other only.
 """
 import argparse
 import hashlib
@@ -105,7 +108,8 @@ class SizedReader:
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--model", required=True, help="directory with the *.safetensors shards")
+    p.add_argument("--model", help="directory with the *.safetensors shards")
+    p.add_argument("--dummy", action="store_true", help="seeded random weights instead of --model")
     p.add_argument("--ref", required=True, help="gpu-model-result.json with input_ids and generated_ids")
     p.add_argument("--out", required=True)
     p.add_argument("--build", default="build-model", help="build directory, relative to the repo root")
@@ -114,6 +118,8 @@ def main():
     p.add_argument("--new-tokens", type=int, default=64)
     p.add_argument("--max-seq-len", type=int, default=1536)
     args = p.parse_args()
+    if not args.dummy and not args.model:
+        p.error("--model is required without --dummy")
 
     sys.path.insert(0, str(ROOT / args.build / "py" / "unified_llm_w4a16"))
     sys.path.insert(1, str(ROOT / "py" / "unified_llm_w4a16"))
@@ -123,13 +129,15 @@ def main():
     from llama3_8b_w4a16_model import LLaMA3W4A16Model, _model_name_from_path, load_config_with_comments
 
     out = Path(args.out).resolve()
-    model_dir = Path(args.model).resolve()
-    merged = ROOT / "py/unified_llm_w4a16/model_weights" / f"{_model_name_from_path(str(model_dir))}.safetensors"
-    if not merged.exists():
-        merge_shards(sorted(model_dir.glob("*.safetensors")), merged)
+    model_dir = None if args.dummy else Path(args.model).resolve()
+    if model_dir is not None:
+        merged = ROOT / "py/unified_llm_w4a16/model_weights" / f"{_model_name_from_path(str(model_dir))}.safetensors"
+        if not merged.exists():
+            merge_shards(sorted(model_dir.glob("*.safetensors")), merged)
 
     config = load_config_with_comments(str(ROOT / args.config))
-    config.update(heterogeneity="gpu", prompt_len=1024, usePreSavedWeights=False, warmup=False, debug_verbosity=1)
+    config.update(heterogeneity="gpu", prompt_len=1024, usePreSavedWeights=False, warmup=False, debug_verbosity=1,
+                  dummy_weights=args.dummy)
     config_path = out.with_name(out.stem + ".config.json")
     config_path.write_text(json.dumps(config, indent=2))
 
@@ -140,10 +148,11 @@ def main():
     assert sha == ref["input_sha256"], sha
 
     record = {"gpu_ffn_env": os.environ.get("HETEROMEGA_GPU_FFN", ""), "backend": backend.__file__,
-              "config": str(config_path), "input_sha256": sha, "new_tokens": args.new_tokens}
+              "config": str(config_path), "input_sha256": sha, "new_tokens": args.new_tokens, "dummy": args.dummy}
     t = time.perf_counter()
-    model = LLaMA3W4A16Model(model_path=str(model_dir), tokenizer_path=str(model_dir), max_seq_len=args.max_seq_len,
-                             device="cuda", config_path=str(config_path))
+    path = None if model_dir is None else str(model_dir)
+    model = LLaMA3W4A16Model(model_path=path, tokenizer_path=path, max_seq_len=args.max_seq_len, device="cuda",
+                             config_path=str(config_path))
     record["load_s"] = time.perf_counter() - t
 
     def timed(n):
@@ -156,9 +165,9 @@ def main():
 
     want = ref["generated_ids"]
     record["warmup_s"], record["warmup_ids"] = timed(len(want))
-    record["matches_reference"] = record["warmup_ids"] == want
-    print("WARMUP", record["warmup_s"], record["warmup_ids"], "matches" if record["matches_reference"] else "DIFFERS",
-          flush=True)
+    record["matches_reference"] = None if args.dummy else record["warmup_ids"] == want
+    verdict = {None: "dummy weights", True: "matches the reference", False: "DIFFERS from the reference"}
+    print("WARMUP", record["warmup_s"], record["warmup_ids"], verdict[record["matches_reference"]], flush=True)
 
     record["reps"] = []
     for rep in range(args.reps):

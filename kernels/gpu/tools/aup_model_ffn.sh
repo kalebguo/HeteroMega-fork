@@ -7,6 +7,9 @@
 # The build applies docs/runs/2026-10-12-aup/cloud-build.patch (ROCm 7.2 paths, Torch 2.11 HIP type names) to the
 # working tree. Revert it with: git checkout -- CMakeLists.txt src/unified_llm_w4a16_hetero/CMakeLists.txt
 # Environment: OUT (results), MODEL_DIR, HOME_LIBS (xdna-driver parent), JOBS, REPS, NEW_TOKENS.
+#   DUMMY=1               run with the backend's seeded random weights: no model download, timing only
+#   SYSTEM_XDNA_HEADER=1  build against the installed XDNA 2.26 UAPI header instead of the pinned xdna-driver clone.
+#                         Only for GPU-only runs (heterogeneity=gpu); the NPU path needs the pinned headers.
 set -euo pipefail
 
 OUT=${OUT:-/notebooks/hm-results/g6}
@@ -44,6 +47,11 @@ fetch() {
 
 build() {
     git sparse-checkout list | grep -qx py || git sparse-checkout add py
+    local uapi=$HOME_LIBS/xdna-driver-05-19-25/src/include/uapi/drm_local
+    if [ "${SYSTEM_XDNA_HEADER:-0}" = 1 ] && [ ! -e "$uapi/amdxdna_accel.h" ]; then
+        mkdir -p "$uapi"
+        ln -s /usr/src/xrt-amdxdna-2.26.0/include/uapi/drm/amdxdna_accel.h "$uapi/amdxdna_accel.h"
+    fi
     git --no-pager show "HEAD:$RUNS/torch211-hip-compat.hpp" > "$OUT/torch211-hip-compat.hpp"
     if git diff --quiet -- CMakeLists.txt src/unified_llm_w4a16_hetero/CMakeLists.txt; then
         git --no-pager show "HEAD:$RUNS/cloud-build.patch" | sed "s#/notebooks/heteromega-baseline-logs/#$OUT/#" | git apply
@@ -70,7 +78,9 @@ run() {
     for ffn in 0 1 1 0; do
         i=$((i + 1))
         local name=$OUT/run$i-ffn$ffn
-        HETEROMEGA_GPU_FFN=$ffn timeout 1200 python3 -u kernels/gpu/tools/run_model_ffn.py --model "$MODEL_DIR" \
+        local weights=(--model "$MODEL_DIR")
+        [ "${DUMMY:-0}" = 1 ] && weights=(--dummy)
+        HETEROMEGA_GPU_FFN=$ffn timeout 1200 python3 -u kernels/gpu/tools/run_model_ffn.py "${weights[@]}" \
             --ref "$OUT/reference.json" --out "$name.json" --reps "${REPS:-3}" --new-tokens "${NEW_TOKENS:-64}" \
             > "$name.log" 2>&1 || echo "run $i failed: see $name.log"
         grep -E "^(WARMUP|REP|DONE|stub)|HeteroMega GPU FFN|Error|Traceback" "$name.log" || true
