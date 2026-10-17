@@ -12,7 +12,9 @@
 #include <unordered_map>
 
 #define BF16_COMPUTE 1 // 0 = Int8 Native ASM, 1 = BF16 Baseline
+#ifndef AUTOTUNE
 #define AUTOTUNE 0     // 0 = disable kernel autotuning, 1 = benchmark/select per shape
+#endif
 
 #if BF16_COMPUTE
 #include <rocwmma/rocwmma.hpp>
@@ -628,7 +630,7 @@ __global__ void __launch_bounds__(256, 2) w4a16_gemm_rocwmma_packed_k2048(
 
     // Specialized path for K == 2048 (16 tiles of 128), each split into two K=64 chunks.
 #pragma unroll 1
-    for (int k_tile_idx = 0; k_tile_idx < num_tiles_k; ++k_tile_idx) {
+    for (int k_tile_idx = 0; k_tile_idx * 128 < K; ++k_tile_idx) {
         const size_t tile_offset = (size_t)(base_z + k_tile_idx) * PACKED_TILE_SIZE;
         const uint8_t *w_base = packed_params + tile_offset;
 
@@ -950,12 +952,25 @@ __global__ void __launch_bounds__(128) w4a16_gemm_rocwmma_packed_n64(
 void w4a16_gemm_fused_packed(torch::Tensor &output, const torch::Tensor &input,
                              const torch::Tensor &packed_params, int64_t in_features,
                              int64_t out_features, hipStream_t stream) {
+    w4a16_gemm_fused_packed_tiles(output, input, packed_params, in_features, out_features,
+                                  (in_features + 128 - 1) / 128, (out_features + 64 - 1) / 64, stream);
+}
+
+void w4a16_gemm_fused_packed_tiles(torch::Tensor &output, const torch::Tensor &input,
+                                   const torch::Tensor &packed_params, int64_t in_features,
+                                   int64_t out_features, int64_t packed_tiles_k, int64_t packed_tiles_n,
+                                   hipStream_t stream) {
     const int M = input.numel() / in_features;
     const int K = in_features;
     const int N = out_features;
 
-    const int num_tiles_k = (K + 128 - 1) / 128;
-    const int num_tiles_n = (N + 64 - 1) / 64;
+    // The kernels locate a tile from the tile counts of the whole packed matrix, so passing larger counts than
+    // K and N need computes the leading K x N block of that matrix.
+    const int num_tiles_k = static_cast<int>(packed_tiles_k);
+    const int num_tiles_n = static_cast<int>(packed_tiles_n);
+    if (num_tiles_k * 128 < K || num_tiles_n * 64 < N) {
+        throw std::runtime_error("w4a16_gemm_fused_packed_tiles: packed matrix is smaller than K x N");
+    }
 
 #if BF16_COMPUTE
     static bool cache_config_set = false;

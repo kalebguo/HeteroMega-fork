@@ -4,12 +4,18 @@
 #include <hip/hip_runtime.h>
 
 #include <algorithm>
+#include <atomic>
+#include <chrono>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
+#include <fstream>
+#include <mutex>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <thread>
 #include <vector>
 
 namespace bench {
@@ -87,6 +93,91 @@ class EventTimer {
   private:
     hipStream_t stream_;
     std::vector<hipEvent_t> events_;
+};
+
+// Samples the GPU's hwmon sensors (read-only) on a background thread:
+//   freq1_input  GPU clock (Hz)       power1_input  package power PPT of the whole SoC (uW)
+//   temp1_input  GPU edge temperature (millidegree C)
+// Call start() before the GPU work and stop() after it. Values are -1 when the files are missing.
+class SensorSampler {
+  public:
+    struct Stats {
+        double sclk_mhz_median = -1, sclk_mhz_min = -1, power_w_median = -1, temp_c_max = -1;
+    };
+
+    explicit SensorSampler(int period_ms = 5) : period_ms_(period_ms) {
+        namespace fs = std::filesystem;
+        std::error_code ec;
+        for (const auto &card : fs::directory_iterator("/sys/class/drm", ec)) {
+            const fs::path hw = card.path() / "device" / "hwmon";
+            if (!fs::exists(hw, ec)) {
+                continue;
+            }
+            for (const auto &h : fs::directory_iterator(hw, ec)) {
+                if (fs::exists(h.path() / "freq1_input", ec)) {
+                    dir_ = h.path().string();
+                    return;
+                }
+            }
+        }
+    }
+    ~SensorSampler() { stop(); }
+
+    bool available() const { return !dir_.empty(); }
+
+    void start() {
+        stop();
+        if (!available()) {
+            return;
+        }
+        {
+            std::lock_guard<std::mutex> lock(mu_);
+            sclk_.clear(), power_.clear(), temp_.clear();
+        }
+        running_ = true;
+        thread_ = std::thread([this] {
+            while (running_) {
+                const double f = read(dir_ + "/freq1_input"), p = read(dir_ + "/power1_input"), t = read(dir_ + "/temp1_input");
+                {
+                    std::lock_guard<std::mutex> lock(mu_);
+                    if (f >= 0) sclk_.push_back(f / 1e6);
+                    if (p >= 0) power_.push_back(p / 1e6);
+                    if (t >= 0) temp_.push_back(t / 1e3);
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(period_ms_));
+            }
+        });
+    }
+
+    Stats stop() {
+        if (thread_.joinable()) {
+            running_ = false;
+            thread_.join();
+        }
+        std::lock_guard<std::mutex> lock(mu_);
+        Stats s;
+        if (!sclk_.empty()) {
+            s.sclk_mhz_median = median(sclk_);
+            s.sclk_mhz_min = *std::min_element(sclk_.begin(), sclk_.end());
+        }
+        if (!power_.empty()) s.power_w_median = median(power_);
+        if (!temp_.empty()) s.temp_c_max = *std::max_element(temp_.begin(), temp_.end());
+        return s;
+    }
+
+  private:
+    static double read(const std::string &path) {
+        std::ifstream f(path);
+        double v = -1;
+        return (f >> v) ? v : -1;
+    }
+
+    std::string dir_;
+    int period_ms_;
+    std::atomic<bool> running_{false};
+    std::thread thread_;
+    std::mutex mu_;
+    std::vector<double> sclk_, power_, temp_;
 };
 
 } // namespace bench

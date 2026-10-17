@@ -38,6 +38,16 @@ namespace hipkernels {
 void w4a16_gemm_fused_packed(torch::Tensor &output, const torch::Tensor &input, const torch::Tensor &packed_params, int64_t in_features,
                              int64_t out_features, hipStream_t stream = 0);
 
+/**
+ * @brief Same as w4a16_gemm_fused_packed, on the leading in_features x out_features block of a larger packed matrix
+ *
+ * @param packed_tiles_k Tile rows of the whole packed matrix (its K / 128)
+ * @param packed_tiles_n Tile columns of the whole packed matrix (its N / 64)
+ */
+void w4a16_gemm_fused_packed_tiles(torch::Tensor &output, const torch::Tensor &input, const torch::Tensor &packed_params,
+                                   int64_t in_features, int64_t out_features, int64_t packed_tiles_k, int64_t packed_tiles_n,
+                                   hipStream_t stream = 0);
+
 void w4a16_gemv_fused_packed(torch::Tensor &output, const torch::Tensor &input, const torch::Tensor &packed_params, int64_t in_features,
                              int64_t out_features, int64_t total_out_features = -1, int64_t start_col = 0, hipStream_t stream = 0);
 

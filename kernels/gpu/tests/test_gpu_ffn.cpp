@@ -1,6 +1,7 @@
 // Correctness tests for the GPU side of the FFN split.
 //   Level 1: each kernel against an fp32 reference (random signed inputs, nonuniform weights, scales and zeros).
-//   Level 2: Y_G + Y_N of two channel slices against the unsplit fp32 FFN.
+//   Level 2: Y_G + Y_N of two channel slices against the unsplit fp32 FFN, with the GPU slice packed on its own
+//            and as a prefix of all channels (FfnSliceWeights::prefix).
 // Run on the AUP cloud in the environment of docs/cloud-baseline.md:
 //   ./test_gpu_ffn          (full: M in {1, 37, 128, 512, 2048}, s in {512, 7168, 10240, 13824})
 //   ./test_gpu_ffn --quick  (M in {1, 37, 128}, s = 7168)
@@ -101,6 +102,59 @@ void test_packed_linear(const torch::Device &dev, hipStream_t stream, const std:
     }
 }
 
+// Level 1: gemv_w4a16 with each K split, and HeteroMosaic's GEMV, on the shapes of the decode step.
+void test_gemv(const torch::Device &dev, hipStream_t stream) {
+    struct Case {
+        const char *name;
+        int64_t k, n;
+    };
+    const Case cases[] = {{"gate_up [4096 x 2*7168]", kHidden, 2 * 7168}, {"down [14336 x 4096]", kInter, kHidden},
+                          {"down [7168 x 4096]", 7168, kHidden}, {"down [512 x 4096]", 512, kHidden}};
+    for (const auto &c : cases) {
+        const Quant t = random_quant(c.k, c.n);
+        const auto w = dequant(t, dev);
+        const auto packed = pack_w4a16(t.q, t.s, t.z).to(dev);
+        const auto x = padded_input(1, c.k, dev);
+        const auto ref = x.to(torch::kFloat32).matmul(w);
+        auto y = torch::empty({1, c.n}, x.options());
+        for (int split : {0, 1, 2, 3, 8}) {
+            gemv_w4a16(y, x, packed, c.k, c.n, c.k, c.n, split, stream);
+            sync();
+            check(std::string("L1 gemv_w4a16 split_k=") + std::to_string(split) + " " + c.name, y, ref, kLevel);
+        }
+        LinearOptions hm;
+        hm.gemv = GemvKernel::kHeteroMosaic;
+        packed_linear(y, x, packed, c.k, c.n, stream, hm);
+        sync();
+        check(std::string("L1 HeteroMosaic GEMV ") + c.name, y, ref, kLevel);
+    }
+}
+
+// Level 1: the leading [k, n] block of a larger packed matrix, as FfnSliceWeights::prefix() uses it.
+// Covers the GEMV, the generic GEMM (K >= 2048) and the small-K GEMM (K <= 1024).
+void test_packed_prefix(const torch::Device &dev, hipStream_t stream, const std::vector<int64_t> &ms) {
+    const int64_t full_k = 4096, full_n = 1024;
+    const Quant t = random_quant(full_k, full_n);
+    const auto w = dequant(t, dev);
+    const auto packed = pack_w4a16(t.q, t.s, t.z).to(dev);
+    LinearOptions opt;
+    opt.packed_k = full_k;
+    opt.packed_n = full_n;
+    const int64_t blocks[][2] = {{2048, 512}, {4096, 256}, {1024, 768}, {512, 1024}};
+    for (const auto &b : blocks) {
+        const int64_t k = b[0], n = b[1];
+        const auto ref_w = w.narrow(0, 0, k).narrow(1, 0, n);
+        for (int64_t m : ms) {
+            const auto x = padded_input(m, k, dev);
+            auto y = torch::empty({m, n}, x.options());
+            packed_linear(y, x, packed, k, n, stream, opt);
+            sync();
+            check("L1 linear prefix [" + std::to_string(k) + " x " + std::to_string(n) + "] of [4096 x 1024] M=" + std::to_string(m), y,
+                  x.to(torch::kFloat32).matmul(ref_w), kLevel);
+        }
+    }
+}
+
 // Level 1: SiLU-and-multiply.
 void test_silu_mul(const torch::Device &dev, hipStream_t stream) {
     for (int64_t m : {1L, 37L, 2048L}) {
@@ -112,6 +166,14 @@ void test_silu_mul(const torch::Device &dev, hipStream_t stream) {
         const auto g = gu.narrow(1, 0, n).to(torch::kFloat32);
         const auto u = gu.narrow(1, n, n).to(torch::kFloat32);
         check("L1 silu_mul M=" + std::to_string(m), act, torch::silu(g) * u, kExact);
+
+        // Interleaved: per 64 channels, 64 gate columns then 64 up columns.
+        auto act_i = torch::empty({m, n}, gu.options());
+        silu_mul(gu, act_i, stream, GateUpLayout::kInterleaved);
+        sync();
+        const auto pairs = gu.to(torch::kFloat32).view({m, n / 64, 2, 64});
+        const auto gi = pairs.select(2, 0).reshape({m, n}), ui = pairs.select(2, 1).reshape({m, n});
+        check("L1 silu_mul interleaved M=" + std::to_string(m), act_i, torch::silu(gi) * ui, kExact);
     }
 }
 
@@ -152,6 +214,9 @@ void test_ffn_split(const torch::Device &dev, hipStream_t stream, const std::vec
     const int64_t max_m = *std::max_element(ms.begin(), ms.end());
     const auto full = pack_ffn_slice(layer, 0, kInter).to(dev);
     auto full_buf = GpuFfnBuffers::allocate(max_m, kInter, kHidden, dev);
+    // All channels packed once with interleaved gate/up. Each split's GPU part is a prefix of it.
+    const auto all = pack_ffn_slice(layer, 0, kInter, GateUpLayout::kInterleaved).to(dev);
+    auto all_buf = GpuFfnBuffers::allocate(max_m, kInter, kHidden, dev);
 
     for (int64_t s : splits) {
         const auto gpu_part = pack_ffn_slice(layer, 0, s).to(dev);
@@ -167,17 +232,23 @@ void test_ffn_split(const torch::Device &dev, hipStream_t stream, const std::vec
             auto y_g = torch::empty({m, kHidden}, x.options());
             auto y_n = torch::empty({m, kHidden}, x.options());
             auto y_full = torch::empty({m, kHidden}, x.options());
+            auto y_prefix = torch::empty({m, kHidden}, x.options());
             gpu_ffn_slice_forward(gpu_part, x, gpu_buf, y_g, stream);
             gpu_ffn_slice_forward(npu_part, x, npu_buf, y_n, stream);
             gpu_ffn_slice_forward(full, x, full_buf, y_full, stream);
+            gpu_ffn_slice_forward(all.prefix(s), x, all_buf, y_prefix, stream);
 
             // Reducer path: zero residual, so x_out == Y_G + Y_N.
             auto x_out = torch::zeros({m, kHidden}, x.options());
             residual_add2(x_out, y_g, y_n, stream);
+            auto x_out_prefix = torch::zeros({m, kHidden}, x.options());
+            residual_add2(x_out_prefix, y_prefix, y_n, stream);
             sync();
 
             const std::string tag = " s=" + std::to_string(s) + " M=" + std::to_string(m);
             check("L2 split Y_G + Y_N vs fp32 FFN" + tag, x_out, ref, kLevel);
+            check("L2 prefix split Y_G + Y_N vs fp32 FFN" + tag, x_out_prefix, ref, kLevel);
+            check("L2 prefix Y_G vs separately packed Y_G" + tag, y_prefix, y_g, kExact);
             check("L2 unsplit GPU FFN vs fp32 FFN" + tag, y_full, ref, kLevel);
         }
     }
@@ -203,6 +274,8 @@ int main(int argc, char **argv) {
     const std::vector<int64_t> splits = quick ? std::vector<int64_t>{7168} : std::vector<int64_t>{512, 7168, 10240, 13824};
 
     test_packed_linear(dev, stream, ms);
+    test_gemv(dev, stream);
+    test_packed_prefix(dev, stream, ms);
     test_silu_mul(dev, stream);
     test_residual_add2(dev, stream);
     test_ffn_split(dev, stream, ms, splits);

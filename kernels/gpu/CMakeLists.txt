@@ -11,6 +11,8 @@
 #   CMAKE_HIP_ARCHITECTURES  the GPU that rocminfo reports: native gfx1150 on the HX 370,
 #                            gfx1100 if HSA_OVERRIDE_GFX_VERSION=11.0.0 is set
 #   HETEROMOSAIC_ROOT        the repository root
+#   HETEROMEGA_GEMM_AUTOTUNE OFF: build HeteroMosaic's GEMM with AUTOTUNE=1 when ON (it then times its kernel
+#                            variants at the first call of each shape and keeps the fastest; it prints one line each)
 cmake_minimum_required(VERSION 3.25)
 project(heteromega_gpu LANGUAGES CXX)
 
@@ -77,6 +79,8 @@ list(APPEND CMAKE_PREFIX_PATH "${TORCH_PYTHON_PATH}/share/cmake/Torch")
 find_package(Torch REQUIRED)
 find_package(hip REQUIRED)
 find_package(OpenMP)
+find_package(Threads REQUIRED)
+option(HETEROMEGA_GEMM_AUTOTUNE "Build HeteroMosaic's GEMM with AUTOTUNE=1" OFF)
 
 # The Torch ROCm wheel bundles its own HIP runtime and hipBLASLt in torch/lib, under names without a version
 # (libamdhip64.so has SONAME libamdhip64.so.7), and libtorch_hip loads them by those names. Our executables need
@@ -107,12 +111,16 @@ add_library(hm_w4a16 STATIC ${HM_SOURCES})
 set_target_properties(hm_w4a16 PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(hm_w4a16 PUBLIC ${HETEROMOSAIC_ROOT}/include ${ROCM_PATH}/include ${TORCH_INCLUDE_DIRS})
 target_compile_definitions(hm_w4a16 PRIVATE __HIP_PLATFORM_AMD__=1 RDNA3=1)
+if(HETEROMEGA_GEMM_AUTOTUNE)
+    target_compile_definitions(hm_w4a16 PRIVATE AUTOTUNE=1)
+    message(STATUS "HeteroMosaic GEMM: AUTOTUNE=1")
+endif()
 target_compile_options(hm_w4a16 PRIVATE ${HETEROMEGA_HIP_OPTIONS})
 target_link_libraries(hm_w4a16 PRIVATE hip::device "${TORCH_LIBRARIES}")
 target_link_libraries(hm_w4a16 PUBLIC hip::host)
 
 # HeteroMega GPU library.
-set(HETEROMEGA_HIP_SOURCES src/silu_mul.cu src/residual_add.cu)
+set(HETEROMEGA_HIP_SOURCES src/silu_mul.cu src/residual_add.cu src/gemv_w4a16.cu)
 set_source_files_properties(${HETEROMEGA_HIP_SOURCES} PROPERTIES LANGUAGE HIP)
 add_library(heteromega_gpu STATIC
     ${HETEROMEGA_HIP_SOURCES}
@@ -130,10 +138,10 @@ endif()
 
 # Tests and benchmarks.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-foreach(name tests/test_gpu_ffn bench/bench_gpu_ffn_slice bench/bench_ffn_ablation bench/bench_reduce)
+foreach(name tests/test_gpu_ffn bench/bench_gpu_ffn_slice bench/bench_ffn_ablation bench/bench_gemv bench/bench_reduce)
     get_filename_component(target ${name} NAME)
     add_executable(${target} ${name}.cpp)
-    target_link_libraries(${target} PRIVATE heteromega_gpu)
+    target_link_libraries(${target} PRIVATE heteromega_gpu Threads::Threads)
     if(EXISTS "${TORCH_ROCM_ALIAS_DIR}")
         set_target_properties(${target} PROPERTIES SKIP_BUILD_RPATH ON)
         target_link_options(${target} PRIVATE "LINKER:--disable-new-dtags" "LINKER:-rpath,${TORCH_ROCM_ALIAS_DIR}:${TORCH_LIB_DIR}")
@@ -143,4 +151,4 @@ endforeach()
 set_source_files_properties(bench/bench_bandwidth.cpp PROPERTIES LANGUAGE HIP)
 add_executable(bench_bandwidth bench/bench_bandwidth.cpp)
 target_compile_options(bench_bandwidth PRIVATE ${HETEROMEGA_HIP_OPTIONS})
-target_link_libraries(bench_bandwidth PRIVATE hip::device)
+target_link_libraries(bench_bandwidth PRIVATE hip::device Threads::Threads)

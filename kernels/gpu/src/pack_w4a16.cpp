@@ -65,7 +65,7 @@ torch::Tensor pack_w4a16(const torch::Tensor &qweight, const torch::Tensor &scal
     return out;
 }
 
-FfnSliceWeights pack_ffn_slice(const FfnLayerQuant &layer, int64_t begin, int64_t end) {
+FfnSliceWeights pack_ffn_slice(const FfnLayerQuant &layer, int64_t begin, int64_t end, GateUpLayout layout) {
     TORCH_CHECK(layer.gate_q.dim() == 2, "pack_ffn_slice: gate_q must be [H, I]");
     const int64_t hidden = layer.gate_q.size(0);
     const int64_t inter = layer.gate_q.size(1);
@@ -76,14 +76,35 @@ FfnSliceWeights pack_ffn_slice(const FfnLayerQuant &layer, int64_t begin, int64_
     auto cols = [&](const torch::Tensor &t) { return t.slice(1, begin, end); };
     auto rows = [&](const torch::Tensor &t, int64_t per_row) { return t.slice(0, begin / per_row, end / per_row); };
 
+    // [rows, n] gate and up -> [rows, 2n] in `layout` order.
+    const int64_t n = end - begin;
+    auto join = [&](const torch::Tensor &g, const torch::Tensor &u) {
+        if (layout == GateUpLayout::kBlocked) {
+            return torch::cat({g, u}, 1);
+        }
+        const int64_t r = g.size(0);
+        return torch::stack({g.reshape({r, n / kTileN, kTileN}), u.reshape({r, n / kTileN, kTileN})}, 2).reshape({r, 2 * n});
+    };
+
     FfnSliceWeights w;
-    w.gate_up = pack_w4a16(torch::cat({cols(layer.gate_q), cols(layer.up_q)}, 1),
-                           torch::cat({cols(layer.gate_s), cols(layer.up_s)}, 1),
-                           torch::cat({cols(layer.gate_z), cols(layer.up_z)}, 1));
+    w.gate_up = pack_w4a16(join(cols(layer.gate_q), cols(layer.up_q)), join(cols(layer.gate_s), cols(layer.up_s)),
+                           join(cols(layer.gate_z), cols(layer.up_z)));
     w.down = pack_w4a16(rows(layer.down_q, 1), rows(layer.down_s, kTileK), rows(layer.down_z, kTileK));
     w.begin = begin;
     w.end = end;
     w.hidden = hidden;
+    w.layout = layout;
+    return w;
+}
+
+FfnSliceWeights FfnSliceWeights::prefix(int64_t n) const {
+    TORCH_CHECK(n > 0 && n <= stored_channels() && n % kTileK == 0, "FfnSliceWeights::prefix: n must be a multiple of 128 in (0, ",
+                stored_channels(), "], got ", n);
+    TORCH_CHECK(n == stored_channels() || layout == GateUpLayout::kInterleaved,
+                "FfnSliceWeights::prefix: a shorter prefix needs GateUpLayout::kInterleaved");
+    FfnSliceWeights w = *this;
+    w.packed_channels = stored_channels();
+    w.end = begin + n;
     return w;
 }
 
