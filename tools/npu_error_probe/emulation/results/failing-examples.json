@@ -1,0 +1,314 @@
+[
+  {
+    "experiment": "smoke_p6400",
+    "layer": 0,
+    "input": 0,
+    "config": "deployed",
+    "check": "contract.error_metrics(rtol=0.03, atol=0.05, l2_limit=0.02)",
+    "metrics": {
+      "passed": false,
+      "max_abs_error": 0.0703125,
+      "relative_l2_error": 0.021432311012500403,
+      "rms_error": 0.009772284843216066,
+      "reference_max_abs": 2.984375,
+      "max_error_limit": 0.13953125
+    },
+    "worst_elements": [
+      {
+        "row": 431,
+        "col": 727,
+        "emulated": 1.1953125,
+        "reference": 1.125,
+        "abs_error": 0.0703125
+      },
+      {
+        "row": 50,
+        "col": 3171,
+        "emulated": -1.8515625,
+        "reference": -1.921875,
+        "abs_error": 0.0703125
+      },
+      {
+        "row": 212,
+        "col": 1638,
+        "emulated": -0.84375,
+        "reference": -0.77734375,
+        "abs_error": 0.06640625
+      },
+      {
+        "row": 464,
+        "col": 2099,
+        "emulated": 1.5859375,
+        "reference": 1.6484375,
+        "abs_error": 0.0625
+      },
+      {
+        "row": 435,
+        "col": 556,
+        "emulated": -1.0,
+        "reference": -1.0625,
+        "abs_error": 0.0625
+      }
+    ]
+  },
+  {
+    "experiment": "smoke_p6400",
+    "layer": 0,
+    "input": 0,
+    "config": "deployed_exact_silu",
+    "check": "contract.error_metrics(rtol=0.03, atol=0.05, l2_limit=0.02)",
+    "metrics": {
+      "passed": false,
+      "max_abs_error": 0.078125,
+      "relative_l2_error": 0.021344814923505526,
+      "rms_error": 0.009732390092536746,
+      "reference_max_abs": 2.984375,
+      "max_error_limit": 0.13953125
+    },
+    "worst_elements": [
+      {
+        "row": 50,
+        "col": 3171,
+        "emulated": -1.84375,
+        "reference": -1.921875,
+        "abs_error": 0.078125
+      },
+      {
+        "row": 269,
+        "col": 2091,
+        "emulated": 1.21875,
+        "reference": 1.2890625,
+        "abs_error": 0.0703125
+      },
+      {
+        "row": 40,
+        "col": 3130,
+        "emulated": 1.296875,
+        "reference": 1.359375,
+        "abs_error": 0.0625
+      },
+      {
+        "row": 464,
+        "col": 2099,
+        "emulated": 1.5859375,
+        "reference": 1.6484375,
+        "abs_error": 0.0625
+      },
+      {
+        "row": 255,
+        "col": 2530,
+        "emulated": 1.2109375,
+        "reference": 1.2734375,
+        "abs_error": 0.0625
+      }
+    ]
+  },
+  {
+    "experiment": "smoke_p6400",
+    "layer": 0,
+    "input": 0,
+    "config": "deployed_renormalize",
+    "check": "contract.error_metrics(rtol=0.03, atol=0.05, l2_limit=0.02)",
+    "metrics": {
+      "passed": false,
+      "max_abs_error": 0.0703125,
+      "relative_l2_error": 0.02147285748634018,
+      "rms_error": 0.009790772429156713,
+      "reference_max_abs": 2.984375,
+      "max_error_limit": 0.13953125
+    },
+    "worst_elements": [
+      {
+        "row": 50,
+        "col": 3171,
+        "emulated": -1.8515625,
+        "reference": -1.921875,
+        "abs_error": 0.0703125
+      },
+      {
+        "row": 408,
+        "col": 2123,
+        "emulated": -1.5,
+        "reference": -1.4296875,
+        "abs_error": 0.0703125
+      },
+      {
+        "row": 50,
+        "col": 739,
+        "emulated": -2.21875,
+        "reference": -2.28125,
+        "abs_error": 0.0625
+      },
+      {
+        "row": 431,
+        "col": 727,
+        "emulated": 1.1875,
+        "reference": 1.125,
+        "abs_error": 0.0625
+      },
+      {
+        "row": 19,
+        "col": 1969,
+        "emulated": 1.0859375,
+        "reference": 1.1484375,
+        "abs_error": 0.0625
+      }
+    ]
+  },
+  {
+    "experiment": "smoke_p6400",
+    "layer": 0,
+    "input": 1,
+    "config": "deployed",
+    "check": "contract.error_metrics(rtol=0.03, atol=0.05, l2_limit=0.02)",
+    "metrics": {
+      "passed": false,
+      "max_abs_error": 0.078125,
+      "relative_l2_error": 0.02143502970603741,
+      "rms_error": 0.009830814797501697,
+      "reference_max_abs": 3.09375,
+      "max_error_limit": 0.1428125
+    },
+    "worst_elements": [
+      {
+        "row": 25,
+        "col": 2355,
+        "emulated": -1.8984375,
+        "reference": -1.8203125,
+        "abs_error": 0.078125
+      },
+      {
+        "row": 301,
+        "col": 3426,
+        "emulated": -2.296875,
+        "reference": -2.375,
+        "abs_error": 0.078125
+      },
+      {
+        "row": 490,
+        "col": 3063,
+        "emulated": -1.7890625,
+        "reference": -1.859375,
+        "abs_error": 0.0703125
+      },
+      {
+        "row": 327,
+        "col": 1471,
+        "emulated": 0.60546875,
+        "reference": 0.671875,
+        "abs_error": 0.06640625
+      },
+      {
+        "row": 291,
+        "col": 644,
+        "emulated": -1.4765625,
+        "reference": -1.4140625,
+        "abs_error": 0.0625
+      }
+    ]
+  },
+  {
+    "experiment": "smoke_p6400",
+    "layer": 1,
+    "input": 0,
+    "config": "deployed",
+    "check": "contract.error_metrics(rtol=0.03, atol=0.05, l2_limit=0.02)",
+    "metrics": {
+      "passed": false,
+      "max_abs_error": 0.0703125,
+      "relative_l2_error": 0.021395936123869145,
+      "rms_error": 0.009767582259372371,
+      "reference_max_abs": 3.0,
+      "max_error_limit": 0.14
+    },
+    "worst_elements": [
+      {
+        "row": 477,
+        "col": 3896,
+        "emulated": -1.2265625,
+        "reference": -1.296875,
+        "abs_error": 0.0703125
+      },
+      {
+        "row": 344,
+        "col": 4040,
+        "emulated": 2.21875,
+        "reference": 2.15625,
+        "abs_error": 0.0625
+      },
+      {
+        "row": 114,
+        "col": 2018,
+        "emulated": -1.15625,
+        "reference": -1.09375,
+        "abs_error": 0.0625
+      },
+      {
+        "row": 460,
+        "col": 1725,
+        "emulated": -1.8515625,
+        "reference": -1.9140625,
+        "abs_error": 0.0625
+      },
+      {
+        "row": 390,
+        "col": 187,
+        "emulated": 1.171875,
+        "reference": 1.109375,
+        "abs_error": 0.0625
+      }
+    ]
+  },
+  {
+    "experiment": "smoke_p6400",
+    "layer": 1,
+    "input": 1,
+    "config": "deployed",
+    "check": "contract.error_metrics(rtol=0.03, atol=0.05, l2_limit=0.02)",
+    "metrics": {
+      "passed": false,
+      "max_abs_error": 0.078125,
+      "relative_l2_error": 0.02147565234755006,
+      "rms_error": 0.009798900215995068,
+      "reference_max_abs": 3.03125,
+      "max_error_limit": 0.1409375
+    },
+    "worst_elements": [
+      {
+        "row": 256,
+        "col": 1523,
+        "emulated": -2.171875,
+        "reference": -2.09375,
+        "abs_error": 0.078125
+      },
+      {
+        "row": 478,
+        "col": 3864,
+        "emulated": -0.78125,
+        "reference": -0.84765625,
+        "abs_error": 0.06640625
+      },
+      {
+        "row": 123,
+        "col": 368,
+        "emulated": -0.08447265625,
+        "reference": -0.020263671875,
+        "abs_error": 0.064208984375
+      },
+      {
+        "row": 490,
+        "col": 2675,
+        "emulated": -0.65625,
+        "reference": -0.59375,
+        "abs_error": 0.0625
+      },
+      {
+        "row": 199,
+        "col": 1793,
+        "emulated": -2.359375,
+        "reference": -2.296875,
+        "abs_error": 0.0625
+      }
+    ]
+  }
+]

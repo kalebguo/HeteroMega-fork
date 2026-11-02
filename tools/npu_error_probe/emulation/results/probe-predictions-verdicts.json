@@ -1,0 +1,122 @@
+{
+  "emulated_bf16_partials_bfp16": {
+    "supported": [
+      "accumulation precision / partial-sum rounding (NPU excess error grows with K)"
+    ],
+    "details": {
+      "k_n2048": {
+        "ratio_slope": 0.40857550361142575,
+        "raw_npu_slope": 0.9201196046167675,
+        "raw_about_linear": true,
+        "ratios": {
+          "1536": 2.9072533334572537,
+          "2048": 3.2209957742948885,
+          "10240": 6.344012504604668,
+          "11264": 6.453261002892095
+        }
+      },
+      "k_n4096": {
+        "ratio_slope": 0.44554110806070296,
+        "raw_npu_slope": 0.9452763154888082,
+        "raw_about_linear": true,
+        "ratios": {
+          "4096": 4.182312152518838,
+          "14336": 7.308380045965478
+        }
+      },
+      "sign": {
+        "r_positive": 3.2209957742948885,
+        "r_negative": 3.2209957742948885,
+        "negative_over_positive": 1.0,
+        "outputs_exact_negation": null,
+        "r_mixed_informational": 4.145757587252512
+      },
+      "metadata": {
+        "scales_equal_zeros_eight": 1.0,
+        "scales_equal_zeros_random": 1.277601612800603,
+        "scales_random_zeros_eight": 1.0795517844624516,
+        "scales_random_zeros_random": 1.3043562880587887
+      }
+    }
+  },
+  "emulated_fp32_partials_bfp16": {
+    "supported": [
+      "per-element dequantization / operand format (excess flat in K, median r > 1.5)"
+    ],
+    "details": {
+      "k_n2048": {
+        "ratio_slope": -0.000812459419575563,
+        "raw_npu_slope": 0.5107316415857662,
+        "raw_about_linear": false,
+        "ratios": {
+          "1536": 1.74453777728433,
+          "2048": 1.7696776736203923,
+          "10240": 1.7597550384169944,
+          "11264": 1.7459120169338063
+        }
+      },
+      "k_n4096": {
+        "ratio_slope": 0.002151627536004411,
+        "raw_npu_slope": 0.5018868349641099,
+        "raw_about_linear": false,
+        "ratios": {
+          "4096": 1.7439027851215416,
+          "14336": 1.7486097799320863
+        }
+      },
+      "sign": {
+        "r_positive": 1.7696776736203923,
+        "r_negative": 1.7696776736203923,
+        "negative_over_positive": 1.0,
+        "outputs_exact_negation": null,
+        "r_mixed_informational": 3.654441198552532
+      },
+      "metadata": {
+        "scales_equal_zeros_eight": 1.0,
+        "scales_equal_zeros_random": 0.9689847626826242,
+        "scales_random_zeros_eight": 1.337355797230948,
+        "scales_random_zeros_random": 1.436821699354598
+      }
+    }
+  },
+  "emulated_bf16_partials_every_k16": {
+    "supported": [
+      "accumulation precision / partial-sum rounding (NPU excess error grows with K)"
+    ],
+    "details": {
+      "k_n2048": {
+        "ratio_slope": 0.534594653882293,
+        "raw_npu_slope": 1.0461387548876342,
+        "raw_about_linear": true,
+        "ratios": {
+          "1536": 7.095499074391155,
+          "2048": 8.141968413387016,
+          "10240": 19.555136766884697,
+          "11264": 20.32860391437027
+        }
+      },
+      "k_n4096": {
+        "ratio_slope": 0.5518450545348542,
+        "raw_npu_slope": 1.05158026196296,
+        "raw_about_linear": true,
+        "ratios": {
+          "4096": 11.790011853727743,
+          "14336": 23.537238138279452
+        }
+      },
+      "sign": {
+        "r_positive": 8.141968413387016,
+        "r_negative": 8.141968413387016,
+        "negative_over_positive": 1.0,
+        "outputs_exact_negation": null,
+        "r_mixed_informational": 6.500535195188439
+      },
+      "metadata": {
+        "scales_equal_zeros_eight": 1.0,
+        "scales_equal_zeros_random": 1.3039361688908233,
+        "scales_random_zeros_eight": 0.9852491195265942,
+        "scales_random_zeros_random": 1.2693742364092544
+      }
+    }
+  }
+}

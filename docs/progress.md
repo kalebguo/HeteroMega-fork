@@ -1,5 +1,33 @@
 # HeteroMega progress
 
+## 2026-11-02: CPU-side preparation for AUP measurements (cloud session, not executed on hardware)
+
+Branch `claude/exciting-faraday-95a0c1` of kalebguo/HeteroMega-fork, based on main
+`8e5c804`. This sandbox has no GPU/NPU and **cannot reach the AUP hub** (its egress
+proxy refuses `dub.aupcloud.io`, HTTP 403 at CONNECT, also with the aup-kit User-Agent),
+so no hardware step of the hand-off plan (H1-H5) ran here. Nothing below is a new
+hardware measurement unless it cites an existing evidence file.
+
+- **Evaluation runner (code-confirmed, CPU-tested):** `evaluate_prefill.py` methods
+  `merged_ffn` / `merged_ffn_hetero`, `--merged-ffn-config`, per-pass merged completion
+  counts (expected `32 * (prompt_tokens // 512)`), verdict columns and speedup suppression;
+  controls clear `HETEROMEGA_FFN_CONFIG`. 10 unit tests and both dry runs pass. Per the
+  local session, the box has since run it (`eval-main`); those results are not in this
+  repository yet and are not cited here.
+- **NPU error probes (`tools/npu_error_probe/`, not executed):** native single-GEMM probes
+  (K, sign, metadata series), report with a fixed decision rule, real-weight token
+  agreement/logits/perplexity wrapper, detached AUP job. Blocked requests are listed
+  (K=64 below the quantization group; K=256/1024/2048 at N=4096 and K=16384 at N=2048
+  have no native M-split artifact). 17 CPU tests pass.
+- **Emulation (estimated):** the CPU model of `w4a16_prefill_upstream.cc` reproduces the
+  measured Oct-31 smoke NPU error (relative L2 0.02143 vs 0.02144 measured). BF16 partial
+  storage per K128, BFP16 activations and BFP16 weights contribute comparably. The same
+  arithmetic predicts only 0.375 of the native sweep's 1.5; a BF16 store about every K16
+  would fit all three native measurements. Hypothesis until the K-sweep probe runs.
+- Next: allow `dub.aupcloud.io` in this environment's network settings, or run
+  `tools/npu_error_probe/aup_job.sh` from the local session; then the task-4 review and
+  task-2 cost model (in that order).
+
 ## 2026-10-31: publish validated FFN integration for teammate evaluation
 
 - User requested publishing the GPU/NPU model integration to origin/main and

@@ -1,0 +1,658 @@
+{
+  "numpy": "2.5.3",
+  "quick": false,
+  "label": "estimated (CPU emulation); not a hardware measurement",
+  "sweep": {
+    "scope": "M=256 NPU rows x N=2048 x K=2048 (smallest measured npuM=256 also gave 1.5)",
+    "measured_max_abs_diff": {
+      "random": 1.5,
+      "exact_scale": 1.25,
+      "constant_weight": 0.25,
+      "exact_matrix": 0.0
+    },
+    "cases": [
+      {
+        "variant": "random",
+        "seed": 0,
+        "reference_abs_max": 26.688831808860414,
+        "gpu_like_vs_exact_max": 0.07278316980227828,
+        "configs": {
+          "deployed": {
+            "max_abs_diff_vs_gpu_like": 0.375,
+            "last_row_max_error_vs_exact": 0.2558567557716742,
+            "sweep_allclose": true,
+            "k8_rounding": "fp32"
+          },
+          "fp32_partials": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.09927697945386171,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bf16_partials_only": {
+            "max_abs_diff_vs_gpu_like": 0.375,
+            "last_row_max_error_vs_exact": 0.2558567557716742,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_a_only": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.07708280440419912,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_b_only": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.09927697945386171,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          }
+        }
+      },
+      {
+        "variant": "random",
+        "seed": 1,
+        "reference_abs_max": 26.115834819618613,
+        "gpu_like_vs_exact_max": 0.07527378015220165,
+        "configs": {
+          "deployed": {
+            "max_abs_diff_vs_gpu_like": 0.375,
+            "last_row_max_error_vs_exact": 0.19408145842317026,
+            "sweep_allclose": true,
+            "k8_rounding": "fp32"
+          },
+          "fp32_partials": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.08268229532404803,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bf16_partials_only": {
+            "max_abs_diff_vs_gpu_like": 0.375,
+            "last_row_max_error_vs_exact": 0.19154456332034897,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_a_only": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.072207223454825,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_b_only": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.08268229532404803,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          }
+        }
+      },
+      {
+        "variant": "random",
+        "seed": 2,
+        "reference_abs_max": 24.82905339379795,
+        "gpu_like_vs_exact_max": 0.07027083415232482,
+        "configs": {
+          "deployed": {
+            "max_abs_diff_vs_gpu_like": 0.375,
+            "last_row_max_error_vs_exact": 0.16305135557195172,
+            "sweep_allclose": true,
+            "k8_rounding": "fp32"
+          },
+          "fp32_partials": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.0744159847672563,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bf16_partials_only": {
+            "max_abs_diff_vs_gpu_like": 0.375,
+            "last_row_max_error_vs_exact": 0.18167571879166644,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_a_only": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.06756090016278904,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_b_only": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.0744159847672563,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          }
+        }
+      },
+      {
+        "variant": "exact_scale",
+        "seed": 0,
+        "reference_abs_max": 27.100171715021133,
+        "gpu_like_vs_exact_max": 0.062496066093444824,
+        "configs": {
+          "deployed": {
+            "max_abs_diff_vs_gpu_like": 0.375,
+            "last_row_max_error_vs_exact": 0.3148990273475647,
+            "sweep_allclose": true,
+            "k8_rounding": "fp32"
+          },
+          "fp32_partials": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.08011174201965332,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bf16_partials_only": {
+            "max_abs_diff_vs_gpu_like": 0.375,
+            "last_row_max_error_vs_exact": 0.3148990273475647,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_a_only": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.08011174201965332,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_b_only": {
+            "max_abs_diff_vs_gpu_like": 0.03125,
+            "last_row_max_error_vs_exact": 0.06191641092300415,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          }
+        }
+      },
+      {
+        "variant": "exact_scale",
+        "seed": 1,
+        "reference_abs_max": 30.67824959754944,
+        "gpu_like_vs_exact_max": 0.06249246001243591,
+        "configs": {
+          "deployed": {
+            "max_abs_diff_vs_gpu_like": 0.375,
+            "last_row_max_error_vs_exact": 0.1974605731666088,
+            "sweep_allclose": true,
+            "k8_rounding": "fp32"
+          },
+          "fp32_partials": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.06155629828572273,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bf16_partials_only": {
+            "max_abs_diff_vs_gpu_like": 0.375,
+            "last_row_max_error_vs_exact": 0.1955605112016201,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_a_only": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.06155629828572273,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_b_only": {
+            "max_abs_diff_vs_gpu_like": 0.0625,
+            "last_row_max_error_vs_exact": 0.06155629828572273,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          }
+        }
+      },
+      {
+        "variant": "exact_scale",
+        "seed": 2,
+        "reference_abs_max": 24.827016055583954,
+        "gpu_like_vs_exact_max": 0.06249779462814331,
+        "configs": {
+          "deployed": {
+            "max_abs_diff_vs_gpu_like": 0.375,
+            "last_row_max_error_vs_exact": 0.21211260557174683,
+            "sweep_allclose": true,
+            "k8_rounding": "fp32"
+          },
+          "fp32_partials": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.07103195041418076,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bf16_partials_only": {
+            "max_abs_diff_vs_gpu_like": 0.375,
+            "last_row_max_error_vs_exact": 0.2064317911863327,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_a_only": {
+            "max_abs_diff_vs_gpu_like": 0.125,
+            "last_row_max_error_vs_exact": 0.07103195041418076,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_b_only": {
+            "max_abs_diff_vs_gpu_like": 0.0625,
+            "last_row_max_error_vs_exact": 0.0623822882771492,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          }
+        }
+      },
+      {
+        "variant": "constant_weight",
+        "seed": 0,
+        "reference_abs_max": 6.63487571105361,
+        "gpu_like_vs_exact_max": 0.015619397163391113,
+        "configs": {
+          "deployed": {
+            "max_abs_diff_vs_gpu_like": 0.09375,
+            "last_row_max_error_vs_exact": 0.034303247928619385,
+            "sweep_allclose": true,
+            "k8_rounding": "fp32"
+          },
+          "fp32_partials": {
+            "max_abs_diff_vs_gpu_like": 0.03125,
+            "last_row_max_error_vs_exact": 0.0030532479286193848,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bf16_partials_only": {
+            "max_abs_diff_vs_gpu_like": 0.09375,
+            "last_row_max_error_vs_exact": 0.034303247928619385,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_a_only": {
+            "max_abs_diff_vs_gpu_like": 0.03125,
+            "last_row_max_error_vs_exact": 0.0030532479286193848,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_b_only": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0030532479286193848,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          }
+        }
+      },
+      {
+        "variant": "constant_weight",
+        "seed": 1,
+        "reference_abs_max": 6.591785326600075,
+        "gpu_like_vs_exact_max": 0.01556745171546936,
+        "configs": {
+          "deployed": {
+            "max_abs_diff_vs_gpu_like": 0.0625,
+            "last_row_max_error_vs_exact": 0.026671696454286575,
+            "sweep_allclose": true,
+            "k8_rounding": "fp32"
+          },
+          "fp32_partials": {
+            "max_abs_diff_vs_gpu_like": 0.03125,
+            "last_row_max_error_vs_exact": 0.004578303545713425,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bf16_partials_only": {
+            "max_abs_diff_vs_gpu_like": 0.0625,
+            "last_row_max_error_vs_exact": 0.026671696454286575,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_a_only": {
+            "max_abs_diff_vs_gpu_like": 0.03125,
+            "last_row_max_error_vs_exact": 0.004578303545713425,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_b_only": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.004578303545713425,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          }
+        }
+      },
+      {
+        "variant": "constant_weight",
+        "seed": 2,
+        "reference_abs_max": 6.6149623692035675,
+        "gpu_like_vs_exact_max": 0.015519469976425171,
+        "configs": {
+          "deployed": {
+            "max_abs_diff_vs_gpu_like": 0.0625,
+            "last_row_max_error_vs_exact": 0.032943256199359894,
+            "sweep_allclose": true,
+            "k8_rounding": "fp32"
+          },
+          "fp32_partials": {
+            "max_abs_diff_vs_gpu_like": 0.03125,
+            "last_row_max_error_vs_exact": 0.0016932561993598938,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bf16_partials_only": {
+            "max_abs_diff_vs_gpu_like": 0.0625,
+            "last_row_max_error_vs_exact": 0.0016932561993598938,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_a_only": {
+            "max_abs_diff_vs_gpu_like": 0.03125,
+            "last_row_max_error_vs_exact": 0.0016932561993598938,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_b_only": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0016932561993598938,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          }
+        }
+      },
+      {
+        "variant": "exact_matrix",
+        "seed": 0,
+        "reference_abs_max": 8.0,
+        "gpu_like_vs_exact_max": 0.0,
+        "configs": {
+          "deployed": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "fp32"
+          },
+          "fp32_partials": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bf16_partials_only": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_a_only": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_b_only": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          }
+        }
+      },
+      {
+        "variant": "exact_matrix",
+        "seed": 1,
+        "reference_abs_max": 8.0,
+        "gpu_like_vs_exact_max": 0.0,
+        "configs": {
+          "deployed": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "fp32"
+          },
+          "fp32_partials": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bf16_partials_only": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_a_only": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_b_only": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          }
+        }
+      },
+      {
+        "variant": "exact_matrix",
+        "seed": 2,
+        "reference_abs_max": 8.0,
+        "gpu_like_vs_exact_max": 0.0,
+        "configs": {
+          "deployed": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "fp32"
+          },
+          "fp32_partials": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bf16_partials_only": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_a_only": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          },
+          "bfp16_b_only": {
+            "max_abs_diff_vs_gpu_like": 0.0,
+            "last_row_max_error_vs_exact": 0.0,
+            "sweep_allclose": true,
+            "k8_rounding": "exact"
+          }
+        }
+      }
+    ]
+  },
+  "smoke": {
+    "scope": "NPU branch P6400 of the isolated smoke; reference = contract.reference_full on the NPU slice",
+    "input_sha256_match": true,
+    "cases": [
+      {
+        "layer": 0,
+        "input": 0,
+        "reference_max_abs": 2.984375,
+        "measured_aup": {
+          "passed": false,
+          "max_abs_error": 0.0625,
+          "relative_l2_error": 0.02144325751059262,
+          "rms_error": 0.009777276012732523,
+          "reference_max_abs": 2.984375,
+          "max_error_limit": 0.13953125
+        },
+        "emulated": {
+          "deployed": {
+            "passed": false,
+            "max_abs_error": 0.0703125,
+            "relative_l2_error": 0.021432311012500403,
+            "rms_error": 0.009772284843216066,
+            "reference_max_abs": 2.984375,
+            "max_error_limit": 0.13953125,
+            "k8_rounding": "fp32",
+            "cpu_seconds": 21.3
+          },
+          "deployed_exact_silu": {
+            "passed": false,
+            "max_abs_error": 0.078125,
+            "relative_l2_error": 0.021344814923505526,
+            "rms_error": 0.009732390092536746,
+            "reference_max_abs": 2.984375,
+            "max_error_limit": 0.13953125,
+            "k8_rounding": "exact",
+            "cpu_seconds": 10.3
+          },
+          "fp32_partials": {
+            "passed": true,
+            "max_abs_error": 0.04296875,
+            "relative_l2_error": 0.017141390781903586,
+            "rms_error": 0.007815795190352519,
+            "reference_max_abs": 2.984375,
+            "max_error_limit": 0.13953125,
+            "k8_rounding": "exact",
+            "cpu_seconds": 7.9
+          },
+          "bf16_partials_only": {
+            "passed": true,
+            "max_abs_error": 0.0546875,
+            "relative_l2_error": 0.014053537199638243,
+            "rms_error": 0.006407856273152119,
+            "reference_max_abs": 2.984375,
+            "max_error_limit": 0.13953125,
+            "k8_rounding": "exact",
+            "cpu_seconds": 5.3
+          },
+          "bfp16_a_only": {
+            "passed": true,
+            "max_abs_error": 0.03515625,
+            "relative_l2_error": 0.013970583262084819,
+            "rms_error": 0.0063700325636060215,
+            "reference_max_abs": 2.984375,
+            "max_error_limit": 0.13953125,
+            "k8_rounding": "exact",
+            "cpu_seconds": 4.9
+          },
+          "bfp16_b_only": {
+            "passed": true,
+            "max_abs_error": 0.03125,
+            "relative_l2_error": 0.011358031185584615,
+            "rms_error": 0.0051788123053517965,
+            "reference_max_abs": 2.984375,
+            "max_error_limit": 0.13953125,
+            "k8_rounding": "exact",
+            "cpu_seconds": 8.3
+          },
+          "silu_lut_only": {
+            "passed": true,
+            "max_abs_error": 0.015625,
+            "relative_l2_error": 0.0035318715513401938,
+            "rms_error": 0.001610393522621859,
+            "reference_max_abs": 2.984375,
+            "max_error_limit": 0.13953125,
+            "k8_rounding": "exact",
+            "cpu_seconds": 3.5
+          },
+          "deployed_renormalize": {
+            "passed": false,
+            "max_abs_error": 0.0703125,
+            "relative_l2_error": 0.02147285748634018,
+            "rms_error": 0.009790772429156713,
+            "reference_max_abs": 2.984375,
+            "max_error_limit": 0.13953125,
+            "k8_rounding": "exact",
+            "cpu_seconds": 11.3
+          },
+          "deployed_9bit_mantissa": {
+            "passed": true,
+            "max_abs_error": 0.0625,
+            "relative_l2_error": 0.015832310517953786,
+            "rms_error": 0.007218906445387566,
+            "reference_max_abs": 2.984375,
+            "max_error_limit": 0.13953125,
+            "k8_rounding": "exact",
+            "cpu_seconds": 10.5
+          }
+        }
+      },
+      {
+        "layer": 0,
+        "input": 1,
+        "reference_max_abs": 3.09375,
+        "measured_aup": {
+          "passed": false,
+          "max_abs_error": 0.0703125,
+          "relative_l2_error": 0.021415865301400116,
+          "rms_error": 0.009822025366589894,
+          "reference_max_abs": 3.09375,
+          "max_error_limit": 0.1428125
+        },
+        "emulated": {
+          "deployed": {
+            "passed": false,
+            "max_abs_error": 0.078125,
+            "relative_l2_error": 0.02143502970603741,
+            "rms_error": 0.009830814797501697,
+            "reference_max_abs": 3.09375,
+            "max_error_limit": 0.1428125,
+            "k8_rounding": "fp32",
+            "cpu_seconds": 22.4
+          }
+        }
+      },
+      {
+        "layer": 1,
+        "input": 0,
+        "reference_max_abs": 3.0,
+        "measured_aup": {
+          "passed": false,
+          "max_abs_error": 0.0625,
+          "relative_l2_error": 0.021415961586501345,
+          "rms_error": 0.009776724198870115,
+          "reference_max_abs": 3.0,
+          "max_error_limit": 0.14
+        },
+        "emulated": {
+          "deployed": {
+            "passed": false,
+            "max_abs_error": 0.0703125,
+            "relative_l2_error": 0.021395936123869145,
+            "rms_error": 0.009767582259372371,
+            "reference_max_abs": 3.0,
+            "max_error_limit": 0.14,
+            "k8_rounding": "fp32",
+            "cpu_seconds": 19.3
+          }
+        }
+      },
+      {
+        "layer": 1,
+        "input": 1,
+        "reference_max_abs": 3.03125,
+        "measured_aup": {
+          "passed": false,
+          "max_abs_error": 0.0625,
+          "relative_l2_error": 0.02150459423485892,
+          "rms_error": 0.009812105806270625,
+          "reference_max_abs": 3.03125,
+          "max_error_limit": 0.1409375
+        },
+        "emulated": {
+          "deployed": {
+            "passed": false,
+            "max_abs_error": 0.078125,
+            "relative_l2_error": 0.02147565234755006,
+            "rms_error": 0.009798900215995068,
+            "reference_max_abs": 3.03125,
+            "max_error_limit": 0.1409375,
+            "k8_rounding": "fp32",
+            "cpu_seconds": 21.8
+          }
+        }
+      }
+    ]
+  }
+}
