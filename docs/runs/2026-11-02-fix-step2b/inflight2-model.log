@@ -1,0 +1,24 @@
+merged_ffn length=1024 round=0: [HETEROMEGA_GPU_FFN=0 HETEROMEGA_FFN_CONFIG=/notebooks/hm-fix/deployment.json HETEROMEGA_FFN_FINITE_CHECK=sampled HETEROMEGA_FFN_TIMERS=/notebooks/hm-results/2026-11-02/fix-step2b/inflight2-timers HETEROMOSAIC_ROOT=/notebooks/hm-fix] /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/kernels/gpu/tools/run_model_ffn.py --ref /notebooks/hm-fix/docs/runs/2026-10-12-aup/gpu-model-result.json --out /notebooks/hm-results/2026-11-02/fix-step2b/inflight2-model/merged_ffn-1024-r0.result.json --build build --config py/unified_llm_w4a16/configs/configs_strixP_llama3_8b.json5 --heterogeneity gpu --prompt-tokens 1024 --reps 5 --new-tokens 64 --gpu-chunk-size 512 --inflight 2 --model /notebooks/hm-model/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
+[
+  {
+    "method": "merged_ffn",
+    "prompt_tokens": 1024,
+    "dummy": false,
+    "samples": 5,
+    "prefill_median_ms": 1355.12031102553,
+    "prefill_min_ms": 1348.7548339180648,
+    "prefill_max_ms": 1460.6497079366818,
+    "speedup_vs_gpu": "",
+    "tokens_match_gpu": null,
+    "speedup_vs_heteromosaic": "",
+    "tokens_match_heteromosaic": null,
+    "matches_reference": true,
+    "gpu_ffn_active": null,
+    "merged_ffn_expected_per_pass": 64,
+    "merged_ffn_passes": 11,
+    "merged_ffn_completions": 704,
+    "merged_ffn_wrong_passes": 0,
+    "merged_ffn_verdict": "active",
+    "npu_execution": "merged_ffn_counted"
+  }
+]

@@ -77,13 +77,15 @@ missing overlap (25.53 ms is about its serial time).
 | `full_branchless` (same detection, vectorizable; not in the executor) | 0.105 |
 
 In the model `full` costs 1.9 ms more per call than `sampled` (estimated from 1473.8 - 1351.2 ms over
-64 calls), about twice the warm figure for two scans: the input buffer is cold after the D2H copy.
+64 calls). The phase timers measure 0.94 + 1.06 ms for the two scans in the model
+(`../2026-11-02-fix-step2b/`); the CPU-only `full` figure varies between runs (0.41-0.90 ms).
 
 ## Why sampled, and what it can miss
 
 Chosen over a GPU-side `isfinite`, which needs a blocking readback or more kernels on the same stream
-and so stops the host from queueing the next layer. A sampled check costs 27 µs per call (estimated
-from the table above) and has no such cost.
+and so stops the host from queueing the next layer. In the model the two sampled scans cost 0.169 ms
+per call (measured with the phase timers, `../2026-11-02-fix-step2/`; 1 in 64 columns touches one cold
+cache line per element) and do not block GPU work.
 
 - Whole nonfinite row: caught in the same call.
 - Isolated nonfinite element at an unsampled column of layer L: missed at L. Layer L+1's input has it

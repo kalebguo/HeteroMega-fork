@@ -1,0 +1,72 @@
+HEAD 9dac4608 merged FFN: always wait for input readiness before the D2H copy
+
+=== 20:51:06 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 37.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.012
+
+=== 20:51:06 UTC A. smoke, no timers
+    "accuracy_status": "reported_deviations"
+  }
+}
+
+=== 20:51:26 UTC A. paired evaluation
+]
+method,prompt_tokens,prefill_median_ms,prefill_min_ms,prefill_max_ms,speedup_vs_gpu,tokens_match_gpu,matches_reference,merged_ffn_verdict
+gpu_original,512,891.7323090136051,882.7966779936105,969.0219289623201,1.0,True,,clean
+gpu_original,1024,1827.754368481692,1826.0965279769152,1871.711608953774,1.0,True,True,clean
+merged_ffn,512,644.6627480327152,640.8390239812434,668.5147359967232,1.3832539754078543,True,,active
+merged_ffn,1024,1340.7572880387306,1335.8067640801892,1376.4702369226143,1.3632253837346984,True,True,active
+
+=== 20:59:39 UTC B. two inflight chunks, no timers
+]
+method,prompt_tokens,prefill_median_ms,prefill_min_ms,prefill_max_ms,speedup_vs_gpu,tokens_match_gpu,matches_reference,merged_ffn_verdict
+gpu_original,1024,1839.9586155428551,1829.9107570201159,1957.4700359953567,1.0,True,True,clean
+merged_ffn,1024,1352.5404770043679,1348.3174870489165,2386.6941300220788,1.3603723118276136,True,True,active
+
+=== 21:04:10 UTC B. two inflight chunks, timers
+]
+      "sum_ms": 0.2712,
+      "calls": 320
+    }
+  }
+}
+
+=== 21:05:15 UTC C. build the same commit without -O3 in a separate tree
+[ 94%] Built target unified_llm_w4a16_hetero_lib
+[100%] Built target unified_llm_w4a16_hetero_libtorch
+=== 21:08:27 UTC optimization flags of the merged FFN file (expect -O3, or nothing with NOOPT)
+HEAD 9dac4608 merged FFN: always wait for input readiness before the D2H copy
+
+=== 21:08:28 UTC C. no -O: smoke, full check, timers
+    "accuracy_status": "reported_deviations"
+  }
+}
+    }
+  }
+}
+
+=== 21:08:48 UTC C. no -O: model, full check, timers
+]
+    }
+  }
+}
+HEAD 9dac4608 merged FFN: always wait for input readiness before the D2H copy
+
+=== 21:10:06 UTC C. -O3: model, full check, timers (same commit)
+]
+    }
+  }
+}
+
+=== 21:11:11 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 61.0
+GPU[0]		: sclk clock level: 1: (1857Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 30.078
+
+=== 21:11:11 UTC done
+exit=0
