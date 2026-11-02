@@ -1,0 +1,12 @@
+HeteroMega merged FFN configured: M=512 H=4096 I=14336 NPU=[0,6400) GPU=[6400,14336) accuracy_policy=report; host staging, numerical equivalence unvalidated
+{
+  "status": "completed_with_accuracy_deviations",
+  "completed_dispatches": 30,
+  "accuracy": {
+    "passed": false,
+    "accepted": true,
+    "check_count": 90,
+    "outside_tolerance_count": 24,
+    "accuracy_status": "reported_deviations"
+  }
+}

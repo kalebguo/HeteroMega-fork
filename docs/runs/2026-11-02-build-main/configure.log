@@ -1,0 +1,322 @@
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Python: /notebooks/heteromosaic-venv/bin/python (found version "3.12.3") found components: Interpreter
+-- Found PyTorch in Python environment: /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch
+-- Using ROCM_PATH: /opt/rocm-7.2.0
+Building PyTorch for GPU arch: gfx1150
+-- Found HIP: /opt/rocm-7.2.0 (found suitable version "7.2.26015-fc0010cf6a", minimum required is "1.0")
+HIP VERSION: 7.2.26015-fc0010cf6a
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+hip VERSION: 7.2.26015
+HIP version: 7.2.26015
+-- Reading ROCM version from: /opt/rocm-7.2.0/include/rocm-core/rocm_version.h
+-- Content: 
+
+***** ROCm version from rocm_version.h ****
+
+ROCM_VERSION_DEV: 7.2.0
+ROCM_VERSION_DEV_MAJOR: 7
+ROCM_VERSION_DEV_MINOR: 2
+ROCM_VERSION_DEV_PATCH: 0
+ROCM_VERSION_DEV_INT:   70200
+HIP_VERSION_MAJOR: 7
+HIP_VERSION_MINOR: 2
+TORCH_HIP_VERSION: 702
+
+***** Library versions from cmake find_package *****
+
+amd_comgr VERSION: 3.0.0
+rocrand VERSION: 4.2.0
+hiprand VERSION: 3.1.0
+rocblas VERSION: 5.2.0
+hipblas VERSION: 3.2.0
+miopen VERSION: 3.5.1
+hipfft VERSION: 1.0.22
+hipsparse VERSION: 4.2.0
+rocprim VERSION: 4.2.0
+hipcub VERSION: 4.2.0
+rocthrust VERSION: 4.2.0
+hipsolver VERSION: 3.2.0
+rocsolver VERSION: 3.32.0
+CMake Warning at /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Caffe2/public/LoadHIP.cmake:189 (message):
+  Work around hiprtc cmake failure for cmake >= 4
+Call Stack (most recent call first):
+  /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Caffe2/Caffe2Config.cmake:74 (include)
+  /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Torch/TorchConfig.cmake:62 (find_package)
+  CMakeLists.txt:41 (find_package)
+
+
+hiprtc VERSION: 7.2.26015
+hipblaslt VERSION: 1.2.1
+rccl VERSION: 2.27.7
+hsa-runtime64 VERSION: 1.18.70200
+hipsparselt VERSION: 0.2.6
+hipblaslt is using scale pointer outer vec
+CMake Warning at /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Torch/TorchConfig.cmake:22 (message):
+  library kineto not found.
+Call Stack (most recent call first):
+  /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Torch/TorchConfig.cmake:119 (append_torchlib_if_found)
+  CMakeLists.txt:41 (find_package)
+
+
+-- Found Torch: /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/lib/libtorch.so
+-- Using HIP architectures: gfx1150
+-- The HIP compiler identification is Clang 22.0.0
+-- Detecting HIP compiler ABI info
+-- Detecting HIP compiler ABI info - done
+-- Check for working HIP compiler: /opt/rocm-7.2.0/lib/llvm/bin/clang++ - skipped
+-- Detecting HIP compile features
+-- Detecting HIP compile features - done
+Building PyTorch for GPU arch: gfx1150
+-- Found HIP: /opt/rocm-7.2.0 (found suitable version "7.2.26015", minimum required is "1.0")
+HIP VERSION: 7.2.26015
+hip VERSION: 7.2.26015
+HIP version: 7.2.26015
+-- Reading ROCM version from: /opt/rocm-7.2.0/include/rocm-core/rocm_version.h
+-- Content: //Copyright © Advanced Micro Devices, Inc., or its affiliates.
+//SPDX-License-Identifier: MIT
+
+#ifndef _ROCM_VERSION_H_
+#define _ROCM_VERSION_H_
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif  // __cplusplus
+
+
+#if defined(_WIN32) || defined(__CYGWIN__)
+#define LIB_API_PUBLIC __declspec(dllexport)
+#define ATTRIBUTE_NON_NULL
+#else
+#define LIB_API_PUBLIC __attribute__((visibility("default")))
+#define ATTRIBUTE_NON_NULL __attribute__((nonnull))
+#endif
+
+#define ROCM_VERSION_MAJOR   7
+#define ROCM_VERSION_MINOR   2
+#define ROCM_VERSION_PATCH   0
+
+#define ROCM_BUILD_INFO	     "7.2.0.0-43-fc0010cf6a"
+
+typedef enum {
+	VerSuccess=0,
+	VerIncorrectParameters,
+	VerMemoryAllocationFailed,
+	VerValuesNotDefined,
+	VerErrorMAX		//This should always be last value in the enumerations
+} VerErrors;
+
+
+//  API for getting the version
+//  Return val :  VerErros : API execution status.  The parameters are valid only when the execution status is SUCCESS==0
+LIB_API_PUBLIC VerErrors getROCmVersion(unsigned int* Major, unsigned int* Minor, unsigned int* Patch) ATTRIBUTE_NON_NULL ;
+//  Usage :
+//  int mj=0,mn=0,p=0,ret=0;
+//  ret=getROCMVersion(&mj,&mn,&p);
+//  if(ret !=VerSuccess )  // error occured
+//
+//  check for the values and
+//
+
+
+
+//API for building build info on console
+LIB_API_PUBLIC VerErrors printBuildInfo();
+
+
+#ifdef __cplusplus
+}  // end extern "C" block
+#endif
+
+#endif  //_ROCM_VERSION_H_  header guard
+
+
+
+***** ROCm version from rocm_version.h ****
+
+ROCM_VERSION_DEV: 7.2.0
+ROCM_VERSION_DEV_MAJOR: 7
+ROCM_VERSION_DEV_MINOR: 2
+ROCM_VERSION_DEV_PATCH: 0
+ROCM_VERSION_DEV_INT:   70200
+HIP_VERSION_MAJOR: 7
+HIP_VERSION_MINOR: 2
+TORCH_HIP_VERSION: 702
+
+***** Library versions from cmake find_package *****
+
+amd_comgr VERSION: 3.0.0
+rocrand VERSION: 4.2.0
+hiprand VERSION: 3.1.0
+rocblas VERSION: 5.2.0
+hipblas VERSION: 3.2.0
+miopen VERSION: 3.5.1
+hipfft VERSION: 1.0.22
+hipsparse VERSION: 4.2.0
+rocprim VERSION: 4.2.0
+hipcub VERSION: 4.2.0
+rocthrust VERSION: 4.2.0
+hipsolver VERSION: 3.2.0
+rocsolver VERSION: 3.32.0
+CMake Warning at /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Caffe2/public/LoadHIP.cmake:189 (message):
+  Work around hiprtc cmake failure for cmake >= 4
+Call Stack (most recent call first):
+  /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Caffe2/Caffe2Config.cmake:74 (include)
+  /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Torch/TorchConfig.cmake:62 (find_package)
+  src/hipkernels/CMakeLists.txt:5 (find_package)
+
+
+hiprtc VERSION: 7.2.26015
+hipblaslt VERSION: 1.2.1
+rccl VERSION: 2.27.7
+hsa-runtime64 VERSION: 1.18.70200
+hipsparselt VERSION: 0.2.6
+hipblaslt is using scale pointer outer vec
+CMake Warning at /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Torch/TorchConfig.cmake:22 (message):
+  library kineto not found.
+Call Stack (most recent call first):
+  /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Torch/TorchConfig.cmake:119 (append_torchlib_if_found)
+  src/hipkernels/CMakeLists.txt:5 (find_package)
+
+
+-- npu_matmul_func library configured
+-- Using ROCM_PATH: /opt/rocm-7.2.0
+-- Found OpenMP_C: -fopenmp (found version "4.5")
+-- Found OpenMP_CXX: -fopenmp (found version "4.5")
+-- Found OpenMP: TRUE (found version "4.5")
+-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13") found components: Crypto
+-- HeteroMega merged FFN: ON (runtime opt-in HETEROMEGA_FFN_CONFIG=<JSON>)
+-- Performing Test HAS_FLTO_AUTO
+-- Performing Test HAS_FLTO_AUTO - Success
+-- Found pybind11: /notebooks/heteromosaic-venv/lib/python3.12/site-packages/pybind11/include (found version "3.1.0")
+-- Found Python: /notebooks/heteromosaic-venv/bin/python (found version "3.12.3") found components: Interpreter Development Development.Module Development.Embed
+-- Found PyTorch in Python environment: /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch
+Building PyTorch for GPU arch: gfx1150
+HIP VERSION: 7.2.26015
+hip VERSION: 7.2.26015
+HIP version: 7.2.26015
+-- Reading ROCM version from: /opt/rocm-7.2.0/include/rocm-core/rocm_version.h
+-- Content: //Copyright © Advanced Micro Devices, Inc., or its affiliates.
+//SPDX-License-Identifier: MIT
+
+#ifndef _ROCM_VERSION_H_
+#define _ROCM_VERSION_H_
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif  // __cplusplus
+
+
+#if defined(_WIN32) || defined(__CYGWIN__)
+#define LIB_API_PUBLIC __declspec(dllexport)
+#define ATTRIBUTE_NON_NULL
+#else
+#define LIB_API_PUBLIC __attribute__((visibility("default")))
+#define ATTRIBUTE_NON_NULL __attribute__((nonnull))
+#endif
+
+#define ROCM_VERSION_MAJOR   7
+#define ROCM_VERSION_MINOR   2
+#define ROCM_VERSION_PATCH   0
+
+#define ROCM_BUILD_INFO	     "7.2.0.0-43-fc0010cf6a"
+
+typedef enum {
+	VerSuccess=0,
+	VerIncorrectParameters,
+	VerMemoryAllocationFailed,
+	VerValuesNotDefined,
+	VerErrorMAX		//This should always be last value in the enumerations
+} VerErrors;
+
+
+//  API for getting the version
+//  Return val :  VerErros : API execution status.  The parameters are valid only when the execution status is SUCCESS==0
+LIB_API_PUBLIC VerErrors getROCmVersion(unsigned int* Major, unsigned int* Minor, unsigned int* Patch) ATTRIBUTE_NON_NULL ;
+//  Usage :
+//  int mj=0,mn=0,p=0,ret=0;
+//  ret=getROCMVersion(&mj,&mn,&p);
+//  if(ret !=VerSuccess )  // error occured
+//
+//  check for the values and
+//
+
+
+
+//API for building build info on console
+LIB_API_PUBLIC VerErrors printBuildInfo();
+
+
+#ifdef __cplusplus
+}  // end extern "C" block
+#endif
+
+#endif  //_ROCM_VERSION_H_  header guard
+
+
+
+***** ROCm version from rocm_version.h ****
+
+ROCM_VERSION_DEV: 7.2.0
+ROCM_VERSION_DEV_MAJOR: 7
+ROCM_VERSION_DEV_MINOR: 2
+ROCM_VERSION_DEV_PATCH: 0
+ROCM_VERSION_DEV_INT:   70200
+HIP_VERSION_MAJOR: 7
+HIP_VERSION_MINOR: 2
+TORCH_HIP_VERSION: 702
+
+***** Library versions from cmake find_package *****
+
+amd_comgr VERSION: 3.0.0
+rocrand VERSION: 4.2.0
+hiprand VERSION: 3.1.0
+rocblas VERSION: 5.2.0
+hipblas VERSION: 3.2.0
+miopen VERSION: 3.5.1
+hipfft VERSION: 1.0.22
+hipsparse VERSION: 4.2.0
+rocprim VERSION: 4.2.0
+hipcub VERSION: 4.2.0
+rocthrust VERSION: 4.2.0
+hipsolver VERSION: 3.2.0
+rocsolver VERSION: 3.32.0
+CMake Warning at /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Caffe2/public/LoadHIP.cmake:189 (message):
+  Work around hiprtc cmake failure for cmake >= 4
+Call Stack (most recent call first):
+  /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Caffe2/Caffe2Config.cmake:74 (include)
+  /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Torch/TorchConfig.cmake:62 (find_package)
+  src/unified_llm_w4a16_hetero/CMakeLists.txt:116 (find_package)
+
+
+hiprtc VERSION: 7.2.26015
+hipblaslt VERSION: 1.2.1
+rccl VERSION: 2.27.7
+hsa-runtime64 VERSION: 1.18.70200
+hipsparselt VERSION: 0.2.6
+hipblaslt is using scale pointer outer vec
+CMake Warning at /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Torch/TorchConfig.cmake:22 (message):
+  library kineto not found.
+Call Stack (most recent call first):
+  /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/share/cmake/Torch/TorchConfig.cmake:119 (append_torchlib_if_found)
+  src/unified_llm_w4a16_hetero/CMakeLists.txt:116 (find_package)
+
+
+-- Found torch_python library: /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/lib/libtorch_python.so
+-- Configuring done (7.2s)
+-- Generating done (0.1s)
+-- Build files have been written to: /notebooks/hm-eval-main/build

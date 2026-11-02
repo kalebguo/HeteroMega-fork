@@ -1,0 +1,98 @@
+HEAD 0190cd8a Add merged GPU+NPU FFN methods to the prefill evaluation runner
+artifact /notebooks/hm-eval-main/docs/runs/2026-10-31-ffn-deploy/deployment-results/artifact
+
+=== 17:43:23 device snapshot before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 37.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.008
+
+=== 17:43:23 evaluate gpu_original vs merged_ffn at 512 and 1024 tokens
+    "dummy": false,
+    "samples": 10,
+    "prefill_median_ms": 1257.0883750449866,
+    "prefill_min_ms": 1248.1295650359243,
+    "prefill_max_ms": 1621.900100959465,
+    "speedup_vs_gpu": 0.7074626805398235,
+    "tokens_match_gpu": true,
+    "speedup_vs_heteromosaic": "",
+    "tokens_match_heteromosaic": null,
+    "matches_reference": null,
+    "gpu_ffn_active": null,
+    "merged_ffn_expected_per_pass": 32,
+    "merged_ffn_passes": 22,
+    "merged_ffn_completions": 704,
+    "merged_ffn_wrong_passes": 0,
+    "merged_ffn_verdict": "active",
+    "npu_execution": "merged_ffn_counted"
+  },
+  {
+    "method": "merged_ffn",
+    "prompt_tokens": 1024,
+    "dummy": false,
+    "samples": 10,
+    "prefill_median_ms": 2558.70622349903,
+    "prefill_min_ms": 2543.3708949713036,
+    "prefill_max_ms": 2621.2909399764612,
+    "speedup_vs_gpu": 0.7148081459051742,
+    "tokens_match_gpu": true,
+    "speedup_vs_heteromosaic": "",
+    "tokens_match_heteromosaic": null,
+    "matches_reference": true,
+    "gpu_ffn_active": null,
+    "merged_ffn_expected_per_pass": 64,
+    "merged_ffn_passes": 22,
+    "merged_ffn_completions": 1408,
+    "merged_ffn_wrong_passes": 0,
+    "merged_ffn_verdict": "active",
+    "npu_execution": "merged_ffn_counted"
+  }
+]
+
+=== 17:52:28 summarize
+    "gpu_ffn_active": null,
+    "merged_ffn_expected_per_pass": 32,
+    "merged_ffn_passes": 22,
+    "merged_ffn_completions": 704,
+    "merged_ffn_wrong_passes": 0,
+    "merged_ffn_verdict": "active",
+    "npu_execution": "merged_ffn_counted"
+  },
+  {
+    "method": "merged_ffn",
+    "prompt_tokens": 1024,
+    "dummy": false,
+    "samples": 10,
+    "prefill_median_ms": 2558.70622349903,
+    "prefill_min_ms": 2543.3708949713036,
+    "prefill_max_ms": 2621.2909399764612,
+    "speedup_vs_gpu": 0.7148081459051742,
+    "tokens_match_gpu": true,
+    "speedup_vs_heteromosaic": "",
+    "tokens_match_heteromosaic": null,
+    "matches_reference": true,
+    "gpu_ffn_active": null,
+    "merged_ffn_expected_per_pass": 64,
+    "merged_ffn_passes": 22,
+    "merged_ffn_completions": 1408,
+    "merged_ffn_wrong_passes": 0,
+    "merged_ffn_verdict": "active",
+    "npu_execution": "merged_ffn_counted"
+  }
+]
+--- summary.csv
+method,prompt_tokens,dummy,samples,prefill_median_ms,prefill_min_ms,prefill_max_ms,speedup_vs_gpu,tokens_match_gpu,speedup_vs_heteromosaic,tokens_match_heteromosaic,matches_reference,gpu_ffn_active,merged_ffn_expected_per_pass,merged_ffn_passes,merged_ffn_completions,merged_ffn_wrong_passes,merged_ffn_verdict,npu_execution
+gpu_original,512,False,10,889.3431114847772,879.9732320476323,967.768625007011,1.0,True,,,,,0,22,0,0,clean,not_requested
+gpu_original,1024,False,10,1828.9840515353717,1825.6071549840271,1875.419991905801,1.0,True,,,True,,0,22,0,0,clean,not_requested
+merged_ffn,512,False,10,1257.0883750449866,1248.1295650359243,1621.900100959465,0.7074626805398235,True,,,,,32,22,704,0,active,merged_ffn_counted
+merged_ffn,1024,False,10,2558.70622349903,2543.3708949713036,2621.2909399764612,0.7148081459051742,True,,,True,,64,22,1408,0,active,merged_ffn_counted
+
+=== 17:52:28 device snapshot after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 62.0
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 32.097
+
+=== 17:52:29 done
+exit=0

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/notebooks/hm-eval-main/experiments/ffn_deploy/model_smoke.py", line 121, in <module>
+    main()
+  File "/notebooks/hm-eval-main/experiments/ffn_deploy/model_smoke.py", line 37, in main
+    from llama3_8b_w4a16_model import LLaMA3W4A16Model
+  File "/notebooks/hm-eval-main/py/unified_llm_w4a16/llama3_8b_w4a16_model.py", line 8, in <module>
+    from transformers import AutoTokenizer, AutoModelForCausalLM
+ModuleNotFoundError: No module named 'transformers'

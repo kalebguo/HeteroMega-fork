@@ -1,0 +1,15 @@
+[  8%] Built target npu_matmul_func
+[ 47%] Built target hipkernels
+[ 67%] Built target heteromega_gpu_ffn
+[ 73%] Built target heteromega_merged_ffn
+[ 76%] Building CXX object src/unified_llm_w4a16_hetero/CMakeFiles/unified_llm_w4a16_hetero_lib.dir/unified_llm_w4a16.cpp.o
+[ 79%] Building CXX object src/unified_llm_w4a16_hetero/CMakeFiles/unified_llm_w4a16_hetero_lib.dir/npuSetup.cpp.o
+[ 82%] Building CXX object src/unified_llm_w4a16_hetero/CMakeFiles/unified_llm_w4a16_hetero_lib.dir/hetero_compute.cpp.o
+[ 85%] Building CXX object src/unified_llm_w4a16_hetero/CMakeFiles/unified_llm_w4a16_hetero_lib.dir/helper.cpp.o
+[ 88%] Building CXX object src/unified_llm_w4a16_hetero/CMakeFiles/unified_llm_w4a16_hetero_lib.dir/__/cpu_avx_kernels/w4a16_gemv_avx_packed.cpp.o
+[ 91%] Building CXX object src/unified_llm_w4a16_hetero/CMakeFiles/unified_llm_w4a16_hetero_lib.dir/__/cpu_avx_kernels/w4a16_gemv_avx_unpacked.cpp.o
+[ 94%] Linking HIP static library libunified_llm_w4a16_hetero_lib.a
+[ 94%] Built target unified_llm_w4a16_hetero_lib
+[ 97%] Building CXX object src/unified_llm_w4a16_hetero/CMakeFiles/unified_llm_w4a16_hetero_libtorch.dir/python_bindings.cpp.o
+[100%] Linking HIP shared module ../../py/unified_llm_w4a16/unified_llm_w4a16_hetero_libtorch.so
+[100%] Built target unified_llm_w4a16_hetero_libtorch

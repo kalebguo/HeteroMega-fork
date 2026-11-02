@@ -1,0 +1,58 @@
+
+=== 17:07:35 clone team main
+Cloning into '/notebooks/hm-eval-main'...
+Updating files:  20% (4602/22356)Updating files:  21% (4695/22356)Updating files:  22% (4919/22356)Updating files:  23% (5142/22356)Updating files:  24% (5366/22356)Updating files:  25% (5589/22356)Updating files:  26% (5813/22356)Updating files:  27% (6037/22356)Updating files:  28% (6260/22356)Updating files:  29% (6484/22356)Updating files:  30% (6707/22356)Updating files:  31% (6931/22356)Updating files:  32% (7154/22356)Updating files:  33% (7378/22356)Updating files:  34% (7602/22356)Updating files:  35% (7825/22356)Updating files:  36% (8049/22356)Updating files:  37% (8272/22356)Updating files:  38% (8496/22356)Updating files:  39% (8719/22356)Updating files:  40% (8943/22356)Updating files:  41% (9166/22356)Updating files:  42% (9390/22356)Updating files:  42% (9518/22356)Updating files:  43% (9614/22356)Updating files:  44% (9837/22356)Updating files:  45% (10061/22356)Updating files:  46% (10284/22356)Updating files:  47% (10508/22356)Updating files:  48% (10731/22356)Updating files:  49% (10955/22356)Updating files:  50% (11178/22356)Updating files:  51% (11402/22356)Updating files:  52% (11626/22356)Updating files:  53% (11849/22356)Updating files:  54% (12073/22356)Updating files:  55% (12296/22356)Updating files:  56% (12520/22356)Updating files:  57% (12743/22356)Updating files:  58% (12967/22356)Updating files:  59% (13191/22356)Updating files:  60% (13414/22356)Updating files:  61% (13638/22356)Updating files:  62% (13861/22356)Updating files:  63% (14085/22356)Updating files:  63% (14140/22356)Updating files:  64% (14308/22356)Updating files:  65% (14532/22356)Updating files:  66% (14755/22356)Updating files:  67% (14979/22356)Updating files:  68% (15203/22356)Updating files:  69% (15426/22356)Updating files:  70% (15650/22356)Updating files:  71% (15873/22356)Updating files:  72% (16097/22356)Updating files:  73% (16320/22356)Updating files:  74% (16544/22356)Updating files:  75% (16767/22356)Updating files:  76% (16991/22356)Updating files:  77% (17215/22356)Updating files:  78% (17438/22356)Updating files:  79% (17662/22356)Updating files:  80% (17885/22356)Updating files:  81% (18109/22356)Updating files:  82% (18332/22356)Updating files:  83% (18556/22356)Updating files:  84% (18780/22356)Updating files:  85% (19003/22356)Updating files:  86% (19227/22356)Updating files:  87% (19450/22356)Updating files:  88% (19674/22356)Updating files:  88% (19792/22356)Updating files:  89% (19897/22356)Updating files:  90% (20121/22356)Updating files:  91% (20344/22356)Updating files:  92% (20568/22356)Updating files:  93% (20792/22356)Updating files:  94% (21015/22356)Updating files:  95% (21239/22356)Updating files:  96% (21462/22356)Updating files:  97% (21686/22356)Updating files:  98% (21909/22356)Updating files:  99% (22133/22356)Updating files: 100% (22356/22356)Updating files: 100% (22356/22356), done.
+HEAD 8e5c804cd15c59720b78e856deef3726674cdcdf
+8.5G	hw_bins
+
+=== 17:07:47 pinned xdna-driver UAPI headers
+Cloning into '/notebooks/hm-libs/xdna-driver-05-19-25'...
+HEAD is now at 0e6d303 Update FW version (#523)
+xdna-driver 0e6d303b2cc2b3fe1cf10aba0acbf57a422588fb 2025-05-19
+-rw-r--r-- 1 mliraie aup 21920 Nov  2 17:07 /notebooks/hm-libs/xdna-driver-05-19-25/src/include/uapi/drm_local/amdxdna_accel.h
+
+=== 17:07:48 environment
+Torch: 2.11.0+rocm7.2 HIP: 7.2.26015
+GPU: AMD Radeon 890M
+gpu_arch=gfx1150 hip_compiler=/opt/rocm-7.2.0/lib/llvm/bin/clang++
+
+=== 17:07:51 cmake configure (HETEROMEGA_MERGED_FFN=ON)
+
+-- Found torch_python library: /notebooks/heteromosaic-venv/lib/python3.12/site-packages/torch/lib/libtorch_python.so
+-- Configuring done (7.2s)
+-- Generating done (0.1s)
+-- Build files have been written to: /notebooks/hm-eval-main/build
+
+=== 17:07:58 build heteromega_ffn_deploy
+[ 14%] Linking CXX static library libnpu_matmul_func.a
+[ 14%] Built target npu_matmul_func
+[ 59%] Linking HIP static library libhipkernels.a
+[ 59%] Built target hipkernels
+[ 85%] Linking HIP static library libheteromega_gpu_ffn.a
+[ 85%] Built target heteromega_gpu_ffn
+[ 92%] Linking HIP static library libheteromega_merged_ffn.a
+[ 92%] Built target heteromega_merged_ffn
+[100%] Linking HIP shared module ../../py/heteromega_ffn_deploy.cpython-312-x86_64-linux-gnu.so
+[100%] Built target heteromega_ffn_deploy
+
+=== 17:10:12 build unified_llm_w4a16_hetero_libtorch
+[  8%] Built target npu_matmul_func
+[ 47%] Built target hipkernels
+[ 67%] Built target heteromega_gpu_ffn
+[ 73%] Built target heteromega_merged_ffn
+[ 94%] Linking HIP static library libunified_llm_w4a16_hetero_lib.a
+[ 94%] Built target unified_llm_w4a16_hetero_lib
+[100%] Linking HIP shared module ../../py/unified_llm_w4a16/unified_llm_w4a16_hetero_libtorch.so
+[100%] Built target unified_llm_w4a16_hetero_libtorch
+HIP link check passed
+
+=== 17:10:54 package the retained NPU artifact -> deployment.json
+  "artifact_dir": "/notebooks/hm-eval-main/docs/runs/2026-10-31-ffn-deploy/deployment-results/artifact",
+  "accuracy_policy": "report",
+  "timeout_ms": 10000,
+  "device_index": 0
+}
+-rw-r--r-- 1 mliraie aup 183 Nov  2 17:10 deployment.json
+
+=== 17:10:54 done
+exit=0

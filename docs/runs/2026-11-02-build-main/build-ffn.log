@@ -1,0 +1,32 @@
+[  3%] Building CXX object src/npu_matmul_func/CMakeFiles/npu_matmul_func.dir/npu_matmul_func.cpp.o
+[  7%] Building HIP object src/hipkernels/CMakeFiles/hipkernels.dir/w4a16_gemm_packed.cu.o
+[ 11%] Building CXX object src/npu_matmul_func/CMakeFiles/npu_matmul_func.dir/npu_execution.cpp.o
+[ 14%] Linking CXX static library libnpu_matmul_func.a
+[ 14%] Built target npu_matmul_func
+[ 18%] Building HIP object src/hipkernels/CMakeFiles/hipkernels.dir/w4a16_gemv_packed.cu.o
+[ 22%] Building HIP object src/hipkernels/CMakeFiles/hipkernels.dir/w4a16_gemm_unpacked.cu.o
+[ 25%] Building HIP object src/hipkernels/CMakeFiles/hipkernels.dir/w4a16_gemv_unpacked.cu.o
+[ 29%] Building HIP object src/hipkernels/CMakeFiles/hipkernels.dir/embedding.cu.o
+[ 33%] Building HIP object src/hipkernels/CMakeFiles/hipkernels.dir/lm_head.cu.o
+[ 37%] Building HIP object src/hipkernels/CMakeFiles/hipkernels.dir/rope.cu.o
+[ 40%] Building HIP object src/hipkernels/CMakeFiles/hipkernels.dir/rmsnorm.cu.o
+[ 44%] Building HIP object src/hipkernels/CMakeFiles/hipkernels.dir/w4a16_gemv_packedGPU.cu.o
+[ 48%] Building HIP object src/hipkernels/CMakeFiles/hipkernels.dir/w4a16_gemm_packedGPU.cu.o
+[ 51%] Building HIP object src/hipkernels/CMakeFiles/hipkernels.dir/flash_attn_decode.cu.o
+[ 55%] Building HIP object src/hipkernels/CMakeFiles/hipkernels.dir/softmax.cu.o
+[ 59%] Linking HIP static library libhipkernels.a
+[ 59%] Built target hipkernels
+[ 62%] Building HIP object src/unified_llm_w4a16_hetero/CMakeFiles/heteromega_gpu_ffn.dir/__/__/kernels/gpu/src/silu_mul.cu.o
+[ 66%] Building HIP object src/unified_llm_w4a16_hetero/CMakeFiles/heteromega_gpu_ffn.dir/__/__/kernels/gpu/src/residual_add.cu.o
+[ 70%] Building HIP object src/unified_llm_w4a16_hetero/CMakeFiles/heteromega_gpu_ffn.dir/__/__/kernels/gpu/src/gemv_w4a16.cu.o
+[ 74%] Building CXX object src/unified_llm_w4a16_hetero/CMakeFiles/heteromega_gpu_ffn.dir/__/__/kernels/gpu/src/gpu_ffn.cpp.o
+[ 77%] Building CXX object src/unified_llm_w4a16_hetero/CMakeFiles/heteromega_gpu_ffn.dir/__/__/kernels/gpu/src/pack_w4a16.cpp.o
+[ 81%] Building CXX object src/unified_llm_w4a16_hetero/CMakeFiles/heteromega_gpu_ffn.dir/__/__/kernels/gpu/src/residual_add_cpu.cpp.o
+[ 85%] Linking HIP static library libheteromega_gpu_ffn.a
+[ 85%] Built target heteromega_gpu_ffn
+[ 88%] Building CXX object src/unified_llm_w4a16_hetero/CMakeFiles/heteromega_merged_ffn.dir/merged_ffn.cpp.o
+[ 92%] Linking HIP static library libheteromega_merged_ffn.a
+[ 92%] Built target heteromega_merged_ffn
+[ 96%] Building CXX object src/unified_llm_w4a16_hetero/CMakeFiles/heteromega_ffn_deploy.dir/__/__/experiments/ffn_deploy/bindings.cpp.o
+[100%] Linking HIP shared module ../../py/heteromega_ffn_deploy.cpython-312-x86_64-linux-gnu.so
+[100%] Built target heteromega_ffn_deploy
