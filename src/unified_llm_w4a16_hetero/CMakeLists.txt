@@ -83,6 +83,7 @@ if(HETEROMEGA_MERGED_FFN)
     find_package(OpenSSL REQUIRED COMPONENTS Crypto)
     add_library(heteromega_merged_ffn STATIC merged_ffn.cpp)
     set_target_properties(heteromega_merged_ffn PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON POSITION_INDEPENDENT_CODE ON)
+    target_compile_options(heteromega_merged_ffn PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-O3>)
     target_include_directories(heteromega_merged_ffn PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../include
                                PRIVATE ${HETEROMEGA_XRT_INCLUDE})
     target_link_libraries(heteromega_merged_ffn PUBLIC heteromega_gpu_ffn npu_matmul_func

@@ -1,6 +1,7 @@
 #include "heteromega/merged_ffn_contract.hpp"
 #include <functional>
 #include <iostream>
+#include <vector>
 
 using Json = nlohmann::json;
 using heteromega::MergedFfnConfig;
@@ -92,6 +93,33 @@ int main(int argc, char **argv) {
         write(config_path, settings); write(manifest_path, manifest);
         std::cout << "PASS: valid shape/partition/BO sizes, fallback selection, " << rejected
                   << " invalid contracts rejected, overflow guard\n";
+
+        using heteromega::FiniteCheck;
+        using heteromega::find_nonfinite_bf16;
+        using heteromega::parse_finite_check;
+        expect(parse_finite_check(nullptr) == FiniteCheck::kFull && parse_finite_check("") == FiniteCheck::kFull &&
+               parse_finite_check("full") == FiniteCheck::kFull && parse_finite_check("sampled") == FiniteCheck::kSampled,
+               "finite check modes");
+        bool bad_mode = false;
+        try { parse_finite_check("off"); } catch (const std::invalid_argument &) { bad_mode = true; }
+        expect(bad_mode, "unknown finite check mode rejected");
+        const int64_t rows = 4, columns = 256;
+        std::vector<uint16_t> bits(rows * columns, 0x3f80); // BF16 1.0
+        const auto scan = [&](FiniteCheck mode) { return find_nonfinite_bf16(bits.data(), rows, columns, mode); };
+        expect(scan(FiniteCheck::kFull) == -1 && scan(FiniteCheck::kSampled) == -1, "finite data passes");
+        for (const uint16_t nonfinite : {uint16_t(0x7f80), uint16_t(0xff80), uint16_t(0x7fc0), uint16_t(0xffff)}) {
+            bits[2 * columns + 3] = nonfinite; // Row 2, unsampled column 3.
+            expect(scan(FiniteCheck::kFull) == 2 * columns + 3, "full check finds an isolated nonfinite element");
+            expect(scan(FiniteCheck::kSampled) == -1, "sampled check skips unsampled columns");
+            bits[2 * columns + 3] = 0x3f80;
+            bits[3 * columns + 64] = nonfinite; // Row 3, sampled column 64.
+            expect(scan(FiniteCheck::kSampled) == 3 * columns + 64, "sampled check reads every row at stride columns");
+            bits[3 * columns + 64] = 0x3f80;
+        }
+        for (int64_t i = columns; i < 2 * columns; ++i) bits[i] = 0x7fc0; // The whole of row 1, as the next layer sees it.
+        expect(scan(FiniteCheck::kFull) == columns && scan(FiniteCheck::kSampled) == columns,
+               "both checks find a whole nonfinite row");
+        std::cout << "PASS: finite check modes\n";
     } catch (const std::exception &e) { std::cerr << e.what() << '\n'; return 1; }
     return 0;
 }

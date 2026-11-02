@@ -177,6 +177,8 @@ def main():
     record = {"gpu_ffn_env": os.environ.get("HETEROMEGA_GPU_FFN", ""), "backend": backend.__file__,
               "config": str(config_path), "input_sha256": sha, "new_tokens": args.new_tokens, "dummy": args.dummy,
               "merged_ffn_config_env": os.environ.get("HETEROMEGA_FFN_CONFIG", ""),
+              "merged_ffn_finite_check_env": os.environ.get("HETEROMEGA_FFN_FINITE_CHECK", ""),
+              "merged_ffn_timers_env": os.environ.get("HETEROMEGA_FFN_TIMERS", ""),
               "heteromosaic_root_env": os.environ.get("HETEROMOSAIC_ROOT", ""),
               "gpu_chunk_size": args.gpu_chunk_size, "inflight": args.inflight}
     record.update(prompt_tokens=prompt_length, heterogeneity=args.heterogeneity, model=str(model_dir),

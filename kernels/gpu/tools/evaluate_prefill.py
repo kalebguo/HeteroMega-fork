@@ -18,7 +18,7 @@ METHODS = {"gpu_original": ("gpu", "0", False), "gpu_ffn_all": ("gpu", "1", Fals
            "merged_ffn": ("gpu", "0", True), "merged_ffn_hetero": ("hetero", "0", True)}
 # Never inherited: the candidate switch, and PR #1's partial-channel mode (it omits the NPU output).
 CLEARED_ENV = ("HETEROMEGA_FFN_CONFIG", "HETEROMEGA_GPU_FFN_SPLIT")
-SHOWN_ENV = ("HETEROMEGA_GPU_FFN", "HETEROMEGA_FFN_CONFIG", "HETEROMOSAIC_ROOT")
+SHOWN_ENV = ("HETEROMEGA_GPU_FFN", "HETEROMEGA_FFN_CONFIG", "HETEROMEGA_FFN_FINITE_CHECK", "HETEROMEGA_FFN_TIMERS", "HETEROMOSAIC_ROOT")
 
 
 def is_merged(method):

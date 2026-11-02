@@ -10,6 +10,34 @@
 #include <string>
 
 namespace heteromega {
+// HETEROMEGA_FFN_FINITE_CHECK. full (default): every element of the input and the NPU output on the critical path.
+// sampled: every row at one in kFiniteSampleStride columns. A nonfinite element at an unsampled column of layer L is
+// caught by layer L+1's input check, because the attention GEMMs spread it over its whole row; layer L=last relies on
+// the logits/token checks instead.
+enum class FiniteCheck { kFull, kSampled };
+constexpr int64_t kFiniteSampleStride = 64;
+
+inline FiniteCheck parse_finite_check(const char *value) {
+    if (value == nullptr || *value == '\0' || std::string(value) == "full") return FiniteCheck::kFull;
+    if (std::string(value) == "sampled") return FiniteCheck::kSampled;
+    throw std::invalid_argument(std::string("merged FFN: HETEROMEGA_FFN_FINITE_CHECK must be full or sampled, not ") + value);
+}
+
+// Row-major BF16 bits. Returns the first checked nonfinite element (all 8 exponent bits set), or -1.
+inline int64_t find_nonfinite_bf16(const uint16_t *bits, int64_t rows, int64_t columns, FiniteCheck mode) {
+    const int64_t stride = mode == FiniteCheck::kFull ? 1 : kFiniteSampleStride;
+    const int64_t count = rows * columns;
+    if (stride == 1) {
+        for (int64_t i = 0; i < count; ++i)
+            if ((bits[i] & 0x7f80) == 0x7f80) return i;
+        return -1;
+    }
+    for (int64_t row = 0; row < rows; ++row)
+        for (int64_t i = row * columns; i < (row + 1) * columns; i += stride)
+            if ((bits[i] & 0x7f80) == 0x7f80) return i;
+    return -1;
+}
+
 struct MergedFfnConfig {
     std::filesystem::path artifact_dir;
     int64_t m = 0, hidden = 0, intermediate = 0, npu_channels = 0;

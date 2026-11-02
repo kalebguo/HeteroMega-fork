@@ -9,6 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 import gc
 import hashlib
 import json
+import os
 from pathlib import Path
 import time
 
@@ -125,6 +126,20 @@ def main():
                 raise RuntimeError('invalid input accepted')
         if executor.completed_dispatches() != before:
             raise RuntimeError('invalid inputs dispatched NPU work')
+        # Positive control of HETEROMEGA_FFN_FINITE_CHECK: a whole NaN row is what the next layer sees after an NPU
+        # nonfinite element, and both modes must stop on it before dispatching.
+        nan_row = gpu_inputs[0].clone()
+        nan_row[7, :] = float('nan')
+        try:
+            executor.forward(0, nan_row)
+        except RuntimeError as exc:
+            if 'nonfinite input' not in str(exc):
+                raise
+        else:
+            raise RuntimeError('NaN input row accepted')
+        if executor.completed_dispatches() != before:
+            raise RuntimeError('NaN input row dispatched NPU work')
+        report['finite_check'] = dict(mode=os.environ.get('HETEROMEGA_FFN_FINITE_CHECK') or 'full', nan_row_rejected=True)
         report['completed_dispatches'] = before
         del executor
         gc.collect()
