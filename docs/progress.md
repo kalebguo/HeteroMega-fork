@@ -36,8 +36,21 @@ hardware measurement unless it cites an existing evidence file.
   the unmeasured SiLU×up epilogue (`HETEROMEGA_GPU_FUSE_ACT`), boundary-sum/residual
   folding; a FlashAttention-style fused FFN is estimated at no more than about 5% on GPU
   and is unfavourable on the NPU.
-- Next: allow `dub.aupcloud.io` in this environment's network settings, or run
-  `tools/npu_error_probe/aup_job.sh` from the local session; then the task-2 cost model.
+- **Split-ratio cost model** (`tools/split_model/`, estimated; inputs read from the measured
+  files listed in `REPORT.md`): t_gpu from the GPU ablation (about 9.3 TFLOPS); t_npu from the
+  P6400 smoke (32.5 ms per call, NPU-bound; about 2.8-3.4 TFLOPS after the staging
+  scenarios). Code-ordered optimum p ≈ 2560-2816 (17.0 ms central, 7.7-18.4% below the
+  19.8 ms GPU-only FFN). P4096 is already predicted slower than GPU-only and P6400 is
+  64% slower. Main B's measured in-model FFN is 14.2 ms per layer-chunk, so **no split of
+  the current merged graph is predicted to beat Main B**. Its NPU work is about 3x slower per
+  FLOP than the native GEMM (3.24 ms per 256x4096x14336 call ≈ 9.3 TFLOPS). Only with
+  native-rate NPU work would the best split (p≈5888, 12.9 ms) win. Gaps and the AUP
+  experiment (three p values via `prepare --build` + smoke + evaluator) are in the report.
+- Next (hardware, once reachable): `eval-main` results into `docs/runs/`, then
+  `heteromosaic` vs `merged_ffn_hetero`, then `tools/npu_error_probe/aup_job.sh`, then
+  P2560/P2816 artifacts instead of P4096/P8192. In parallel, profile why the merged NPU graph
+  is about 3x below the native GEMM's rate; per the model this, not the split, decides
+  Main C vs Main B.
 
 ## 2026-10-31: publish validated FFN integration for teammate evaluation
 
