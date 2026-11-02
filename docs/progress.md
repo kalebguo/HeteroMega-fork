@@ -24,9 +24,20 @@ hardware measurement unless it cites an existing evidence file.
   storage per K128, BFP16 activations and BFP16 weights contribute comparably. The same
   arithmetic predicts only 0.375 of the native sweep's 1.5; a BF16 store about every K16
   would fit all three native measurements. Hypothesis until the K-sweep probe runs.
+- **Host serialization review** (`docs/host-serialization-review.md`, report only):
+  original heterogeneous prefill is GPU-bound (estimated from the Oct-14 measured stage
+  table: each stage ≈ its GPU share; 1327 ms ≈ 1780 ms GPU-only minus the moved work),
+  which is why two inflight chunks gain only 0.8% on prefill and 0.3% on generation;
+  the polling/completion sums overlap. The merged FFN at P6400 is NPU-bound
+  (smoke: 32.5 ms concurrent vs about 12.3 ms GPU branch). The review lists 14 serialization
+  points (code-confirmed, `file:line`) and 7 ranked proposals with AUP measurements; the top
+  two are placement changes: a smaller merged NPU share, and native M-split down with the
+  existing `final_256x14336x4096` artifact. Fusion section: launch counts per path,
+  the unmeasured SiLU×up epilogue (`HETEROMEGA_GPU_FUSE_ACT`), boundary-sum/residual
+  folding; a FlashAttention-style fused FFN is estimated at no more than about 5% on GPU
+  and is unfavourable on the NPU.
 - Next: allow `dub.aupcloud.io` in this environment's network settings, or run
-  `tools/npu_error_probe/aup_job.sh` from the local session; then the task-4 review and
-  task-2 cost model (in that order).
+  `tools/npu_error_probe/aup_job.sh` from the local session; then the task-2 cost model.
 
 ## 2026-10-31: publish validated FFN integration for teammate evaluation
 
