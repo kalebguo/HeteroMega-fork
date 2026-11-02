@@ -2,13 +2,18 @@
 # Build branch merged-ffn-fix in the separate tree /notebooks/hm-fix (hm-eval-main/build stays as evidence of the
 # first evaluation). Flags mirror jobs/build-main/cmd.sh. Upload this file, then:
 # bg build-fix -- 'bash build.sh'. Rerun after pushing C++ changes: it fast-forwards and rebuilds in place.
+# SRC=<tree> NOOPT=1 builds a separate attribution tree with the -O3 line of the merged FFN target removed.
 set -eo pipefail
-SRC=/notebooks/hm-fix
+export SRC=${SRC:-/notebooks/hm-fix}
 if [ ! -d "$SRC/.git" ]; then
     git clone --reference /notebooks/hm-eval-main --branch merged-ffn-fix \
         https://github.com/kalebguo/HeteroMega-fork.git "$SRC" 2>&1 | tail -2
 else
+    git -C "$SRC" checkout -q -- src/unified_llm_w4a16_hetero/CMakeLists.txt
     git -C "$SRC" pull --ff-only 2>&1 | tail -2
+fi
+if [ -n "${NOOPT:-}" ]; then
+    sed -i '/target_compile_options(heteromega_merged_ffn PRIVATE/d' "$SRC/src/unified_llm_w4a16_hetero/CMakeLists.txt"
 fi
 source "$SRC/tools/aup-kit/jobs/fix-env.sh"
 unset PYTHONPATH
@@ -56,8 +61,8 @@ if readelf -d build/py/unified_llm_w4a16/*.so | grep -q 'libamdhip64.so.5'; then
 fi
 echo "HIP link check passed"
 
-step "the merged FFN file is now optimized (expect -O3)"
-grep -h CXX_FLAGS build/src/unified_llm_w4a16_hetero/CMakeFiles/heteromega_merged_ffn.dir/flags.make | grep -o ' -O[0-9s]\b' | sort -u
+step "optimization flags of the merged FFN file (expect -O3, or nothing with NOOPT)"
+grep -h CXX_FLAGS build/src/unified_llm_w4a16_hetero/CMakeFiles/heteromega_merged_ffn.dir/flags.make | grep -o ' -O[0-9s]\b' | sort -u || true
 
 step "package the retained NPU artifact -> deployment.json"
 export PYTHONPATH="$PWD/build/py:$PWD/build/py/unified_llm_w4a16:$PWD"

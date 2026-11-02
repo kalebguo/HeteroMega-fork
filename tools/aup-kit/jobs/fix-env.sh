@@ -1,7 +1,8 @@
 # Environment of every merged-ffn-fix job on the AUP box (same values as jobs/eval-main/cmd.sh), sourced by the jobs
-# in this directory. Sets cwd to the build tree /notebooks/hm-fix; hm-eval-main stays untouched as earlier evidence.
+# in this directory. Sets cwd to the build tree $SRC (default /notebooks/hm-fix); hm-eval-main stays untouched as
+# earlier evidence.
 step() { echo; echo "=== $(date '+%H:%M:%S') UTC $*"; }
-SRC=/notebooks/hm-fix
+SRC=${SRC:-/notebooks/hm-fix}
 MODEL=/notebooks/hm-model/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
 RESULTS=/notebooks/hm-results/2026-11-02
 COUNT_IOCTLS=/notebooks/hm-results/count_ioctls.so

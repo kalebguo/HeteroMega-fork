@@ -88,7 +88,7 @@ void require_finite_bf16(const torch::Tensor &host, const char *name, FiniteChec
 }
 
 // HETEROMEGA_FFN_TIMERS=<directory> writes one CSV per process with one row per forward call. Diagnostic only: it adds
-// host waits for attention, the H2D copy, the GPU branch and the sum, which the normal path leaves asynchronous.
+// host waits for the H2D copy, the GPU branch and the sum, which the normal path leaves asynchronous.
 enum Phase { kSetup, kPrevWait, kGpuEnqueue, kInputWait, kSerialGpu, kD2h, kInputScan, kMutexWait, kBoWrite, kBoSync,
              kRunStart, kRunWait, kYSync, kYRead, kOutputScan, kH2d, kGpuWait, kSum, kPhaseCount };
 constexpr std::array<const char *, kPhaseCount> kPhaseNames = {
@@ -298,7 +298,9 @@ MergedFfnResult MergedFfn::forward(int64_t index, const torch::Tensor &x, torch:
     hip_check(hipEventRecord(slot.done.value, current_stream));
     slot.pending = true; // Also protects scratch if a subsequent host/XRT operation throws.
     timer.mark(kGpuEnqueue);
-    if (timer.enabled) hip_check(hipEventSynchronize(slot.input_ready.value));
+    // The host blocks on the D2H below anyway, and that copy waits for this event. Waiting here first keeps the GPU
+    // branch and the NPU overlapping on every stream: without it the smoke's second stream ran them one after the other.
+    hip_check(hipEventSynchronize(slot.input_ready.value));
     timer.mark(kInputWait);
     if (serial) hip_check(hipEventSynchronize(slot.done.value));
     timer.mark(kSerialGpu);
