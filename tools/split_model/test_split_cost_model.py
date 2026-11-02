@@ -31,6 +31,13 @@ class SplitCostModelTests(unittest.TestCase):
         best = model.best(model.scenario_model(self.cal, "central"), "code_ordered")
         self.assertIn(best["p"], model.VALID_P)
 
+    def test_measured_evaluation_is_read_and_close_to_the_smoke_prediction(self):
+        ev = self.cal["evaluation"]
+        self.assertAlmostEqual(ev[("merged_ffn", 1024)], 2558.706, places=2)
+        extra = (ev[("merged_ffn", 1024)] - ev[("gpu_original", 1024)]) / 64
+        predicted = self.cal["path_concurrent"] - model._hm_total(self.cal)
+        self.assertLess(abs(predicted / extra - 1), 0.15)  # documents the observed 7%; not a tolerance on results
+
     def test_report_labels_estimates_and_gaps(self):
         text = model.report(self.cal)
         for phrase in ("estimated", "What the data cannot determine", "Experiment on the AUP box", "Main B"):

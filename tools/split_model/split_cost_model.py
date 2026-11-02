@@ -32,6 +32,8 @@ SOURCES = {
     "bo_io": "experiments/ffn_partition/results/bottleneck_analysis.json",  # earlier design's host BO IO medians
     "artifact": "docs/runs/2026-10-31-ffn-deploy/deployment-results/artifact/final.xclbin.json",
     "profile": "docs/runs/2026-10-14-profile/evidence/analysis.json",  # in-model stages and native NPU waits (measured)
+    "eval": "docs/runs/2026-11-02-eval-merged-gpu/summary.csv",  # first paired prefill evaluation, P6400 (measured)
+    "smoke_1102": "docs/runs/2026-11-02-smoke-main/cpp-smoke.json",  # same smoke on the evaluated build (measured)
 }
 # Native gate/up NPU calls in the Oct-14 profile: instruction indices with 256x4096x14336 work. Inferred from the
 # four equal ~3.24 ms completion waits and their gate/up readiness pattern; the README defers to the kernel map.
@@ -51,13 +53,22 @@ def read_gpu_points(root=ROOT):
     return points
 
 
-def read_smoke(root=ROOT):
+def read_smoke(root=ROOT, key="smoke", counts=False):
     """Median complete-call wall ms of the P6400 merged FFN by (layer, slot, serial), warmups excluded."""
     groups = {}
-    for s in json.loads((root / SOURCES["smoke"]).read_text())["samples"]:
+    for s in json.loads((root / SOURCES[key]).read_text())["samples"]:
         if not s["warmup"]:
             groups.setdefault((s["layer"], s["slot"], s["serial"]), []).append(s["complete_host_wall_us"] / 1000)
+    if counts:
+        return {k: len(v) for k, v in groups.items()}
     return {k: statistics.median(v) for k, v in groups.items()}
+
+
+def read_eval(root=ROOT):
+    """{(method, prompt_tokens): prefill median ms} from the measured evaluation summary."""
+    import csv
+    with (root / SOURCES["eval"]).open() as f:
+        return {(r["method"], int(r["prompt_tokens"])): float(r["prefill_median_ms"]) for r in csv.DictReader(f)}
 
 
 def read_staging(root=ROOT):
@@ -85,6 +96,15 @@ def read_profile(root=ROOT):
                 native_b_n=3 * 512 * 4096 / macs_per_ms)
 
 
+def _hm_total(cal, root=ROOT):
+    """Original HeteroMosaic-order GPU FFN at 14336 channels (the gpu_original FFN), from the README row."""
+    for line in (root / SOURCES["gpu"]).read_text().splitlines():
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) == 7 and cells[0] == "512" and cells[1] == str(I):
+            return float(cells[6])
+    raise ValueError("README has no M=512, s=14336 ablation row")
+
+
 def calibrate(root=ROOT):
     gpu = read_gpu_points(root)
     (c1, t1), (c2, t2) = sorted(gpu.items())
@@ -95,7 +115,8 @@ def calibrate(root=ROOT):
     return dict(gpu_points=gpu, a_g=t1 - b_g * c1, b_g=b_g, smoke=smoke, staging=staging, p_measured=p_measured,
                 profile=read_profile(root),
                 path_concurrent=smoke[(0, 0, False)], path_serial=smoke[(0, 0, True)],
-                path_concurrent_slot1=smoke.get((1, 1, False)))
+                path_concurrent_slot1=smoke.get((1, 1, False)), smoke_counts=read_smoke(root, counts=True),
+                smoke_1102=read_smoke(root, "smoke_1102"), evaluation=read_eval(root))
 
 
 def scenario_model(cal, name, b_n_override=None):
@@ -139,7 +160,7 @@ def report(cal):
     for ch, t in sorted(cal["gpu_points"].items()):
         lines.append(f"| GPU fused 3-launch FFN, {ch} channels | {t:.3f} ms | `{SOURCES['gpu']}` (hm total × fused ratio) | measured, isolated GPU, 2026-10-17 |")
     st = cal["staging"]
-    lines += [f"| Merged FFN call P{cal['p_measured']}, concurrent (layer 0, stream 0) | {cal['path_concurrent']:.2f} ms | `{SOURCES['smoke']}` | measured, synthetic weights, n=7 |",
+    lines += [f"| Merged FFN call P{cal['p_measured']}, concurrent (layer 0, stream 0) | {cal['path_concurrent']:.2f} ms | `{SOURCES['smoke']}` | measured, synthetic weights, n={cal['smoke_counts'][(0, 0, False)]} |",
               f"| Same, serial (GPU branch then NPU) | {cal['path_serial']:.2f} ms | same | measured |",
               f"| Same, concurrent, layer 1 / stream 1 (no overlap observed) | {cal['path_concurrent_slot1']:.2f} ms | same | measured, unexplained |",
               f"| D2H of X / H2D of Y_npu (4 MiB, GPU events) | {st['d2h_ms']:.3f} / {st['h2d_ms']:.3f} ms | `{SOURCES['timeline']}` | measured, earlier 4-launch design |",
@@ -172,6 +193,9 @@ def report(cal):
         lines.append(f"| {m['name']} | {a['p']} | {a['requested']:.2f} | {b['p']} | {b['code_ordered']:.2f} | "
                      f"{(1 - b['code_ordered'] / m['gpu_only']) * 100:.1f}% |")
     per_chunk = cal["path_concurrent"] - c["gpu_only"]
+    ev = cal["evaluation"]
+    extra = {n: (ev[("merged_ffn", n)] - ev[("gpu_original", n)]) / (32 * n // 512) for n in (512, 1024)}
+    hm_gpu = _hm_total(cal)
     gpu_model = prof["ffn"]["gpu_matched-detail-sync"]["per_layer_chunk_ms"]
     main_b = prof["ffn"]["hetero_serial-detail-sync"]["per_layer_chunk_ms"]
     best_central = best(c, "code_ordered")
@@ -193,10 +217,20 @@ def report(cal):
               "ratio, decides whether persistent channel partitioning can beat Main B.",
               "", "## Consistency checks", "",
               f"- At P{cal['p_measured']} the model is NPU-bound: per layer-chunk about {per_chunk:.1f} ms slower than "
-              f"GPU-only, i.e. about {32 * per_chunk / 1000:.2f} s per 512-token and {64 * per_chunk / 1000:.2f} s per "
-              "1024-token prefill (estimated). The local session reports `eval-main` medians of about 0.9 → 1.3 s "
-              "(512) and 1.8 → 2.5 s (1024) for gpu_original → merged_ffn. These are peer-reported, not yet in this "
-              "repository, and not verified here.",
+              f"the fused GPU-only FFN ({cal['path_concurrent'] - hm_gpu:.1f} ms slower than the original HeteroMosaic "
+              f"GPU FFN, {hm_gpu:.2f} ms), i.e. about {32 * per_chunk / 1000:.2f}/{32 * (cal['path_concurrent'] - hm_gpu) / 1000:.2f} s "
+              f"per 512-token and {64 * per_chunk / 1000:.2f}/{64 * (cal['path_concurrent'] - hm_gpu) / 1000:.2f} s per "
+              "1024-token prefill (estimated).",
+              f"- **Measured** (`{SOURCES['eval']}`, synchronized `generate(1)`, 10 samples per cell): gpu_original → "
+              f"merged_ffn prefill median {ev[('gpu_original', 512)]:.1f} → {ev[('merged_ffn', 512)]:.1f} ms (512 tokens) and "
+              f"{ev[('gpu_original', 1024)]:.1f} → {ev[('merged_ffn', 1024)]:.1f} ms (1024 tokens), i.e. "
+              f"{extra[512]:.1f} / {extra[1024]:.1f} ms extra per merged FFN call (32 / 64 calls). The smoke-based "
+              f"prediction of {cal['path_concurrent'] - hm_gpu:.1f} ms against the original GPU FFN is "
+              f"{((cal['path_concurrent'] - hm_gpu) / statistics.mean(extra.values()) - 1) * 100:.0f}% high; the "
+              "per-call smoke figure is therefore a slightly pessimistic but consistent proxy for the in-model cost.",
+              f"- Same smoke on the evaluated build (`{SOURCES['smoke_1102']}`, measured): concurrent "
+              f"{cal['smoke_1102'][(0, 0, False)]:.2f} ms, serial {cal['smoke_1102'][(0, 0, True)]:.2f} ms, layer 1 / "
+              f"stream 1 concurrent {cal['smoke_1102'][(1, 1, False)]:.2f} ms (the no-overlap effect repeats).",
               "- `npu/ffn/BFP16_ADAPTATION.md` documents 19.1-20.3% lower isolated FFN latency than GPU-only at "
               "P2560-2816 for an earlier two-launch BFP16 design. Its evidence directory is not in this checkout, so it is "
               "not used for fitting; it is consistent with the code-ordered optimum here.", "",

@@ -1,5 +1,39 @@
 # HeteroMega progress
 
+## 2026-11-02 (H1): first paired prefill evaluation, gpu_original vs merged_ffn (measured)
+
+- **Measured** on AUP by the local session (`tools/aup-kit` job `eval-main`, 17:43-17:52 UTC),
+  archived in `docs/runs/2026-11-02-eval-merged-gpu/` (merged from fork branch `aup-results`
+  `29ac080`). Build `main` `8e5c804` with `-DHETEROMEGA_MERGED_FFN=ON`; runner `0190cd8`;
+  retained P6400 artifact; GPU attention, M512 serial chunks, 10 samples per cell
+  (synchronized `generate(1)`, process order original/new/new/original).
+
+  | tokens | gpu_original median (min-max) | merged_ffn median (min-max) | speedup |
+  | --- | --- | --- | --- |
+  | 512 | 889.3 ms (880.0-967.8) | 1257.1 ms (1248.1-1621.9) | 0.707 |
+  | 1024 | 1829.0 ms (1825.6-1875.4) | 2558.7 ms (2543.4-2621.3) | 0.715 |
+
+- Merged FFN active: 32 / 64 completions per prefill pass, 22 passes per cell, 0 wrong. Controls
+  clean (0 completions). The 64 greedy tokens are identical in every repetition, and the 8
+  reference tokens match at 1024. Decode about 17 tok/s for both; peak 7.20 vs 7.85 GiB. The
+  first repetition of a process is often slower (e.g. 1621.9 ms); medians are not affected.
+- Cross-check (this cloud session): recomputing all cells from the eight result JSONs with
+  `evaluate_prefill.summarize` reproduces `summary.csv` exactly. The C++ smoke on the same build
+  (`docs/runs/2026-11-02-smoke-main/`, measured) repeats the 10-31 result: 33.02 ms concurrent,
+  43.95 ms serial per call, identical NPU error metrics; layer 1 / stream 1 again shows no
+  GPU/NPU overlap (44.53 ms).
+- Interpretation: the measured extra cost is 11.5 / 11.4 ms per merged FFN call (512 / 1024
+  tokens). The cost model predicted 12.2 ms from the smoke's 32.5 ms per call minus the
+  20.2 ms original GPU FFN (estimated, 7% high): P6400 is NPU-bound, as `tools/split_model/REPORT.md`
+  predicts. That report puts the best split at p≈2560-2816 and still predicts it slower than
+  Main B's FFN (≥16.2 vs 14.2 ms per layer-chunk; estimated). This run does not test the
+  native-rate comparison (3.24 ms per native gate/up call).
+- Not executed: `model_smoke` (the box venv has no `transformers`, the model directory has no
+  tokenizer; nothing installed, per the rules). `tools/npu_error_probe/token_agreement.py` avoids
+  both and covers its token/logit role.
+- Next: H2, `heteromosaic` vs `merged_ffn_hetero` at 1024 tokens with the ioctl counter, once
+  this session can reach the hub (it could not at the time of writing).
+
 ## 2026-11-02: CPU-side preparation for AUP measurements (cloud session, not executed on hardware)
 
 Branch `claude/exciting-faraday-95a0c1` of kalebguo/HeteroMega-fork, based on main

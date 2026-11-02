@@ -8,7 +8,7 @@
 | --- | --- | --- | --- |
 | GPU fused 3-launch FFN, 10240 channels | 14.295 ms | `kernels/gpu/README.md` (hm total × fused ratio) | measured, isolated GPU, 2026-10-17 |
 | GPU fused 3-launch FFN, 14336 channels | 19.818 ms | `kernels/gpu/README.md` (hm total × fused ratio) | measured, isolated GPU, 2026-10-17 |
-| Merged FFN call P6400, concurrent (layer 0, stream 0) | 32.46 ms | `docs/runs/2026-10-31-ffn-deploy/deployment-results/cpp-smoke.json` | measured, synthetic weights, n=7 |
+| Merged FFN call P6400, concurrent (layer 0, stream 0) | 32.46 ms | `docs/runs/2026-10-31-ffn-deploy/deployment-results/cpp-smoke.json` | measured, synthetic weights, n=9 |
 | Same, serial (GPU branch then NPU) | 44.71 ms | same | measured |
 | Same, concurrent, layer 1 / stream 1 (no overlap observed) | 44.29 ms | same | measured, unexplained |
 | D2H of X / H2D of Y_npu (4 MiB, GPU events) | 0.241 / 0.193 ms | `experiments/ffn_partition/results/timeline_m512_p512_array8.json` | measured, earlier 4-launch design |
@@ -61,7 +61,9 @@ Derived (estimated): GPU branch at 7936 channels from the smoke, serial - concur
 
 ## Consistency checks
 
-- At P6400 the model is NPU-bound: per layer-chunk about 12.6 ms slower than GPU-only, i.e. about 0.40 s per 512-token and 0.81 s per 1024-token prefill (estimated). The local session reports `eval-main` medians of about 0.9 → 1.3 s (512) and 1.8 → 2.5 s (1024) for gpu_original → merged_ffn. These are peer-reported, not yet in this repository, and not verified here.
+- At P6400 the model is NPU-bound: per layer-chunk about 12.6 ms slower than the fused GPU-only FFN (12.2 ms slower than the original HeteroMosaic GPU FFN, 20.22 ms), i.e. about 0.40/0.39 s per 512-token and 0.81/0.78 s per 1024-token prefill (estimated).
+- **Measured** (`docs/runs/2026-11-02-eval-merged-gpu/summary.csv`, synchronized `generate(1)`, 10 samples per cell): gpu_original → merged_ffn prefill median 889.3 → 1257.1 ms (512 tokens) and 1829.0 → 2558.7 ms (1024 tokens), i.e. 11.5 / 11.4 ms extra per merged FFN call (32 / 64 calls). The smoke-based prediction of 12.2 ms against the original GPU FFN is 7% high; the per-call smoke figure is therefore a slightly pessimistic but consistent proxy for the in-model cost.
+- Same smoke on the evaluated build (`docs/runs/2026-11-02-smoke-main/cpp-smoke.json`, measured): concurrent 33.02 ms, serial 43.95 ms, layer 1 / stream 1 concurrent 44.53 ms (the no-overlap effect repeats).
 - `npu/ffn/BFP16_ADAPTATION.md` documents 19.1-20.3% lower isolated FFN latency than GPU-only at P2560-2816 for an earlier two-launch BFP16 design. Its evidence directory is not in this checkout, so it is not used for fitting; it is consistent with the code-ordered optimum here.
 
 ## What the data cannot determine
