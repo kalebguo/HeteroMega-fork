@@ -216,6 +216,13 @@ class EvaluationTests(unittest.TestCase):
             self.assertEqual(rows["gpu_original"]["merged_ffn_verdict"], "contaminated")
             self.assertEqual((rows["gpu_original"]["speedup_vs_gpu"], rows["merged_ffn"]["speedup_vs_gpu"]), ("", ""))
 
+    def test_mdown_method_alone_receives_the_mdown_config(self):
+        args = types.SimpleNamespace(prompt_tokens=[1024], rounds=1, methods=["heteromosaic", "heteromosaic_mdown"], out=Path("out"),
+                                     ref=Path("ref.json"), build="build", config="shipped.json5", mdown_config="mdown.json",
+                                     reps=1, new_tokens=1, dummy=True, merged_ffn_config=None)
+        configs = {method: cmd[cmd.index("--config") + 1] for method, _, _, cmd, _, _ in evaluation.cases(args)}
+        self.assertEqual(configs, {"heteromosaic": "shipped.json5", "heteromosaic_mdown": "mdown.json"})
+
     def test_merged_cli_guards(self):
         def dry(*extra):
             return subprocess.run([sys.executable, str(Path(evaluation.__file__)), "--out", tmp, "--dry-run", *extra],

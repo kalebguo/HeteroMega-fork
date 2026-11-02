@@ -15,7 +15,9 @@ LAYERS = 32  # Llama 3.1 8B decoder layers; one merged-FFN dispatch per layer pe
 MERGED_M = 512  # rows per dispatch of the tested merged artifact (M512/H4096/I14336/P6400)
 # method: (heterogeneity, HETEROMEGA_GPU_FFN, merged GPU+NPU FFN via HETEROMEGA_FFN_CONFIG)
 METHODS = {"gpu_original": ("gpu", "0", False), "gpu_ffn_all": ("gpu", "1", False), "heteromosaic": ("hetero", "0", False),
-           "merged_ffn": ("gpu", "0", True), "merged_ffn_hetero": ("hetero", "0", True)}
+           "merged_ffn": ("gpu", "0", True), "merged_ffn_hetero": ("hetero", "0", True),
+           # heteromosaic with half of down on the NPU: same code, --mdown-config enables the native M-split down entries.
+           "heteromosaic_mdown": ("hetero", "0", False)}
 # Never inherited: the candidate switch, and PR #1's partial-channel mode (it omits the NPU output).
 CLEARED_ENV = ("HETEROMEGA_FFN_CONFIG", "HETEROMEGA_GPU_FFN_SPLIT")
 SHOWN_ENV = ("HETEROMEGA_GPU_FFN", "HETEROMEGA_FFN_CONFIG", "HETEROMEGA_FFN_FINITE_CHECK", "HETEROMEGA_FFN_TIMERS", "HETEROMOSAIC_ROOT")
@@ -52,7 +54,8 @@ def cases(args):
                 out = args.out / f"{method}-{length}-r{round_id}.result.json"
                 cmd = [sys.executable, "-u", str(Path(__file__).with_name("run_model_ffn.py")),
                        "--ref", str(args.ref), "--out", str(out), "--build", args.build,
-                       "--config", args.config, "--heterogeneity", backend, "--prompt-tokens", str(length),
+                       "--config", args.mdown_config if method == "heteromosaic_mdown" else args.config,
+                       "--heterogeneity", backend, "--prompt-tokens", str(length),
                        "--reps", str(args.reps), "--new-tokens", str(args.new_tokens)]
                 # Applied to every method so the compared jobs share one chunk schedule.
                 if getattr(args, "gpu_chunk_size", None):
@@ -163,6 +166,7 @@ def main():
     p.add_argument("--build", default="build-model")
     p.add_argument("--config", default="py/unified_llm_w4a16/configs/configs_strixP_llama3_8b.json5")
     p.add_argument("--methods", nargs="+", choices=METHODS, default=["gpu_original", "gpu_ffn_all"])
+    p.add_argument("--mdown-config", help="configuration of heteromosaic_mdown, from tools/split_model/make_mdown_config.py")
     p.add_argument("--merged-ffn-config", type=Path,
                    help="deployment.json for merged_ffn/merged_ffn_hetero; exported as HETEROMEGA_FFN_CONFIG for those jobs only")
     p.add_argument("--gpu-chunk-size", type=int, help="GPU-backend prefill chunk rows for every method (merged_ffn needs 512)")
@@ -187,6 +191,8 @@ def main():
         p.error("--gpu-chunk-size and --inflight must be positive")
     if not args.model and not args.dummy and not args.dry_run:
         p.error("--model is required without --dummy")
+    if "heteromosaic_mdown" in args.methods and not args.mdown_config:
+        p.error("heteromosaic_mdown needs --mdown-config")
     manifest = None
     if any(is_merged(m) for m in args.methods):
         if args.merged_ffn_config is None:
