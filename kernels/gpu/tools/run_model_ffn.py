@@ -20,6 +20,12 @@ weights. prefill_s is the wall time of generate(1). decode_tok_s = (new_tokens -
 
 --dummy uses the backend's seeded random weights (initialize_dummy_weights, seed 42) instead of --model: no download,
 same timing work, but the tokens are not meaningful. Compare the tokens of the ON and OFF runs with each other only.
+
+Merged GPU+NPU FFN (HETEROMEGA_FFN_CONFIG, set by evaluate_prefill.py for its merged methods only): every generate call
+(warm-up and each repetition) is one prefill pass. The process reads model.model.merged_ffn_completed_dispatches()
+before and after each call, outside the synchronized timer window, and stores the per-pass difference. The counter is
+recorded for every method when the binding exists, so a control job that inherited the candidate shows completions.
+--gpu-chunk-size and --inflight override the configuration's chunk schedule for every method that a batch compares.
 """
 import argparse
 import hashlib
@@ -119,9 +125,13 @@ def main():
     p.add_argument("--reps", type=int, default=3)
     p.add_argument("--new-tokens", type=int, default=64)
     p.add_argument("--max-seq-len", type=int, default=1536)
+    p.add_argument("--gpu-chunk-size", type=int, help="override gpu_chunking.gpu_chunk_size (GPU attention backend)")
+    p.add_argument("--inflight", type=int, help="override gpu_chunking_inflight and this prompt length's hetero_inflight")
     args = p.parse_args()
     if not args.dummy and not args.model:
         p.error("--model is required without --dummy")
+    if any(v is not None and v < 1 for v in (args.gpu_chunk_size, args.inflight)):
+        p.error("--gpu-chunk-size and --inflight must be positive")
     ref = json.loads(Path(args.ref).read_text())
     full_length = len(ref["input_ids"][0])
     prompt_length = full_length if args.prompt_tokens is None else args.prompt_tokens
@@ -145,6 +155,17 @@ def main():
     config = load_config_with_comments(str(ROOT / args.config))
     config.update(heterogeneity=args.heterogeneity, prompt_len=prompt_length, usePreSavedWeights=False, warmup=False, debug_verbosity=1,
                   dummy_weights=args.dummy)
+    if args.gpu_chunk_size is not None or args.inflight is not None:
+        chunking = dict(config.get("gpu_chunking") or {})
+        if args.gpu_chunk_size is not None:
+            chunking["gpu_chunk_size"] = args.gpu_chunk_size
+        if args.inflight is not None:
+            chunking["gpu_chunking_inflight"] = args.inflight
+        config["gpu_chunking"] = chunking
+    if args.inflight is not None:
+        for group in config.get("kernels_gemm_chunked", []):
+            if group.get("prompt_len") == prompt_length:
+                group["hetero_inflight"] = args.inflight
     config_path = out.with_name(out.stem + ".config.json")
     config_path.write_text(json.dumps(config, indent=2))
 
@@ -154,7 +175,10 @@ def main():
         assert sha == ref["input_sha256"], sha
 
     record = {"gpu_ffn_env": os.environ.get("HETEROMEGA_GPU_FFN", ""), "backend": backend.__file__,
-              "config": str(config_path), "input_sha256": sha, "new_tokens": args.new_tokens, "dummy": args.dummy}
+              "config": str(config_path), "input_sha256": sha, "new_tokens": args.new_tokens, "dummy": args.dummy,
+              "merged_ffn_config_env": os.environ.get("HETEROMEGA_FFN_CONFIG", ""),
+              "heteromosaic_root_env": os.environ.get("HETEROMOSAIC_ROOT", ""),
+              "gpu_chunk_size": args.gpu_chunk_size, "inflight": args.inflight}
     record.update(prompt_tokens=prompt_length, heterogeneity=args.heterogeneity, model=str(model_dir),
                   torch_version=torch.__version__, gpu_name=torch.cuda.get_device_name())
     t = time.perf_counter()
@@ -162,29 +186,40 @@ def main():
     model = LLaMA3W4A16Model(model_path=path, tokenizer_path=path, max_seq_len=max(args.max_seq_len, prompt_length + args.new_tokens), device="cuda",
                              config_path=str(config_path))
     record["load_s"] = time.perf_counter() - t
+    # Host-side atomic counter of successful merged-FFN NPU runs; absent from bindings older than the merged FFN.
+    counter = getattr(getattr(model, "model", None), "merged_ffn_completed_dispatches", None)
+    record["merged_ffn_counter"] = counter is not None
+
+    def completions():
+        return None if counter is None else int(counter())
 
     def timed(n):
+        before = completions()  # read outside the synchronized timer window
         torch.cuda.synchronize()
         t0 = time.perf_counter()
         with torch.no_grad():
             result = model.generate(ids, max_new_tokens=n, temperature=0.0)
         torch.cuda.synchronize()
-        return time.perf_counter() - t0, result[0, prompt_length:].tolist()
+        elapsed = time.perf_counter() - t0
+        after = completions()
+        return elapsed, result[0, prompt_length:].tolist(), None if before is None else after - before
 
     want = ref["generated_ids"]
-    record["warmup_s"], record["warmup_ids"] = timed(len(want))
+    record["warmup_s"], record["warmup_ids"], record["warmup_merged_ffn_completions"] = timed(len(want))
     record["matches_reference"] = None if args.dummy or prompt_length != full_length else record["warmup_ids"] == want
     verdict = {None: "no matching reference (dummy weights or shortened prompt)", True: "matches the reference", False: "DIFFERS from the reference"}
     print("WARMUP", record["warmup_s"], record["warmup_ids"], verdict[record["matches_reference"]], flush=True)
 
     record["reps"] = []
     for rep in range(args.reps):
-        prefill_s, prefill_ids = timed(1)
-        gen_s, gen_ids = timed(args.new_tokens)
+        prefill_s, prefill_ids, prefill_merged = timed(1)
+        gen_s, gen_ids, gen_merged = timed(args.new_tokens)
         decode = (args.new_tokens - 1) / (gen_s - prefill_s) if gen_s > prefill_s else None
         record["reps"].append({"rep": rep, "prefill_s": prefill_s, "generate_s": gen_s, "decode_tok_s": decode,
-                               "generated_ids": gen_ids, "prefill_ids": prefill_ids})
-        print(f"REP {rep} prefill_s={prefill_s:.4f} generate_s={gen_s:.4f} decode_tok_s={decode}", flush=True)
+                               "generated_ids": gen_ids, "prefill_ids": prefill_ids,
+                               "prefill_merged_ffn_completions": prefill_merged, "generate_merged_ffn_completions": gen_merged})
+        print(f"REP {rep} prefill_s={prefill_s:.4f} generate_s={gen_s:.4f} decode_tok_s={decode} "
+              f"merged_ffn_completions={prefill_merged},{gen_merged}", flush=True)
     record["peak_allocated_GiB"] = torch.cuda.max_memory_allocated() / 2**30
     out.write_text(json.dumps(record, indent=2))
     print("DONE", out, flush=True)

@@ -181,12 +181,17 @@ The NPU BOs add about 89.25 MiB/layer (2.79 GiB for 32 layers), plus GPU slices
 and scratch. Changing the split requires a matching rebuilt NPU artifact and
 fresh deployment config; the model lifetime's config stays fixed.
 
-The existing `kernels/gpu/tools/evaluate_prefill.py` still exposes only its
-original GPU/GPU-FFN/HeteroMosaic methods; it does **not** automatically add our
-combined method or validate its completion counts. Extend your evaluator with
-the switch/counter above. **Unset `HETEROMEGA_FFN_CONFIG` for every original
-baseline**, including when using that older batch runner, to prevent an
-inherited environment from activating the candidate in a control job.
+`kernels/gpu/tools/evaluate_prefill.py` now has `merged_ffn` (GPU attention) and
+`merged_ffn_hetero` (original heterogeneous attention) methods. Pass
+`--merged-ffn-config "$PWD/deployment.json"`; only those jobs receive
+`HETEROMEGA_FFN_CONFIG`, and every other job has it removed. Each job records
+`merged_ffn_completed_dispatches()` before/after every generate call (outside the
+timer) and `summary.csv` reports the completion verdict; a wrong count suppresses
+the speedup cell. `merged_ffn` needs `--gpu-chunk-size 512`, applied to every
+method. Commands and rules: [evaluation](evaluation.md). This runner wiring is
+CPU-tested only and has not yet produced AUP measurements. Your own driver must
+still **unset `HETEROMEGA_FFN_CONFIG` for every original baseline** so inherited
+state cannot activate the candidate in a control job.
 
 Keep weights, exact token IDs, chunk schedule, inflight slots and attention
 placement fixed for A/B comparisons. Exclude first-use allocation/weight upload,

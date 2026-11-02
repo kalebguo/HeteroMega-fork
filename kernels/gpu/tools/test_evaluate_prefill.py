@@ -83,6 +83,169 @@ class EvaluationTests(unittest.TestCase):
             self.assertEqual((new["samples"], new["prefill_median_ms"], new["prefill_min_ms"], new["prefill_max_ms"], new["speedup_vs_gpu"]), (3, 1000, 500, 1500, 2))
             self.assertTrue((root / "summary.csv").exists())
 
+    def run_fixture_runner(self, tmp, counter_values, events, prompt_tokens="2"):
+        """Runs run_model_ffn.main against CPU mocks; events records synchronize/generate/counter order."""
+        def generate(ids, max_new_tokens, temperature):
+            events.append("generate")
+            result = MagicMock()
+            result.__getitem__.side_effect = lambda index: types.SimpleNamespace(
+                tolist=lambda: ([11, 12] + [77] * max_new_tokens)[index[1]])
+            return result
+        values = iter(counter_values)
+
+        def counter():
+            events.append("count")
+            return next(values)
+        torch = MagicMock(__version__="CPU fixture")
+        torch.no_grad = contextlib.nullcontext
+        torch.cuda.synchronize.side_effect = lambda: events.append("sync")
+        torch.cuda.get_device_name.return_value = "CPU fixture"
+        torch.cuda.max_memory_allocated.return_value = 0
+        torch.tensor.return_value.cpu.return_value.numpy.return_value.tobytes.return_value = b"fixture"
+        frontend = MagicMock()
+        frontend.load_config_with_comments.return_value = {
+            "chunking": True, "gpu_chunking": {"gpu_chunk_size": [2048], "gpu_chunking_inflight": 1},
+            "kernels_gemm_chunked": [{"prompt_len": 2, "hetero_inflight": 1}, {"prompt_len": 1024, "hetero_inflight": 1}]}
+        frontend.LLaMA3W4A16Model.return_value.generate.side_effect = generate
+        frontend.LLaMA3W4A16Model.return_value.model.merged_ffn_completed_dispatches.side_effect = counter
+        modules = {"torch": torch, "unified_llm_w4a16_hetero_libtorch": types.SimpleNamespace(__file__="fixture.so"),
+                   "llama3_8b_w4a16_model": frontend}
+        ref, out = Path(tmp) / "ref.json", Path(tmp) / "out.json"
+        ref.write_text(json.dumps(dict(input_ids=[[11, 12, 13, 14]], generated_ids=[77, 78])))
+        argv = ["runner", "--model", tmp, "--ref", str(ref), "--out", str(out), "--prompt-tokens", prompt_tokens,
+                "--heterogeneity", "gpu", "--reps", "2", "--new-tokens", "2", "--gpu-chunk-size", "512", "--inflight", "2"]
+        with patch.dict(sys.modules, modules), patch.object(sys, "argv", argv), \
+                patch.object(model_runner, "stub_missing_modules"), patch.object(model_runner, "merge_shards"), \
+                patch.dict(model_runner.os.environ, HETEROMEGA_FFN_CONFIG="/fixture/deployment.json"):
+            model_runner.main()
+        result = json.loads(out.read_text())
+        return result, json.loads(Path(result["config"]).read_text())
+
+    def test_runner_counts_merged_completions_outside_the_timer(self):
+        events = []
+        # Cumulative counter values read before/after the warmup and two generate(1)/generate(2) pairs.
+        values = [0, 64, 64, 128, 128, 192, 192, 256, 256, 288]
+        with tempfile.TemporaryDirectory() as tmp:
+            result, config = self.run_fixture_runner(tmp, values, events)
+        self.assertEqual(result["warmup_merged_ffn_completions"], 64)
+        self.assertEqual([(p["prefill_merged_ffn_completions"], p["generate_merged_ffn_completions"]) for p in result["reps"]],
+                         [(64, 64), (64, 32)])
+        self.assertEqual(result["merged_ffn_config_env"], "/fixture/deployment.json")
+        # Every timed call is count, sync, generate, sync, count: the counter never enters the timed window.
+        self.assertEqual(events, ["count", "sync", "generate", "sync", "count"] * 5)
+        self.assertEqual(config["gpu_chunking"], {"gpu_chunk_size": 512, "gpu_chunking_inflight": 2})
+        self.assertEqual([g["hetero_inflight"] for g in config["kernels_gemm_chunked"]], [2, 1])
+
+    def test_only_merged_methods_receive_the_candidate_switch(self):
+        methods = ["gpu_original", "merged_ffn", "gpu_ffn_all", "heteromosaic", "merged_ffn_hetero"]
+        args = types.SimpleNamespace(prompt_tokens=[1024], rounds=2, methods=methods, out=Path("out"), ref=Path("ref"),
+                                     build="build-model", config="config", reps=5, new_tokens=64, dummy=True, model=None,
+                                     merged_ffn_config=Path("/abs/deployment.json"), gpu_chunk_size=512, inflight=None)
+        inherited = dict(HETEROMEGA_FFN_CONFIG="/inherited.json", HETEROMEGA_GPU_FFN="1", HETEROMEGA_GPU_FFN_SPLIT="7168,14336")
+        with patch.dict(evaluation.os.environ, inherited):
+            evaluation.os.environ.pop("HETEROMOSAIC_ROOT", None)
+            cases = list(evaluation.cases(args))
+        self.assertEqual([c[0] for c in cases], methods + list(reversed(methods)))
+        for method, _, _, cmd, env, _ in cases:
+            merged = method.startswith("merged_ffn")
+            self.assertEqual(env.get("HETEROMEGA_FFN_CONFIG"), "/abs/deployment.json" if merged else None, method)
+            self.assertNotIn("HETEROMEGA_GPU_FFN_SPLIT", env)
+            self.assertEqual(env["HETEROMEGA_GPU_FFN"], "1" if method == "gpu_ffn_all" else "0")
+            hetero = method in ("heteromosaic", "merged_ffn_hetero")
+            self.assertEqual(cmd[cmd.index("--heterogeneity") + 1], "hetero" if hetero else "gpu")
+            self.assertEqual(env.get("HETEROMOSAIC_ROOT"), str(evaluation.ROOT) if hetero else None)
+            self.assertEqual(cmd[cmd.index("--gpu-chunk-size") + 1], "512")
+        self.assertEqual(evaluation.expected_merged("merged_ffn", 1024), 64)
+        self.assertEqual(evaluation.expected_merged("merged_ffn_hetero", 512), 32)
+        self.assertEqual(evaluation.expected_merged("gpu_original", 1024), 0)
+
+    def write_result(self, root, method, times, counts, tokens=(7,), length=1024, name=None):
+        """counts: per-pass merged completions [warmup, rep0 generate(1), rep0 generate(N), ...] or None."""
+        reps = []
+        for i, t in enumerate(times):
+            rep = dict(prefill_s=t, prefill_ids=[7], generated_ids=list(tokens))
+            if counts is not None:
+                rep.update(prefill_merged_ffn_completions=counts[1 + 2 * i], generate_merged_ffn_completions=counts[2 + 2 * i])
+            reps.append(rep)
+        r = dict(method=method, prompt_tokens=length, warmup_ids=[7], matches_reference=None, gpu_ffn_active=False, reps=reps)
+        if counts is not None:
+            r["warmup_merged_ffn_completions"] = counts[0]
+        (root / f"{name or method}-{length}.result.json").write_text(json.dumps(r))
+
+    def test_merged_verdict_and_speedup_require_exact_completion_counts(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_result(root, "gpu_original", [2, 2], [0] * 5)
+            self.write_result(root, "heteromosaic", [1.6, 1.6], [0] * 5)
+            for counts, verdict in [([64] * 5, "active"), ([64, 64, 64, 32, 64], "wrong_count"), (None, "unrecorded"),
+                                    ([0] * 5, "wrong_count")]:
+                self.write_result(root, "merged_ffn", [1, 1], counts)
+                self.write_result(root, "merged_ffn_hetero", [0.8, 0.8], counts)
+                rows = {r["method"]: r for r in evaluation.summarize(root)}
+                for method in ("merged_ffn", "merged_ffn_hetero"):
+                    row = rows[method]
+                    self.assertEqual(row["merged_ffn_verdict"], verdict)
+                    self.assertEqual(row["merged_ffn_expected_per_pass"], 64)
+                    if verdict == "active":
+                        self.assertEqual((row["merged_ffn_passes"], row["merged_ffn_completions"], row["merged_ffn_wrong_passes"]),
+                                         (5, 320, 0))
+                    else:
+                        self.assertEqual((row["speedup_vs_gpu"], row["speedup_vs_heteromosaic"]), ("", ""))
+                self.assertEqual(rows["gpu_original"]["merged_ffn_verdict"], "clean")
+            self.write_result(root, "merged_ffn", [1, 1], [64] * 5)
+            self.write_result(root, "merged_ffn_hetero", [0.8, 0.8], [64] * 5)
+            rows = {r["method"]: r for r in evaluation.summarize(root)}
+            self.assertEqual((rows["merged_ffn"]["speedup_vs_gpu"], rows["merged_ffn_hetero"]["speedup_vs_heteromosaic"]), (2, 2))
+            self.assertEqual(rows["merged_ffn"]["npu_execution"], "merged_ffn_counted")
+            self.assertEqual(rows["merged_ffn_hetero"]["npu_execution"], "unverified")
+            # A candidate with different greedy tokens keeps its median but loses the speedup claim.
+            self.write_result(root, "merged_ffn", [1, 1], [64] * 5, tokens=(8,))
+            row = next(r for r in evaluation.summarize(root) if r["method"] == "merged_ffn")
+            self.assertEqual((row["prefill_median_ms"], row["speedup_vs_gpu"], row["tokens_match_gpu"]), (1000, "", False))
+            with (root / "summary.csv").open() as f:
+                header = f.readline().strip().split(",")
+            for column in ("merged_ffn_expected_per_pass", "merged_ffn_completions", "merged_ffn_wrong_passes", "merged_ffn_verdict"):
+                self.assertIn(column, header)
+
+    def test_contaminated_control_suppresses_speedups(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.write_result(root, "gpu_original", [2, 2], [0, 0, 0, 64, 0])
+            self.write_result(root, "merged_ffn", [1, 1], [64] * 5)
+            rows = {r["method"]: r for r in evaluation.summarize(root)}
+            self.assertEqual(rows["gpu_original"]["merged_ffn_verdict"], "contaminated")
+            self.assertEqual((rows["gpu_original"]["speedup_vs_gpu"], rows["merged_ffn"]["speedup_vs_gpu"]), ("", ""))
+
+    def test_merged_cli_guards(self):
+        def dry(*extra):
+            return subprocess.run([sys.executable, str(Path(evaluation.__file__)), "--out", tmp, "--dry-run", *extra],
+                                  capture_output=True, text=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            artifact = Path(tmp) / "artifact"
+            artifact.mkdir()
+            (artifact / "final.xclbin.json").write_text(json.dumps(dict(m=512, hidden=4096, weight_n=14336, channels=6400)))
+            config = Path(tmp) / "deployment.json"
+            config.write_text(json.dumps(dict(artifact_dir="artifact")))
+            self.assertIn("--merged-ffn-config", dry("--methods", "merged_ffn", "--gpu-chunk-size", "512").stderr)
+            self.assertIn("multiples of 512", dry("--methods", "merged_ffn_hetero", "--merged-ffn-config", str(config),
+                                                  "--prompt-tokens", "768").stderr)
+            self.assertIn("--gpu-chunk-size 512", dry("--methods", "gpu_original", "merged_ffn",
+                                                     "--merged-ffn-config", str(config)).stderr)
+            result = dry("--methods", "gpu_original", "merged_ffn", "--merged-ffn-config", str(config),
+                         "--gpu-chunk-size", "512", "--prompt-tokens", "512", "1024")
+            self.assertEqual(result.returncode, 0, result.stderr)
+            lines = result.stdout.splitlines()
+            self.assertEqual(len(lines), 8)
+            for line in lines:
+                self.assertEqual(f"HETEROMEGA_FFN_CONFIG={config}" in line, line.startswith("merged_ffn"), line)
+                self.assertIn("--gpu-chunk-size 512", line)
+            (artifact / "final.xclbin.json").write_text(json.dumps(dict(m=1024, hidden=4096, weight_n=14336)))
+            result = subprocess.run([sys.executable, str(Path(evaluation.__file__)), "--out", tmp, "--methods", "merged_ffn",
+                                     "--merged-ffn-config", str(config), "--gpu-chunk-size", "512", "--dummy"],
+                                    capture_output=True, text=True)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("M512/H4096/I14336", result.stderr)
+
     def test_mismatch_or_inactive_ffn_has_no_speedup_claim(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
