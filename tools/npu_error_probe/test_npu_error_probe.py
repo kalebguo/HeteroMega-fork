@@ -14,6 +14,7 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE / "emulation"))
+import path_logits as pl  # noqa: E402
 import probe_cases as pc  # noqa: E402
 import probe_report as report  # noqa: E402
 import token_agreement as ta  # noqa: E402
@@ -166,6 +167,27 @@ class TokenAgreementTests(unittest.TestCase):
         missing = subprocess.run([sys.executable, script], capture_output=True, text=True)
         self.assertEqual(missing.returncode, 2)
         self.assertIn("--merged-ffn-config", missing.stderr)
+
+
+class PathLogitsTests(unittest.TestCase):
+    def test_compare_reports_each_run_against_the_first_gpu_process(self):
+        logits = np.array([2.0, 1.0, 0.0, -1.0, -2.0, -3.0], dtype=np.float32)
+        def save(directory, stem, values, tokens, nlls=None):
+            extra = {} if nlls is None else dict(nlls=np.asarray(nlls, np.float64))
+            np.savez(Path(directory) / f"{stem}.npz", meta=json.dumps(dict(run=stem)), logits=values, logits_repeat=values,
+                     tokens=np.asarray(tokens, np.int64), **extra)
+        with tempfile.TemporaryDirectory() as directory:
+            save(directory, "gpu_original-512-r0", logits, [1, 2, 3], [1.0, 2.0])
+            save(directory, "heteromosaic-512-r0", logits + np.array([0, 0.5, 0, 0, 0, 0], np.float32), [1, 2, 4], [1.5, 2.0])
+            rows = {r["run"]: r for r in pl.compare(directory)}
+        reference, native = rows["gpu_original-512-r0"], rows["heteromosaic-512-r0"]
+        self.assertEqual(reference["step1"]["max_abs_diff"], 0.0)
+        self.assertEqual(reference["step1_kl_nats"], 0.0)
+        self.assertEqual(native["step1"]["max_abs_diff"], 0.5)
+        self.assertAlmostEqual(native["step1_relative_l2"], 0.5 / np.linalg.norm(logits), places=6)
+        self.assertGreater(native["step1_kl_nats"], 0.0)
+        self.assertEqual((native["greedy"]["agree"], native["greedy"]["first_disagreement"]), (2, 2))
+        self.assertAlmostEqual(native["mean_abs_nll_difference"], 0.25)
 
 
 class EmulationTests(unittest.TestCase):

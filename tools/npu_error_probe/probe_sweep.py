@@ -19,12 +19,15 @@ Errors are reported, never compared against a loosened tolerance.
 """
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
 import shlex
+import shutil
 import subprocess
 import sys
+import sysconfig
 import time
 import traceback
 
@@ -66,13 +69,35 @@ def load_binding(root, library, driver_include=None, verbose=False):
     tag = hashlib.sha256(json.dumps(info, sort_keys=True).encode()).hexdigest()[:16]
     build = Path(os.environ.get("HETEROMEGA_PROBE_BUILD_ROOT", Path.home() / ".cache/heteromega/npu_error_probe")) / tag
     build.mkdir(parents=True, exist_ok=True)
-    module = load(name="heteromega_npu_error_probe_" + tag, sources=[str(BINDINGS)],
-                  extra_include_paths=[str(root / "include"), str(include), str(rocm / "include")],
-                  extra_cflags=["-O3", "-std=c++17", "-D__HIP_PLATFORM_AMD__=1"],
-                  extra_ldflags=[str(library), f"-Wl,-rpath,{library.parent}", f"-L{rocm / 'lib'}",
-                                 f"-Wl,-rpath,{rocm / 'lib'}", "-lamdhip64"],
-                  with_cuda=False, build_directory=str(build), verbose=verbose)
+    includes = [str(root / "include"), str(include), str(rocm / "include")]
+    cflags = ["-O3", "-std=c++17", "-D__HIP_PLATFORM_AMD__=1"]
+    ldflags = [str(library), f"-Wl,-rpath,{library.parent}", f"-L{rocm / 'lib'}", f"-Wl,-rpath,{rocm / 'lib'}", "-lamdhip64"]
+    name = "heteromega_npu_error_probe_" + tag
+    if shutil.which("ninja") is None:
+        return compile_without_ninja(name, build, includes, cflags, ldflags), info
+    module = load(name=name, sources=[str(BINDINGS)], extra_include_paths=includes, extra_cflags=cflags,
+                  extra_ldflags=ldflags, with_cuda=False, build_directory=str(build), verbose=verbose)
     return module, info
+
+
+def compile_without_ninja(name, build, includes, cflags, ldflags):
+    """cpp_extension.load's compile for a box without ninja (the AUP box has none, and jobs install no packages)."""
+    import torch
+    from torch.utils.cpp_extension import include_paths
+    output = build / (name + sysconfig.get_config_var("EXT_SUFFIX"))
+    if not output.exists():
+        torch_lib = Path(torch.__file__).parent / "lib"
+        temporary = output.with_name(f"{output.name}.{os.getpid()}.tmp")  # concurrent or killed builds leave no partial module
+        subprocess.run(["c++", "-shared", "-fPIC", f"-DTORCH_EXTENSION_NAME={name}", "-DTORCH_API_INCLUDE_EXTENSION_H",
+                        f"-D_GLIBCXX_USE_CXX11_ABI={int(torch._C._GLIBCXX_USE_CXX11_ABI)}", *cflags,
+                        *[f"-I{p}" for p in [sysconfig.get_path("include"), *include_paths(), *includes]],
+                        str(BINDINGS), f"-L{torch_lib}", f"-Wl,-rpath,{torch_lib}", "-lc10", "-ltorch_cpu", "-ltorch",
+                        "-ltorch_python", *ldflags, "-o", str(temporary)], check=True)
+        temporary.rename(output)
+    spec = importlib.util.spec_from_file_location(name, output)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def run_case(case, args):
