@@ -117,7 +117,7 @@ def load_model(args, heterogeneity, merged, prompt_tokens, out):
     config.update(heterogeneity=heterogeneity, prompt_len=prompt_tokens, usePreSavedWeights=False, warmup=False,
                   debug_verbosity=1, dummy_weights=False)
     chunking = dict(config.get("gpu_chunking") or {})
-    chunking["gpu_chunk_size"] = CHUNK
+    chunking["gpu_chunk_size"] = getattr(args, "chunk", CHUNK)
     inflight = getattr(args, "inflight", None)  # as run_model_ffn.py --inflight
     if inflight is not None:
         chunking["gpu_chunking_inflight"] = inflight
@@ -129,7 +129,7 @@ def load_model(args, heterogeneity, merged, prompt_tokens, out):
     config_path = out.with_suffix(".config.json")
     config_path.write_text(json.dumps(config, indent=2))
     model_dir = str(Path(args.model).resolve())
-    return LLaMA3W4A16Model(model_path=model_dir, tokenizer_path=model_dir, max_seq_len=MAX_SEQ_LEN, device="cuda",
+    return LLaMA3W4A16Model(model_path=model_dir, tokenizer_path=model_dir, max_seq_len=getattr(args, "max_seq_len", MAX_SEQ_LEN), device="cuda",
                             config_path=str(config_path)), torch
 
 
@@ -202,7 +202,10 @@ def main():
     ap.add_argument("--config", default="py/unified_llm_w4a16/configs/configs_strixP_llama3_8b.json5")
     ap.add_argument("--merged-ffn-config", type=Path)
     ap.add_argument("--ref", type=Path, default=ROOT / "docs/runs/2026-10-12-aup/gpu-model-result.json")
-    ap.add_argument("--prompt-tokens", type=int, choices=(512, 1024), default=1024)
+    ap.add_argument("--prompt-tokens", type=int, choices=(512, 1024, 2048, 4096), default=1024)
+    ap.add_argument("--chunk", type=int, default=CHUNK, help="prefill chunk rows; merged methods need 512")
+    ap.add_argument("--max-seq-len", type=int, default=MAX_SEQ_LEN, help="capacity of the KV caches and scratch buffers")
+    ap.add_argument("--inflight", type=int, help="inflight chunk slots, as run_model_ffn.py --inflight")
     ap.add_argument("--new-tokens", type=int, default=64)
     ap.add_argument("--ppl-tokens", type=int, default=512)
     ap.add_argument("--out", type=Path)

@@ -1,0 +1,2703 @@
+stub module: transformers
+stub module: huggingface_hub
+stub module: safetensors
+stub module: safetensors.torch
+Initializing UnifiedLLMW4A16Impl_hetero
+Using NPU config: /notebooks/hm-results/2026-11-02/long-prompt/sampled-2304-seed2.raw.config.json
+Debug verbosity level: 1
+Use Packed Weights: true
+Pad Packed Weights: false
+CPU Decode: false
+Warmup enabled: false
+Minimal PDI enabled: true
+Split M only: false
+Prompt length filter enabled: 1
+Chunking enabled: true
+Chunking scheduled: false
+Prefill chunk size: 512
+Chunking inflight workers: 1
+Async chunking: false
+GEMV Driven Split K: true
+GEMV NPU Col Prefix: 8c
+Heterogeneity mode: gpu
+Initializing NPU...
+GPU-only mode: skipping XDNA/NPU init
+Warmup: Disabled
+UnifiedLLMW4A16 moved to device: cuda
+UnifiedLLMW4A16 initialized on device: cuda with w4a16 quantization
+Loading weights from safetensors (mmap): /notebooks/hm-gemm/py/unified_llm_w4a16/model_weights/Meta-Llama-3.1-8B-Instruct-AWQ-INT4.safetensors
+Found 739 tensors in safetensors file
+Safetensors: model.embed_tokens.weight  Shape: [128256, 4096]  Dtype: F16 (c10::Half)
+Model param: token_embedding.weight  Shape: [128256, 4096]  Dtype: c10::BFloat16
+  -> Loaded directly from model.embed_tokens.weight
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.0.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.0.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.0.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.0.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.0.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.0.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.0.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.0.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.0.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.0.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.0.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.0.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.0.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.0.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.0.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.0.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.0.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.0.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.0.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.0.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.0.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.0.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.0.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.0.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.0.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.0.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.0.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.0.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.0.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.0.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.0.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.0.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.0.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.0.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.0.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.0.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[0].weight
+  -> Loaded
+Safetensors: model.layers.0.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[0].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.1.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.1.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.1.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.1.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.1.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.1.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.1.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.1.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.1.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.1.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.1.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.1.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.1.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.1.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.1.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.1.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.1.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.1.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.1.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.1.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.1.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.1.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.1.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.1.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.1.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.1.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.1.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.1.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.1.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.1.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.1.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.1.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.1.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.1.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.1.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.1.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[1].weight
+  -> Loaded
+Safetensors: model.layers.1.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[1].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.2.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.2.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.2.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.2.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.2.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.2.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.2.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.2.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.2.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.2.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.2.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.2.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.2.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.2.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.2.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.2.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.2.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.2.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.2.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.2.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.2.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.2.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.2.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.2.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.2.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.2.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.2.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.2.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.2.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.2.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.2.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.2.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.2.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.2.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.2.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.2.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[2].weight
+  -> Loaded
+Safetensors: model.layers.2.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[2].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.3.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.3.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.3.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.3.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.3.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.3.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.3.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.3.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.3.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.3.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.3.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.3.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.3.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.3.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.3.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.3.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.3.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.3.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.3.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.3.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.3.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.3.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.3.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.3.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.3.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.3.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.3.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.3.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.3.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.3.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.3.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.3.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.3.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.3.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.3.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.3.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[3].weight
+  -> Loaded
+Safetensors: model.layers.3.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[3].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.4.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.4.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.4.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.4.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.4.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.4.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.4.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.4.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.4.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.4.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.4.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.4.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.4.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.4.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.4.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.4.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.4.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.4.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.4.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.4.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.4.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.4.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.4.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.4.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.4.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.4.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.4.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.4.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.4.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.4.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.4.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.4.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.4.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.4.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.4.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.4.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[4].weight
+  -> Loaded
+Safetensors: model.layers.4.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[4].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.5.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.5.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.5.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.5.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.5.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.5.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.5.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.5.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.5.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.5.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.5.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.5.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.5.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.5.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.5.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.5.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.5.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.5.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.5.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.5.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.5.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.5.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.5.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.5.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.5.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.5.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.5.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.5.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.5.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.5.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.5.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.5.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.5.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.5.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.5.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.5.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[5].weight
+  -> Loaded
+Safetensors: model.layers.5.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[5].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.6.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.6.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.6.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.6.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.6.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.6.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.6.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.6.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.6.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.6.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.6.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.6.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.6.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.6.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.6.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.6.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.6.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.6.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.6.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.6.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.6.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.6.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.6.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.6.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.6.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.6.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.6.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.6.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.6.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.6.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.6.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.6.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.6.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.6.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.6.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.6.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[6].weight
+  -> Loaded
+Safetensors: model.layers.6.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[6].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.7.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.7.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.7.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.7.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.7.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.7.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.7.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.7.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.7.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.7.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.7.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.7.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.7.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.7.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.7.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.7.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.7.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.7.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.7.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.7.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.7.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.7.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.7.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.7.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.7.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.7.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.7.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.7.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.7.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.7.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.7.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.7.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.7.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.7.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.7.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.7.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[7].weight
+  -> Loaded
+Safetensors: model.layers.7.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[7].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.8.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.8.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.8.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.8.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.8.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.8.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.8.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.8.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.8.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.8.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.8.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.8.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.8.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.8.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.8.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.8.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.8.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.8.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.8.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.8.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.8.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.8.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.8.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.8.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.8.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.8.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.8.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.8.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.8.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.8.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.8.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.8.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.8.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.8.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.8.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.8.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[8].weight
+  -> Loaded
+Safetensors: model.layers.8.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[8].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.9.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.9.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.9.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.9.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.9.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.9.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.9.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.9.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.9.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.9.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.9.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.9.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.9.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.9.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.9.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.9.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.9.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.9.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.9.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.9.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.9.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.9.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.9.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.9.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.9.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.9.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.9.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.9.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.9.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.9.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.9.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.9.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.9.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.9.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.9.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.9.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[9].weight
+  -> Loaded
+Safetensors: model.layers.9.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[9].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.10.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.10.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.10.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.10.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.10.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.10.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.10.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.10.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.10.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.10.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.10.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.10.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.10.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.10.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.10.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.10.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.10.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.10.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.10.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.10.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.10.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.10.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.10.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.10.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.10.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.10.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.10.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.10.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.10.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.10.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.10.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.10.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.10.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.10.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.10.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.10.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[10].weight
+  -> Loaded
+Safetensors: model.layers.10.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[10].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.11.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.11.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.11.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.11.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.11.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.11.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.11.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.11.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.11.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.11.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.11.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.11.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.11.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.11.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.11.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.11.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.11.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.11.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.11.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.11.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.11.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.11.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.11.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.11.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.11.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.11.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.11.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.11.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.11.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.11.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.11.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.11.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.11.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.11.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.11.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.11.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[11].weight
+  -> Loaded
+Safetensors: model.layers.11.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[11].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.12.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.12.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.12.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.12.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.12.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.12.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.12.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.12.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.12.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.12.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.12.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.12.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.12.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.12.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.12.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.12.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.12.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.12.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.12.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.12.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.12.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.12.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.12.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.12.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.12.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.12.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.12.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.12.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.12.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.12.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.12.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.12.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.12.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.12.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.12.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.12.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[12].weight
+  -> Loaded
+Safetensors: model.layers.12.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[12].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.13.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.13.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.13.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.13.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.13.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.13.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.13.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.13.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.13.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.13.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.13.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.13.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.13.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.13.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.13.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.13.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.13.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.13.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.13.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.13.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.13.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.13.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.13.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.13.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.13.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.13.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.13.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.13.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.13.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.13.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.13.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.13.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.13.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.13.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.13.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.13.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[13].weight
+  -> Loaded
+Safetensors: model.layers.13.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[13].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.14.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.14.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.14.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.14.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.14.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.14.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.14.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.14.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.14.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.14.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.14.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.14.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.14.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.14.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.14.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.14.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.14.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.14.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.14.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.14.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.14.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.14.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.14.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.14.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.14.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.14.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.14.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.14.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.14.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.14.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.14.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.14.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.14.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.14.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.14.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.14.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[14].weight
+  -> Loaded
+Safetensors: model.layers.14.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[14].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.15.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.15.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.15.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.15.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.15.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.15.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.15.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.15.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.15.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.15.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.15.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.15.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.15.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.15.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.15.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.15.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.15.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.15.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.15.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.15.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.15.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.15.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.15.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.15.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.15.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.15.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.15.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.15.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.15.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.15.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.15.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.15.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.15.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.15.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.15.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.15.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[15].weight
+  -> Loaded
+Safetensors: model.layers.15.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[15].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.16.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.16.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.16.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.16.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.16.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.16.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.16.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.16.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.16.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.16.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.16.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.16.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.16.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.16.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.16.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.16.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.16.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.16.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.16.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.16.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.16.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.16.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.16.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.16.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.16.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.16.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.16.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.16.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.16.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.16.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.16.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.16.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.16.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.16.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.16.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.16.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[16].weight
+  -> Loaded
+Safetensors: model.layers.16.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[16].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.17.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.17.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.17.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.17.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.17.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.17.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.17.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.17.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.17.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.17.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.17.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.17.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.17.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.17.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.17.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.17.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.17.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.17.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.17.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.17.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.17.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.17.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.17.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.17.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.17.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.17.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.17.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.17.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.17.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.17.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.17.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.17.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.17.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.17.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.17.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.17.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[17].weight
+  -> Loaded
+Safetensors: model.layers.17.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[17].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.18.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.18.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.18.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.18.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.18.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.18.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.18.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.18.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.18.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.18.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.18.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.18.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.18.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.18.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.18.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.18.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.18.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.18.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.18.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.18.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.18.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.18.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.18.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.18.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.18.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.18.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.18.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.18.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.18.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.18.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.18.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.18.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.18.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.18.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.18.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.18.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[18].weight
+  -> Loaded
+Safetensors: model.layers.18.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[18].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.19.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.19.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.19.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.19.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.19.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.19.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.19.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.19.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.19.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.19.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.19.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.19.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.19.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.19.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.19.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.19.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.19.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.19.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.19.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.19.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.19.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.19.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.19.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.19.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.19.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.19.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.19.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.19.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.19.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.19.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.19.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.19.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.19.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.19.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.19.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.19.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[19].weight
+  -> Loaded
+Safetensors: model.layers.19.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[19].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.20.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.20.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.20.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.20.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.20.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.20.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.20.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.20.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.20.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.20.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.20.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.20.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.20.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.20.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.20.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.20.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.20.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.20.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.20.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.20.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.20.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.20.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.20.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.20.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.20.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.20.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.20.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.20.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.20.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.20.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.20.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.20.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.20.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.20.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.20.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.20.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[20].weight
+  -> Loaded
+Safetensors: model.layers.20.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[20].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.21.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.21.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.21.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.21.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.21.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.21.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.21.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.21.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.21.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.21.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.21.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.21.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.21.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.21.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.21.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.21.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.21.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.21.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.21.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.21.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.21.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.21.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.21.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.21.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.21.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.21.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.21.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.21.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.21.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.21.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.21.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.21.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.21.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.21.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.21.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.21.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[21].weight
+  -> Loaded
+Safetensors: model.layers.21.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[21].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.22.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.22.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.22.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.22.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.22.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.22.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.22.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.22.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.22.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.22.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.22.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.22.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.22.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.22.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.22.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.22.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.22.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.22.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.22.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.22.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.22.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.22.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.22.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.22.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.22.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.22.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.22.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.22.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.22.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.22.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.22.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.22.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.22.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.22.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.22.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.22.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[22].weight
+  -> Loaded
+Safetensors: model.layers.22.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[22].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.23.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.23.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.23.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.23.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.23.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.23.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.23.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.23.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.23.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.23.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.23.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.23.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.23.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.23.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.23.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.23.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.23.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.23.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.23.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.23.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.23.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.23.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.23.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.23.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.23.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.23.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.23.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.23.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.23.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.23.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.23.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.23.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.23.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.23.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.23.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.23.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[23].weight
+  -> Loaded
+Safetensors: model.layers.23.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[23].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.24.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.24.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.24.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.24.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.24.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.24.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.24.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.24.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.24.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.24.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.24.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.24.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.24.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.24.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.24.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.24.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.24.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.24.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.24.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.24.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.24.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.24.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.24.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.24.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.24.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.24.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.24.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.24.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.24.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.24.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.24.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.24.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.24.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.24.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.24.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.24.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[24].weight
+  -> Loaded
+Safetensors: model.layers.24.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[24].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.25.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.25.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.25.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.25.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.25.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.25.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.25.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.25.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.25.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.25.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.25.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.25.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.25.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.25.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.25.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.25.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.25.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.25.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.25.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.25.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.25.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.25.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.25.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.25.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.25.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.25.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.25.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.25.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.25.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.25.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.25.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.25.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.25.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.25.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.25.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.25.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[25].weight
+  -> Loaded
+Safetensors: model.layers.25.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[25].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.26.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.26.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.26.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.26.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.26.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.26.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.26.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.26.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.26.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.26.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.26.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.26.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.26.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.26.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.26.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.26.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.26.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.26.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.26.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.26.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.26.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.26.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.26.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.26.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.26.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.26.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.26.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.26.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.26.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.26.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.26.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.26.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.26.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.26.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.26.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.26.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[26].weight
+  -> Loaded
+Safetensors: model.layers.26.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[26].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.27.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.27.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.27.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.27.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.27.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.27.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.27.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.27.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.27.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.27.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.27.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.27.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.27.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.27.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.27.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.27.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.27.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.27.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.27.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.27.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.27.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.27.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.27.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.27.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.27.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.27.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.27.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.27.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.27.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.27.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.27.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.27.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.27.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.27.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.27.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.27.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[27].weight
+  -> Loaded
+Safetensors: model.layers.27.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[27].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.28.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.28.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.28.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.28.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.28.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.28.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.28.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.28.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.28.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.28.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.28.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.28.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.28.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.28.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.28.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.28.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.28.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.28.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.28.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.28.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.28.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.28.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.28.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.28.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.28.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.28.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.28.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.28.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.28.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.28.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.28.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.28.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.28.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.28.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.28.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.28.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[28].weight
+  -> Loaded
+Safetensors: model.layers.28.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[28].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.29.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.29.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.29.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.29.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.29.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.29.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.29.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.29.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.29.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.29.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.29.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.29.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.29.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.29.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.29.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.29.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.29.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.29.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.29.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.29.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.29.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.29.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.29.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.29.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.29.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.29.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.29.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.29.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.29.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.29.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.29.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.29.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.29.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.29.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.29.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.29.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[29].weight
+  -> Loaded
+Safetensors: model.layers.29.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[29].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.30.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.30.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.30.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.30.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.30.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.30.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.30.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.30.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.30.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.30.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.30.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.30.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.30.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.30.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.30.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.30.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.30.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.30.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.30.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.30.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.30.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.30.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.30.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.30.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.30.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.30.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.30.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.30.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.30.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.30.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.30.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.30.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.30.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.30.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.30.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.30.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[30].weight
+  -> Loaded
+Safetensors: model.layers.30.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[30].weight
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.31.self_attn.q_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.31.self_attn.q_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.31.self_attn.q_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.31.self_attn.q_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.31.self_attn.q_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.31.self_attn.k_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.31.self_attn.k_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.31.self_attn.k_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.31.self_attn.k_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.31.self_attn.k_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.31.self_attn.v_proj
+  -> qweight shape: [4096, 1024], dtype: unsigned char
+  -> scales shape: [32, 1024], dtype: c10::BFloat16
+  -> qzeros shape: [32, 1024], dtype: signed char
+Safetensors: model.layers.31.self_attn.v_proj.qweight  Shape: [4096, 1024]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.31.self_attn.v_proj.scales  Shape: [32, 1024]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.31.self_attn.v_proj.qzeros  Shape: [32, 1024]  Dtype: I32 (signed char)
+Model param: model.layers.31.self_attn.v_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.31.self_attn.o_proj
+  -> qweight shape: [4096, 4096], dtype: unsigned char
+  -> scales shape: [32, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [32, 4096], dtype: signed char
+Safetensors: model.layers.31.self_attn.o_proj.qweight  Shape: [4096, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.31.self_attn.o_proj.scales  Shape: [32, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.31.self_attn.o_proj.qzeros  Shape: [32, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.31.self_attn.o_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.31.mlp.gate_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.31.mlp.gate_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.31.mlp.gate_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.31.mlp.gate_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.31.mlp.gate_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.31.mlp.up_proj
+  -> qweight shape: [4096, 14336], dtype: unsigned char
+  -> scales shape: [32, 14336], dtype: c10::BFloat16
+  -> qzeros shape: [32, 14336], dtype: signed char
+Safetensors: model.layers.31.mlp.up_proj.qweight  Shape: [4096, 14336]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.31.mlp.up_proj.scales  Shape: [32, 14336]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.31.mlp.up_proj.qzeros  Shape: [32, 14336]  Dtype: I32 (signed char)
+Model param: model.layers.31.mlp.up_proj (quantized)
+  -> Loaded
+  -> Detected AWQ layout [In, Out/8], using AWQ unpack
+  -> Detected [Groups, Out] scales, keeping as [Groups, Out]
+model.layers.31.mlp.down_proj
+  -> qweight shape: [14336, 4096], dtype: unsigned char
+  -> scales shape: [112, 4096], dtype: c10::BFloat16
+  -> qzeros shape: [112, 4096], dtype: signed char
+Safetensors: model.layers.31.mlp.down_proj.qweight  Shape: [14336, 4096]  Dtype: I32 (unsigned char)
+Safetensors: model.layers.31.mlp.down_proj.scales  Shape: [112, 4096]  Dtype: F16 (c10::BFloat16)
+Safetensors: model.layers.31.mlp.down_proj.qzeros  Shape: [112, 4096]  Dtype: I32 (signed char)
+Model param: model.layers.31.mlp.down_proj (quantized)
+  -> Loaded
+Safetensors: model.layers.31.input_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: input_norms[31].weight
+  -> Loaded
+Safetensors: model.layers.31.post_attention_layernorm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: post_attn_norms[31].weight
+  -> Loaded
+Safetensors: model.norm.weight  Shape: [4096]  Dtype: F16 (c10::Half)
+Model param: final_norm.weight
+  -> Loaded
+Safetensors: lm_head.weight  Shape: [128256, 4096]  Dtype: F16 (c10::Half)
+Model param: lm_head.weight  Shape: [128256, 4096]  Dtype: c10::BFloat16
+  -> Loaded
+Loaded 291 parameters, skipped 0
+GPU-only mode: skipping XDNA import
+Warning: Could not load tokenizer from /notebooks/hm-model/Meta-Llama-3.1-8B-Instruct-AWQ-INT4: not available in run_model_ffn.py
+Loading quantized weights from /notebooks/hm-model/Meta-Llama-3.1-8B-Instruct-AWQ-INT4...
+Using saved safetensors: /notebooks/hm-gemm/py/unified_llm_w4a16/model_weights/Meta-Llama-3.1-8B-Instruct-AWQ-INT4.safetensors
+Weights loaded in 26.00 seconds
+Importing weights to NPU...
+{"tokens": 2304, "distinct": 1961, "first": [128000, 22517, 287, 1203, 311, 2978, 1306, 264, 1317, 1464, 649, 387, 264, 8815, 369, 2225], "seed": 2}
+tokens equal to sampled-2.json: 1536 of 1536, distinct tokens 1961 of 2304

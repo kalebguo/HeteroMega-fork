@@ -1,0 +1,126 @@
+[
+  {
+    "run": "gpu_original-4096-r0",
+    "method": "gpu_original",
+    "prompt_tokens": 4096,
+    "meta": {
+      "method": "gpu_original",
+      "heterogeneity": "gpu",
+      "merged": false,
+      "prompt_tokens": 4096,
+      "new_tokens": 64,
+      "load_s": 30.10422788001597,
+      "torch": "2.11.0+rocm7.2"
+    },
+    "step1": {
+      "max_abs_diff": 0.0,
+      "argmax_equal": true,
+      "top5_overlap": 5
+    },
+    "step1_relative_l2": 0.0,
+    "step1_kl_nats": 0.0,
+    "within_process_repeat_max_abs": 0.0,
+    "greedy": {
+      "agree": 64,
+      "total": 64,
+      "first_disagreement": null,
+      "lengths": [
+        64,
+        64
+      ]
+    }
+  },
+  {
+    "run": "merged_p6400-4096-r0",
+    "method": "merged_p6400",
+    "prompt_tokens": 4096,
+    "meta": {
+      "method": "merged_ffn",
+      "heterogeneity": "gpu",
+      "merged": true,
+      "prompt_tokens": 4096,
+      "new_tokens": 64,
+      "load_s": 31.037887318991125,
+      "torch": "2.11.0+rocm7.2"
+    },
+    "step1": {
+      "max_abs_diff": 0.15625,
+      "argmax_equal": true,
+      "top5_overlap": 5
+    },
+    "step1_relative_l2": 0.0054904965322675045,
+    "step1_kl_nats": 0.00018075009194606787,
+    "within_process_repeat_max_abs": 0.0,
+    "greedy": {
+      "agree": 64,
+      "total": 64,
+      "first_disagreement": null,
+      "lengths": [
+        64,
+        64
+      ]
+    }
+  },
+  {
+    "run": "merged_p7168-4096-r0",
+    "method": "merged_p7168",
+    "prompt_tokens": 4096,
+    "meta": {
+      "method": "merged_ffn",
+      "heterogeneity": "gpu",
+      "merged": true,
+      "prompt_tokens": 4096,
+      "new_tokens": 64,
+      "load_s": 30.596900937962346,
+      "torch": "2.11.0+rocm7.2"
+    },
+    "step1": {
+      "max_abs_diff": 0.203125,
+      "argmax_equal": true,
+      "top5_overlap": 4
+    },
+    "step1_relative_l2": 0.003988408272743398,
+    "step1_kl_nats": 0.00016447838133723422,
+    "within_process_repeat_max_abs": 0.0,
+    "greedy": {
+      "agree": 64,
+      "total": 64,
+      "first_disagreement": null,
+      "lengths": [
+        64,
+        64
+      ]
+    }
+  },
+  {
+    "run": "merged_p8192-4096-r0",
+    "method": "merged_p8192",
+    "prompt_tokens": 4096,
+    "meta": {
+      "method": "merged_ffn",
+      "heterogeneity": "gpu",
+      "merged": true,
+      "prompt_tokens": 4096,
+      "new_tokens": 64,
+      "load_s": 29.44366980192717,
+      "torch": "2.11.0+rocm7.2"
+    },
+    "step1": {
+      "max_abs_diff": 0.212890625,
+      "argmax_equal": true,
+      "top5_overlap": 4
+    },
+    "step1_relative_l2": 0.0041142583466453235,
+    "step1_kl_nats": 0.00020830325771455343,
+    "within_process_repeat_max_abs": 0.0,
+    "greedy": {
+      "agree": 64,
+      "total": 64,
+      "first_disagreement": null,
+      "lengths": [
+        64,
+        64
+      ]
+    }
+  }
+]

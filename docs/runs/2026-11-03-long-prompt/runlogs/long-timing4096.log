@@ -1,0 +1,74 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 15:28:54 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 38.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.018
+15:30:36 gpu-4096: median,min,max 8184.734526090324,8130.895943031 peakGTT=9967 lowestAvail=10336 native  fallbacks=0
+15:31:52 p8192-4096-r0: median,min,max 4452.346786973067,4442.165223066 peakGTT=11753 lowestAvail=6248 native exec_ok=1792  fallbacks=0
+15:33:11 hetero-4096-r0: median,min,max 4860.289950040169,4856.599122053 peakGTT=10042 lowestAvail=10457 native exec_ok=8288  fallbacks=0
+15:34:28 p7168-4096-r0: median,min,max 4585.073268972337,4579.269908950 peakGTT=11400 lowestAvail=7166 native exec_ok=1792  fallbacks=0
+15:35:45 p6400-4096-r0: median,min,max 4475.493742967956,4473.465839051 peakGTT=11446 lowestAvail=6763 native exec_ok=1792  fallbacks=0
+15:37:03 p8192-4096-r1: median,min,max 4422.664040932432,4420.353251043 peakGTT=11813 lowestAvail=6336 native exec_ok=1792  fallbacks=0
+15:38:23 hetero-4096-r1: median,min,max 4870.288975071162,4867.040962912 peakGTT=10042 lowestAvail=10260 native exec_ok=8288  fallbacks=0
+15:39:39 p7168-4096-r1: median,min,max 4602.629561908543,4593.533492996 peakGTT=11440 lowestAvail=7152 native exec_ok=1792  fallbacks=0
+15:40:56 p6400-4096-r1: median,min,max 4487.8603459801525,4471.42378997 peakGTT=11542 lowestAvail=6600 native exec_ok=1792  fallbacks=0
+15:42:14 p8192-4096-r2: median,min,max 4478.589455015026,4465.138506027 peakGTT=11753 lowestAvail=6267 native exec_ok=1792  fallbacks=0
+15:43:34 hetero-4096-r2: median,min,max 4860.573812038638,4859.938118956 peakGTT=10042 lowestAvail=10252 native exec_ok=8288  fallbacks=0
+15:44:51 p7168-4096-r2: median,min,max 4657.964105950668,4652.057767030 peakGTT=11330 lowestAvail=7215 native exec_ok=1792  fallbacks=0
+15:46:09 p6400-4096-r2: median,min,max 4548.766211955808,4484.897917020 peakGTT=11796 lowestAvail=6552 native exec_ok=1792  fallbacks=0
+
+=== 15:46:09 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 63.0
+GPU[0]		: sclk clock level: 1: (1867Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 30.094
+
+=== 15:46:09 UTC done status=0
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 15:46:09 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 63.0
+GPU[0]		: sclk clock level: 1: (1743Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 29.078
+
+=== 15:46:09 UTC 2048
+15:47:15 gpu_original-2048-r0 exec_ok=0 fallbacks=0
+15:48:20 gpu_chunk1024-2048-r0 exec_ok=0 fallbacks=0
+15:49:19 hetero1024-2048-r0 exec_ok=11456 fallbacks=0
+15:50:25 heterosched-2048-r0 exec_ok=12992 fallbacks=0
+15:51:24 merged_p8192_all-2048-r0 exec_ok=512 fallbacks=0
+15:52:23 merged_p7168_all-2048-r0 exec_ok=512 fallbacks=0
+15:53:33 merged_p6400_all-2048-r0 exec_ok=512 fallbacks=0
+15:54:38 gpu_original-2048-r1 exec_ok=0 fallbacks=0
+gpu_chunk1024-2048-r0 max_abs=0.0625 rel_l2=0.00301 kl=0.000055 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=22885.5696 scored_argmax=0.9648 scored_kl=0.000056
+gpu_original-2048-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=22895.3137 scored_argmax=1.0000 scored_kl=0.000000
+gpu_original-2048-r1 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=22895.3137 scored_argmax=1.0000 scored_kl=0.000000
+hetero1024-2048-r0 max_abs=4.8438 rel_l2=0.22942 kl=0.249633 argmax_equal=False top5=2 repeat=0.0000 greedy=0/64 ppl=23031.1610 scored_argmax=0.5859 scored_kl=0.008322
+heterosched-2048-r0 max_abs=1.1562 rel_l2=0.06441 kl=0.021056 argmax_equal=False top5=3 repeat=0.0000 greedy=0/64 ppl=23051.4350 scored_argmax=0.6484 scored_kl=0.008337
+merged_p6400_all-2048-r0 max_abs=0.1250 rel_l2=0.00494 kl=0.000198 argmax_equal=False top5=5 repeat=0.0000 greedy=63/64 ppl=22878.6253 scored_argmax=0.9688 scored_kl=0.000063
+merged_p7168_all-2048-r0 max_abs=0.1250 rel_l2=0.00429 kl=0.000221 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=22900.8071 scored_argmax=0.9688 scored_kl=0.000064
+merged_p8192_all-2048-r0 max_abs=0.1406 rel_l2=0.00576 kl=0.000443 argmax_equal=True top5=5 repeat=0.0000 greedy=30/64 ppl=22855.3903 scored_argmax=0.9688 scored_kl=0.000069
+
+=== 15:54:40 UTC 4096
+15:55:39 gpu_original-4096-r0 exec_ok=0 fallbacks=0
+15:56:38 gpu_chunk2048-4096-r0 exec_ok=0 fallbacks=0
+15:57:27 hetero2048-4096-r0 exec_ok=2880 fallbacks=0
+gpu_chunk2048-4096-r0 max_abs=0.0938 rel_l2=0.00292 kl=0.000058 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64  
+gpu_original-4096-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64  
+hetero2048-4096-r0 max_abs=6.2031 rel_l2=0.29320 kl=0.345719 argmax_equal=False top5=1 repeat=0.0000 greedy=0/64  
+
+=== 15:57:27 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 61.0
+GPU[0]		: sclk clock level: 1: (1781Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 27.017
+
+=== 15:57:27 UTC done status=0
+exit=0

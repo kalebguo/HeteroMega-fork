@@ -1,0 +1,95 @@
+[
+  {
+    "run": "gpu_chunk2048-4096-r0",
+    "method": "gpu_chunk2048",
+    "prompt_tokens": 4096,
+    "meta": {
+      "method": "gpu_original",
+      "heterogeneity": "gpu",
+      "merged": false,
+      "prompt_tokens": 4096,
+      "new_tokens": 64,
+      "load_s": 29.337011481053196,
+      "torch": "2.11.0+rocm7.2"
+    },
+    "step1": {
+      "max_abs_diff": 0.09375,
+      "argmax_equal": true,
+      "top5_overlap": 5
+    },
+    "step1_relative_l2": 0.002924870481029309,
+    "step1_kl_nats": 5.763619742440659e-05,
+    "within_process_repeat_max_abs": 0.0,
+    "greedy": {
+      "agree": 64,
+      "total": 64,
+      "first_disagreement": null,
+      "lengths": [
+        64,
+        64
+      ]
+    }
+  },
+  {
+    "run": "gpu_original-4096-r0",
+    "method": "gpu_original",
+    "prompt_tokens": 4096,
+    "meta": {
+      "method": "gpu_original",
+      "heterogeneity": "gpu",
+      "merged": false,
+      "prompt_tokens": 4096,
+      "new_tokens": 64,
+      "load_s": 29.88356918201316,
+      "torch": "2.11.0+rocm7.2"
+    },
+    "step1": {
+      "max_abs_diff": 0.0,
+      "argmax_equal": true,
+      "top5_overlap": 5
+    },
+    "step1_relative_l2": 0.0,
+    "step1_kl_nats": 0.0,
+    "within_process_repeat_max_abs": 0.0,
+    "greedy": {
+      "agree": 64,
+      "total": 64,
+      "first_disagreement": null,
+      "lengths": [
+        64,
+        64
+      ]
+    }
+  },
+  {
+    "run": "hetero2048-4096-r0",
+    "method": "hetero2048",
+    "prompt_tokens": 4096,
+    "meta": {
+      "method": "heteromosaic",
+      "heterogeneity": "hetero",
+      "merged": false,
+      "prompt_tokens": 4096,
+      "new_tokens": 64,
+      "load_s": 29.996504066046327,
+      "torch": "2.11.0+rocm7.2"
+    },
+    "step1": {
+      "max_abs_diff": 6.203125,
+      "argmax_equal": false,
+      "top5_overlap": 1
+    },
+    "step1_relative_l2": 0.29320302545723836,
+    "step1_kl_nats": 0.3457194090395495,
+    "within_process_repeat_max_abs": 0.0,
+    "greedy": {
+      "agree": 0,
+      "total": 64,
+      "first_disagreement": 0,
+      "lengths": [
+        64,
+        64
+      ]
+    }
+  }
+]

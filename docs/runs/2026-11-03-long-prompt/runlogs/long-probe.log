@@ -1,0 +1,37 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 13:17:23 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 37.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.032
+
+=== 13:17:24 UTC sample 4160 tokens
+{"tokens": 4160, "distinct": 3782, "first": [128000, 54322, 110169, 21043, 125240, 23706, 234, 111571, 9554, 54493, 40053, 90070, 41007, 102378, 105142, 103048], "seed": 1}
+tokens equal to sampled-1.json: 1536 of 1536, distinct tokens 3782 of 4160
+
+=== 13:22:14 UTC sampled
+13:22:59 gpu-2048: median,min,max 3787.456354009919,3787.456354009 peakGTT=8795 lowestAvail=11363 native  fallbacks=0
+13:23:40 hetero-2048: median,min,max 2312.8665309632197,2312.86653096 peakGTT=8510 lowestAvail=10946 native exec_ok=3200  fallbacks=0
+13:24:25 p8192-2048: median,min,max 2092.013634974137,2092.013634974 peakGTT=11067 lowestAvail=6169 native exec_ok=384  fallbacks=0
+13:25:26 gpu-4096: median,min,max 8239.460426964797,8239.460426964 peakGTT=9967 lowestAvail=10398 native  fallbacks=0
+13:26:16 hetero-4096: median,min,max 4865.514165954664,4865.514165954 peakGTT=10042 lowestAvail=10600 native exec_ok=3104  fallbacks=0
+13:26:49 p8192-4096: FAILED exit=1 peakGTT=11818 lowestAvail=7153 native exec_ok=44  fallbacks=2
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/notebooks/heteromosaic-venv/bin/python3', '-u', '/notebooks/hm-gemm/kernels/gpu/tools/run_model_ffn.py', '--ref', '/notebooks/hm-results/2026-11-02/long-prompt/sampled-4160.json', '--out', '/notebooks/hm-results/2026-
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+      1 RuntimeError: gemm_w4a16: out of memory
+      1 gemm_w4a16: UNCACHED_FALLBACK 8912896 bytes: out of memory
+      1 gemm_w4a16: UNCACHED_FALLBACK 2228224 bytes: out of memory
+
+=== 13:26:49 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 59.0
+GPU[0]		: sclk clock level: 1: (1389Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 27.057
+
+=== 13:26:49 UTC done status=1
+exit=1

@@ -1,0 +1,59 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 15:59:03 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 41.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.022
+
+=== 15:59:03 UTC 4096, merged_ffn
+16:00:02 gpu_original-4096-r0 exec_ok=0 fallbacks=0
+16:00:51 merged_p8192-4096-r0 exec_ok=768 fallbacks=0
+16:01:42 merged_p7168-4096-r0 exec_ok=768 fallbacks=0
+16:02:33 merged_p6400-4096-r0 exec_ok=768 fallbacks=0
+gpu_original-4096-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64  
+merged_p6400-4096-r0 max_abs=0.1562 rel_l2=0.00549 kl=0.000181 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64  
+merged_p7168-4096-r0 max_abs=0.2031 rel_l2=0.00399 kl=0.000164 argmax_equal=True top5=4 repeat=0.0000 greedy=64/64  
+merged_p8192-4096-r0 max_abs=0.2129 rel_l2=0.00411 kl=0.000208 argmax_equal=True top5=4 repeat=0.0000 greedy=64/64  
+
+=== 16:02:33 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 62.0
+GPU[0]		: sclk clock level: 1: (1809Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 30.029
+
+=== 16:02:33 UTC done status=0
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 16:02:33 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 62.0
+GPU[0]		: sclk clock level: 1: (1692Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 29.026
+
+=== 16:02:33 UTC sample 2304 tokens, seed 2
+{"tokens": 2304, "distinct": 1961, "first": [128000, 22517, 287, 1203, 311, 2978, 1306, 264, 1317, 1464, 649, 387, 264, 8815, 369, 2225], "seed": 2}
+tokens equal to sampled-2.json: 1536 of 1536, distinct tokens 1961 of 2304
+
+=== 16:05:22 UTC 2048
+16:06:26 gpu_original-2048-r0 exec_ok=0 fallbacks=0
+16:07:25 hetero1024-2048-r0 exec_ok=11456 fallbacks=0
+16:08:33 heterosched-2048-r0 exec_ok=12992 fallbacks=0
+16:09:34 merged_p8192_all-2048-r0 exec_ok=512 fallbacks=0
+gpu_original-2048-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=7997.8398 scored_argmax=1.0000 scored_kl=0.000000
+hetero1024-2048-r0 max_abs=4.3438 rel_l2=0.13857 kl=0.125651 argmax_equal=False top5=0 repeat=0.0000 greedy=0/64 ppl=8169.0528 scored_argmax=0.6250 scored_kl=0.012813
+heterosched-2048-r0 max_abs=0.9219 rel_l2=0.02386 kl=0.004887 argmax_equal=True top5=3 repeat=0.0000 greedy=18/64 ppl=8109.1292 scored_argmax=0.8438 scored_kl=0.006431
+merged_p8192_all-2048-r0 max_abs=0.1250 rel_l2=0.00545 kl=0.000141 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=7998.2205 scored_argmax=0.9883 scored_kl=0.000136
+
+=== 16:09:35 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 60.0
+GPU[0]		: sclk clock level: 1: (672Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 16.02
+
+=== 16:09:35 UTC done status=0
+exit=0

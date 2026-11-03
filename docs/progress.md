@@ -1,5 +1,15 @@
 # HeteroMega progress
 
+## 2026-11-03 (merged-ffn-fix): prefill at 2048 and 4096 tokens
+
+Evidence and tables: `docs/runs/2026-11-03-long-prompt/`.
+
+- **Measured:** `merged_ffn` P8192 is 2053.9 ms at 2048 tokens and 4452.3 ms at 4096 tokens (9 samples, 3 processes each), against `gpu_original` 3790.9 and 8184.7 ms: 1.85x and 1.84x. At 1024 tokens on this prompt it is 1010.4 ms.
+- **Measured:** all switches do not fit in GTT at 4096 tokens. Without `HETEROMEGA_GEMM_UNCACHED` it fits, peak 11753-11813 of 11818 MB. All switches at 2048 tokens: peak 10981-11067 MB.
+- **Measured:** `heteromosaic` with its shipped groups is 2318.0 / 4863.9 ms, so P8192 is 1.13x / 1.09x faster, in the same job. Its output deviates strongly at these lengths: step 1 relative L2 0.024-0.293, greedy 0-18 of 64, against 0.004-0.006 and 30-64 for `merged_ffn` and 0.003 and 64 for `gpu_original` with larger chunks. Cause not determined. These ratios do not compare equal outputs.
+- **Limits:** one sampled prompt for timing, two for numerics at 2048 tokens, one at 4096. `heteromosaic` has no paired run at 1024 tokens on this prompt.
+- **Next:** a paired `heteromosaic` run at 1024 tokens, if the user wants it. Then the memory held by the merged path, so that `HETEROMEGA_GEMM_UNCACHED` fits at 4096 tokens, and the cause of the `heteromosaic` deviation.
+
 ## 2026-11-03 (merged-ffn-fix): GPU branch, attention, NPU queue and copies at two inflight chunks
 
 Evidence and tables: `docs/runs/2026-11-03-gemm/`. New kernels `gemm_w4a16`, `sdpa_bf16`, `residual_norm_bf16`; every switch is off by default.

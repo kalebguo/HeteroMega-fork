@@ -1,0 +1,64 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 15:00:47 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 37.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.012
+15:01:40 p8192-no-uncached-4096: median,min,max 4521.839902037755,4521.839902037 peakGTT=11753 lowestAvail=6069 native exec_ok=768  fallbacks=0
+15:02:13 p8192-no-sdpa-4096: FAILED exit=1 peakGTT=11814 lowestAvail=6969 native exec_ok=46  fallbacks=5
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/notebooks/heteromosaic-venv/bin/python3', '-u', '/notebooks/hm-gemm/kernels/gpu/tools/run_model_ffn.py', '--ref', '/notebooks/hm-results/2026-11-02/long-prompt/sampled-4160.json', '--out', '/notebooks/hm-results/2026-
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+      3 gemm_w4a16: UNCACHED_FALLBACK 26738688 bytes: out of memory
+      2 gemm_w4a16: UNCACHED_FALLBACK 13369344 bytes: out of memory
+      1 RuntimeError: gemm_w4a16 weight copy: out of memory
+15:03:11 p8192-neither-4096: median,min,max 5271.401377045549,5271.401377045 peakGTT=11523 lowestAvail=6867 native exec_ok=768  fallbacks=0
+
+=== 15:03:11 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 57.0
+GPU[0]		: sclk clock level: 1: (987Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 14.009
+
+=== 15:03:11 UTC done status=1
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 15:03:11 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 56.0
+GPU[0]		: sclk clock level: 1: (941Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 13.037
+15:04:20 gpu-2048: median,min,max 3790.9420690266415,3749.69423608 peakGTT=8471 lowestAvail=11313 native  fallbacks=0
+15:05:20 p8192-2048-r0: median,min,max 2047.8797430405393,2047.66284802 peakGTT=11067 lowestAvail=6316 native exec_ok=896  fallbacks=0
+15:06:22 hetero-sched-2048-r0: median,min,max 2382.6787089928985,2339.46195500 peakGTT=9009 lowestAvail=10078 native exec_ok=11200  fallbacks=0
+15:07:19 p7168-2048-r0: median,min,max 2146.9516559736803,2132.98792601 peakGTT=11181 lowestAvail=5897 native exec_ok=896  fallbacks=0
+15:08:19 hetero-2048-r0: median,min,max 2315.1014709146693,2310.22494402 peakGTT=8510 lowestAvail=10757 native exec_ok=8512  fallbacks=0
+15:09:19 p6400-2048-r0: median,min,max 2102.0716989878565,2089.71089101 peakGTT=11479 lowestAvail=5927 native exec_ok=896  fallbacks=0
+15:10:13 p8192-1024-r0: median,min,max 1011.6864439332858,1010.42631000 peakGTT=10539 lowestAvail=6663 native exec_ok=448  fallbacks=0
+15:11:14 p8192-2048-r1: median,min,max 2053.9117839653045,2051.92468094 peakGTT=10981 lowestAvail=6182 native exec_ok=896  fallbacks=0
+15:12:16 hetero-sched-2048-r1: median,min,max 2460.3664270834997,2386.12701802 peakGTT=9009 lowestAvail=10119 native exec_ok=11200  fallbacks=0
+15:13:14 p7168-2048-r1: median,min,max 2140.1501829968765,2139.56854399 peakGTT=11181 lowestAvail=5961 native exec_ok=896  fallbacks=0
+15:14:16 hetero-2048-r1: median,min,max 2324.8252470511943,2320.80097508 peakGTT=8510 lowestAvail=11128 native exec_ok=8512  fallbacks=0
+15:15:14 p6400-2048-r1: median,min,max 2109.248554101214,2107.657167012 peakGTT=11385 lowestAvail=5751 native exec_ok=896  fallbacks=0
+15:16:06 p8192-1024-r1: median,min,max 995.5540469381958,994.8242519749 peakGTT=10539 lowestAvail=6697 native exec_ok=448  fallbacks=0
+15:17:07 p8192-2048-r2: median,min,max 2055.915214936249,2052.264414960 peakGTT=10981 lowestAvail=6049 native exec_ok=896  fallbacks=0
+15:18:10 hetero-sched-2048-r2: median,min,max 2586.4771489286795,2558.35189402 peakGTT=9009 lowestAvail=10270 native exec_ok=11200  fallbacks=0
+15:19:11 p7168-2048-r2: median,min,max 2127.499401103705,2122.041267924 peakGTT=11181 lowestAvail=6270 native exec_ok=896  fallbacks=0
+15:20:12 hetero-2048-r2: median,min,max 2318.0240120273083,2307.65977397 peakGTT=8510 lowestAvail=11345 native exec_ok=8512  fallbacks=0
+15:21:11 p6400-2048-r2: median,min,max 2101.7718960065395,2100.78547592 peakGTT=11385 lowestAvail=5659 native exec_ok=896  fallbacks=0
+15:22:07 p8192-1024-r2: median,min,max 1009.541068924591,1008.720275014 peakGTT=10539 lowestAvail=6880 native exec_ok=448  fallbacks=0
+
+=== 15:22:07 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 60.0
+GPU[0]		: sclk clock level: 1: (922Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 12.023
+
+=== 15:22:07 UTC done status=0
+exit=0
