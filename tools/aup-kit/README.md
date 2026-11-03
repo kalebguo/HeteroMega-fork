@@ -39,6 +39,9 @@ bash tools/aup-kit/aup_curl.sh status NAME                  # curl-only fallback
 | Path | What |
 | --- | --- |
 | `/notebooks/hm-eval-main` | clone of glassescrab/HeteroMega, remote `fork` = kalebguo/HeteroMega-fork, branch `eval-runner` (fork `claude/exciting-faraday-95a0c1` on top of `main` `8e5c804`); built with `jobs/build-main/cmd.sh` (`build/`, `deployment.json`) |
+| `/notebooks/hm-fix` | branch `merged-ffn-fix` (remote `origin` here = the fork) with its `-O3` build; `jobs/fix-env.sh` is its environment. `hm-eval-main` stays untouched as earlier evidence |
+| `/notebooks/hm-fix-noopt` | attribution tree for `jobs/step2c`: no `-O3`, original scan loop. Never use it for headline numbers |
+| `/notebooks/hm-results/count_ioctls.so`, `profile_ioctls.so` | `LD_PRELOAD` counters: submissions and contexts, or a timed trace (`jobs/step3c`) |
 | `/notebooks/heteromosaic-venv` | Torch 2.11.0+rocm7.2, pybind11 3.1.0, numpy 2.5.4. No `transformers`, no `safetensors` package |
 | `/notebooks/hm-model/Meta-Llama-3.1-8B-Instruct-AWQ-INT4` | 2 safetensors shards + index only (no tokenizer, no config.json) |
 | `/notebooks/hm-libs/xdna-driver-05-19-25` | pinned xdna-driver sparse clone (`0e6d303b`), `HOME_LIBS=/notebooks/hm-libs` |
@@ -47,7 +50,7 @@ bash tools/aup-kit/aup_curl.sh status NAME                  # curl-only fallback
 | `/notebooks/hm-results/` | results; `2026-11-02/eval-merged-gpu` is the first paired evaluation |
 | `/notebooks/aup-runs/<name>/` | job scripts and logs (`build-main`, `smoke-main`, `eval-main`) |
 | `/home/mliraie/mlir-aie/ironenv/bin/python` | IRON (MLIR-AIE `7e00b579`) for rebuilding NPU artifacts |
-| `/opt/rocm-7.2.0`, `/opt/xilinx/xrt` | ROCm 7.2, XRT 2.26; cmake 4.4.2; OpenSSL headers present |
+| `/opt/rocm-7.2.0`, `/opt/xilinx/xrt` | ROCm 7.2, XRT 2.26; cmake 4.4.2; OpenSSL headers present; no ninja (`torch.utils.cpp_extension.load` fails) |
 
 Environment for every job (from `docs/ffn-deployment.md`): see `jobs/eval-main/cmd.sh`. Always unset
 `HETEROMEGA_FFN_CONFIG HETEROMEGA_GPU_FFN HETEROMEGA_GPU_FFN_SPLIT HSA_OVERRIDE_GFX_VERSION PYTHONPATH`

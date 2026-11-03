@@ -1,0 +1,210 @@
+HEAD 6291e3db Probe binding: compile with the model extension's flags when ninja is absent
+
+=== 00:45:39 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 37.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 4.098
+
+=== 00:45:39 UTC probe sweep: K, sign, metadata (one fresh process per case)
+BLOCKED k_n4096 K=64 N=4096: K=64 is below the 128-element quantization group; the packed 4352-byte K128/N64 tile ABI (and every native artifact) requires K % 128 == 0
+BLOCKED k_n4096 K=256 N=4096: no native M-split artifact with K=256 (no hw_bins/npu2/*x256x*/bf16_int4AWQ_bf16_M); K-split (_K) artifacts start at K=512 and serve the K-split dispatcher, not driven he
+BLOCKED k_n4096 K=1024 N=4096: no native M-split artifact 512x1024x4096; final_512x1024x4096 exists only in 8192x14336x4096/bf16_int4AWQ_bf16_K, a K-split slice for the K-split dispatcher
+BLOCKED k_n4096 K=2048 N=4096: no native M-split artifact 512x2048x4096 (only the K-split slice in 8192x14336x4096/_K); the K sweep therefore uses N=2048, where four M-split K values exist
+BLOCKED k_n2048 K=16384 N=2048: 8192x16384x2048 has only K-split (_K) artifacts; no M-split final_512x16384x2048
+k1536_n2048 [k_n2048 M=512 K=1536 N=2048 act=positive scales=random zeros=random fw=hw_bins/npu2/8192x1536x2048/bf16_int4AWQ_bf16_M/]: /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/too
+  -> {'status': 'ok', 'npu_vs_gpu_max_abs': 1.125, 'error': None} npu=0.2983520907808622 gpu=0.007088896965007654
+k2048_n2048 [k_n2048 M=512 K=2048 N=2048 act=positive scales=random zeros=random fw=hw_bins/npu2/8192x2048x2048/bf16_int4AWQ_bf16_M/]: /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/too
+  -> {'status': 'ok', 'npu_vs_gpu_max_abs': 1.375, 'error': None} npu=0.42484758442516524 gpu=0.008371374581489576
+k10240_n2048 [k_n2048 M=512 K=10240 N=2048 act=positive scales=random zeros=random fw=hw_bins/npu2/8192x10240x2048/bf16_int4AWQ_bf16_M/]: /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/
+  -> {'status': 'ok', 'npu_vs_gpu_max_abs': 10.375, 'error': None} npu=3.141585637111371 gpu=0.018761268410855486
+k11264_n2048 [k_n2048 M=512 K=11264 N=2048 act=positive scales=random zeros=random fw=hw_bins/npu2/8192x11264x2048/bf16_int4AWQ_bf16_M/]: /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/
+  -> {'status': 'ok', 'npu_vs_gpu_max_abs': 13.5, 'error': None} npu=3.5395063835202607 gpu=0.019901013607173952
+k4096_n4096 [k_n4096 M=512 K=4096 N=4096 act=positive scales=random zeros=random fw=hw_bins/npu2/8192x4096x4096/bf16_int4AWQ_bf16_M/]: /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/too
+  -> {'status': 'ok', 'npu_vs_gpu_max_abs': 3.25, 'error': None} npu=0.976240792733137 gpu=0.011863963534327277
+k14336_n4096 [k_n4096 M=512 K=14336 N=4096 act=positive scales=random zeros=random fw=hw_bins/npu2/16384x14336x4096/bf16_int4AWQ_bf16_M/]: /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix
+  -> {'status': 'ok', 'npu_vs_gpu_max_abs': 17.75, 'error': None} npu=4.862047763901282 gpu=0.02219296847044919
+sign_positive [sign M=512 K=2048 N=2048 act=positive scales=random zeros=random fw=hw_bins/npu2/8192x2048x2048/bf16_int4AWQ_bf16_M/]: /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/tool
+  -> {'status': 'ok', 'npu_vs_gpu_max_abs': 1.375, 'error': None} npu=0.42484758442516524 gpu=0.008371374581489576
+sign_negative [sign M=512 K=2048 N=2048 act=negative scales=random zeros=random fw=hw_bins/npu2/8192x2048x2048/bf16_int4AWQ_bf16_M/]: /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/tool
+  -> {'status': 'ok', 'npu_vs_gpu_max_abs': 0.875, 'error': None} npu=0.12225511475831746 gpu=0.008371374581489576
+sign_mixed [sign M=512 K=2048 N=2048 act=mixed scales=random zeros=random fw=hw_bins/npu2/8192x2048x2048/bf16_int4AWQ_bf16_M/]: /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/tools/npu_
+  -> {'status': 'ok', 'npu_vs_gpu_max_abs': 0.296875, 'error': None} npu=0.04249722814509095 gpu=0.0017586602511256953
+meta_scales_equal_zeros_eight [metadata M=512 K=2048 N=2048 act=positive scales=equal zeros=eight fw=hw_bins/npu2/8192x2048x2048/bf16_int4AWQ_bf16_M/]: /notebooks/heteromosaic-venv/bin/python3 -u /not
+  -> {'status': 'ok', 'npu_vs_gpu_max_abs': 0.21875, 'error': None} npu=0.055666510048464346 gpu=0.004361931710374023
+meta_scales_equal_zeros_random [metadata M=512 K=2048 N=2048 act=positive scales=equal zeros=random fw=hw_bins/npu2/8192x2048x2048/bf16_int4AWQ_bf16_M/]: /notebooks/heteromosaic-venv/bin/python3 -u /n
+  -> {'status': 'ok', 'npu_vs_gpu_max_abs': 1.0, 'error': None} npu=0.18495873245597072 gpu=0.008217164298645718
+meta_scales_random_zeros_eight [metadata M=512 K=2048 N=2048 act=positive scales=random zeros=eight fw=hw_bins/npu2/8192x2048x2048/bf16_int4AWQ_bf16_M/]: /notebooks/heteromosaic-venv/bin/python3 -u /n
+  -> {'status': 'ok', 'npu_vs_gpu_max_abs': 0.4375, 'error': None} npu=0.22078997546134316 gpu=0.0037076089347025665
+meta_scales_random_zeros_random [metadata M=512 K=2048 N=2048 act=positive scales=random zeros=random fw=hw_bins/npu2/8192x2048x2048/bf16_int4AWQ_bf16_M/]: /notebooks/heteromosaic-venv/bin/python3 -u 
+  -> {'status': 'ok', 'npu_vs_gpu_max_abs': 1.375, 'error': None} npu=0.42484758442516524 gpu=0.008371374581489576
+wrote /notebooks/hm-results/2026-11-02/fix-step5-numerics/probe.jsonl; 0 failed case(s)
+
+=== 00:46:01 UTC probe report
+== hardware
+case                                    K     N status       e_npu     e_gpu      r  max npu max|npu-gpu| allclose
+------------------------------------------------------------------------------------------------------------------
+K64_N4096                              64  4096 blocked  K=64 is below the 128-element quantization group; the packed 4352-byte K128/N64 tile ABI (
+K256_N4096                            256  4096 blocked  no native M-split artifact with K=256 (no hw_bins/npu2/*x256x*/bf16_int4AWQ_bf16_M); K-spl
+K1024_N4096                          1024  4096 blocked  no native M-split artifact 512x1024x4096; final_512x1024x4096 exists only in 8192x14336x40
+K2048_N4096                          2048  4096 blocked  no native M-split artifact 512x2048x4096 (only the K-split slice in 8192x14336x4096/_K); t
+K16384_N2048                        16384  2048 blocked  8192x16384x2048 has only K-split (_K) artifacts; no M-split final_512x16384x2048
+k1536_n2048                          1536  2048 ok         0.29835   0.00709  42.09   1.1462       1.1250    False
+k2048_n2048                          2048  2048 ok         0.42485   0.00837  50.75   1.3623       1.3750    False
+k10240_n2048                        10240  2048 ok         3.14159   0.01876 167.45  10.3130      10.3750    False
+k11264_n2048                        11264  2048 ok         3.53951   0.01990 177.86  13.5215      13.5000    False
+k4096_n4096                          4096  4096 ok         0.97624   0.01186  82.29   3.1812       3.2500    False
+k14336_n4096                        14336  4096 ok         4.86205   0.02219 219.08  17.8178      17.7500    False
+sign_positive                        2048  2048 ok         0.42485   0.00837  50.75   1.3623       1.3750    False
+sign_negative                        2048  2048 ok         0.12226   0.00837  14.60   0.8760       0.8750    False
+sign_mixed                           2048  2048 ok         0.04250   0.00176  24.16   0.2995       0.2969     True
+meta_scales_equal_zeros_eight        2048  2048 ok         0.05567   0.00436  12.76   0.2109       0.2188     True
+meta_scales_equal_zeros_random       2048  2048 ok         0.18496   0.00822  22.51   0.9774       1.0000    False
+meta_scales_random_zeros_eight       2048  2048 ok         0.22079   0.00371  59.55   0.4509       0.4375    False
+meta_scales_random_zeros_random      2048  2048 ok         0.42485   0.00837  50.75   1.3623       1.3750    False
+
+SUPPORTED: accumulation precision / partial-sum rounding (NPU excess error grows with K)
+SUPPORTED: signed-input packing / sign handling (negative inputs are not handled symmetrically)
+SUPPORTED: quantization metadata addressing (random metadata raises error; factor: scales)
+{
+  "k_n2048": {
+    "ratio_slope": 0.7304104585420836,
+    "raw_npu_slope": 1.242036454538903,
+    "raw_about_linear": true,
+    "ratios": {
+      "1536": 42.08723758485888,
+      "2048": 50.75003875284352,
+      "10240": 167.45059919795258,
+      "11264": 177.85558330779358
+    }
+  },
+  "k_n4096": {
+    "ratio_slope": 0.7816608261680289,
+    "raw_npu_slope": 1.2815718130832205,
+    "raw_about_linear": true,
+    "ratios": {
+      "4096": 82.28622668204221,
+      "14336": 219.08055113831617
+    }
+  },
+  "sign": {
+    "r_positive": 50.75003875284352,
+    "r_negative": 14.60394748416141,
+    "negative_over_positive": 0.2877622922670803,
+    "outputs_exact_negation": false,
+    "r_mixed_informational": 24.164546914555572
+  },
+  "metadata": {
+    "scales_equal_zeros_eight": 1.0,
+    "scales_equal_zeros_random": 1.7637528860691942,
+    "scales_random_zeros_eight": 4.6662746664235595,
+    "scales_random_zeros_random": 3.976685499881549
+  }
+}
+
+=== 00:46:01 UTC token agreement, step-1 logits, perplexity (original vs merged FFN, one process)
+Average Time per Token: 0.0579297 seconds
+Warning: Could not load tokenizer from /notebooks/hm-model/Meta-Llama-3.1-8B-Instruct-AWQ-INT4: not available in run_model_ffn.py
+Loading quantized weights from /notebooks/hm-model/Meta-Llama-3.1-8B-Instruct-AWQ-INT4...
+Using saved safetensors: /notebooks/hm-fix/py/unified_llm_w4a16/model_weights/Meta-Llama-3.1-8B-Instruct-AWQ-INT4.safetensors
+Weights loaded in 25.93 seconds
+Importing weights to NPU...
+{
+  "status": "completed",
+  "error": null,
+  "step1_logits": {
+    "merged_vs_original": {
+      "max_abs_diff": 0.46875,
+      "argmax_equal": true,
+      "top5_overlap": 5
+    },
+    "original_repeat_control": {
+      "max_abs_diff": 0.0,
+      "argmax_equal": true,
+      "top5_overlap": 5
+    }
+  },
+  "perplexity": {
+    "prefix_tokens": 512,
+    "original": {
+      "tokens": 512,
+      "mean_nll": 0.0006940768897849142,
+      "perplexity": 1.0006943178168868
+    },
+    "merged": {
+      "tokens": 512,
+      "mean_nll": 0.0006717815142906619,
+      "perplexity": 1.0006720072100288
+    }
+  },
+  "greedy": {
+    "agree": 64,
+    "total": 64,
+    "first_disagreement": null
+  }
+}
+
+=== 00:47:49 UTC one path per process, 1024 tokens
+--- gpu_original-1024-r0
+{"method": "gpu_original", "heterogeneity": "gpu", "merged": false, "prompt_tokens": 1024, "new_tokens": 64, "load_s": 27.516878847964108, "torch": "2.11.0+rocm7.2", "tokens": [4221, 1646, 45478, 389, 98882, 37686, 13, 1
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- merged_ffn-1024-r0
+{"method": "merged_ffn", "heterogeneity": "gpu", "merged": true, "prompt_tokens": 1024, "new_tokens": 64, "load_s": 27.56364254001528, "torch": "2.11.0+rocm7.2", "tokens": [4221, 1646, 45478, 389, 98882, 37686, 13, 1115]
+IOCTL_COUNTS ctx_ok=1 exec_ok=192 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=192 timeline_fail=0
+--- heteromosaic-1024-r0
+{"method": "heteromosaic", "heterogeneity": "hetero", "merged": false, "prompt_tokens": 1024, "new_tokens": 64, "load_s": 27.908935221028514, "torch": "2.11.0+rocm7.2", "tokens": [4221, 1646, 45478, 389, 98882, 37686, 13
+IOCTL_COUNTS ctx_ok=2 exec_ok=2880 exec_fail=0 legacy_ok=0 legacy_fail=2880 timeline_ok=2880 timeline_fail=0
+--- merged_ffn_hetero-1024-r0
+{"method": "merged_ffn_hetero", "heterogeneity": "hetero", "merged": true, "prompt_tokens": 1024, "new_tokens": 64, "load_s": 28.01307550200727, "torch": "2.11.0+rocm7.2", "tokens": [4221, 1646, 45478, 389, 98882, 37686,
+IOCTL_COUNTS ctx_ok=3 exec_ok=2688 exec_fail=0 legacy_ok=0 legacy_fail=2496 timeline_ok=2688 timeline_fail=0
+--- merged_ffn_hetero-1024-r1
+{"method": "merged_ffn_hetero", "heterogeneity": "hetero", "merged": true, "prompt_tokens": 1024, "new_tokens": 64, "load_s": 27.959563123062253, "torch": "2.11.0+rocm7.2", "tokens": [4221, 1646, 45478, 389, 98882, 37686
+IOCTL_COUNTS ctx_ok=3 exec_ok=2688 exec_fail=0 legacy_ok=0 legacy_fail=2496 timeline_ok=2688 timeline_fail=0
+--- heteromosaic-1024-r1
+{"method": "heteromosaic", "heterogeneity": "hetero", "merged": false, "prompt_tokens": 1024, "new_tokens": 64, "load_s": 28.518600114970468, "torch": "2.11.0+rocm7.2", "tokens": [4221, 1646, 45478, 389, 98882, 37686, 13
+IOCTL_COUNTS ctx_ok=2 exec_ok=2880 exec_fail=0 legacy_ok=0 legacy_fail=2880 timeline_ok=2880 timeline_fail=0
+--- merged_ffn-1024-r1
+{"method": "merged_ffn", "heterogeneity": "gpu", "merged": true, "prompt_tokens": 1024, "new_tokens": 64, "load_s": 27.732528817025013, "torch": "2.11.0+rocm7.2", "tokens": [4221, 1646, 45478, 389, 98882, 37686, 13, 1115
+IOCTL_COUNTS ctx_ok=1 exec_ok=192 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=192 timeline_fail=0
+--- gpu_original-1024-r1
+{"method": "gpu_original", "heterogeneity": "gpu", "merged": false, "prompt_tokens": 1024, "new_tokens": 64, "load_s": 28.3425836910028, "torch": "2.11.0+rocm7.2", "tokens": [4221, 1646, 45478, 389, 98882, 37686, 13, 111
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+
+=== 00:52:56 UTC one path per process, 512 tokens, next 512 scored
+--- gpu_original-512-r0
+{"method": "gpu_original", "heterogeneity": "gpu", "merged": false, "prompt_tokens": 512, "new_tokens": 64, "load_s": 27.67508995695971, "torch": "2.11.0+rocm7.2", "tokens": [9526, 11193, 4221, 1646, 45478, 389, 98882, 3
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- merged_ffn-512-r0
+{"method": "merged_ffn", "heterogeneity": "gpu", "merged": true, "prompt_tokens": 512, "new_tokens": 64, "load_s": 28.143445544992574, "torch": "2.11.0+rocm7.2", "tokens": [9526, 11193, 4221, 1646, 45478, 389, 98882, 376
+IOCTL_COUNTS ctx_ok=1 exec_ok=128 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=128 timeline_fail=0
+--- heteromosaic-512-r0
+{"method": "heteromosaic", "heterogeneity": "hetero", "merged": false, "prompt_tokens": 512, "new_tokens": 64, "load_s": 27.821118879015557, "torch": "2.11.0+rocm7.2", "tokens": [9526, 11193, 4221, 1646, 45478, 389, 9888
+IOCTL_COUNTS ctx_ok=2 exec_ok=18880 exec_fail=0 legacy_ok=0 legacy_fail=18880 timeline_ok=18880 timeline_fail=0
+--- merged_ffn_hetero-512-r0
+{"method": "merged_ffn_hetero", "heterogeneity": "hetero", "merged": true, "prompt_tokens": 512, "new_tokens": 64, "load_s": 28.632221879903227, "torch": "2.11.0+rocm7.2", "tokens": [9526, 11193, 4221, 1646, 45478, 389, 
+IOCTL_COUNTS ctx_ok=3 exec_ok=18752 exec_fail=0 legacy_ok=0 legacy_fail=18624 timeline_ok=18752 timeline_fail=0
+
+=== 00:57:26 UTC comparison
+gpu_original-1024-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 
+gpu_original-1024-r1 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 
+gpu_original-512-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=1.0007
+heteromosaic-1024-r0 max_abs=2.4062 rel_l2=0.15498 kl=0.000095 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 
+heteromosaic-1024-r1 max_abs=2.4062 rel_l2=0.15498 kl=0.000095 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 
+heteromosaic-512-r0 max_abs=2.0312 rel_l2=0.15738 kl=0.000062 argmax_equal=True top5=4 repeat=0.0000 greedy=64/64 ppl=1.0014
+merged_ffn-1024-r0 max_abs=0.4688 rel_l2=0.03757 kl=0.000016 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 
+merged_ffn-1024-r1 max_abs=0.4688 rel_l2=0.03757 kl=0.000016 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 
+merged_ffn-512-r0 max_abs=0.4688 rel_l2=0.04544 kl=0.000005 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=1.0007
+merged_ffn_hetero-1024-r0 max_abs=1.9062 rel_l2=0.12267 kl=0.000050 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 
+merged_ffn_hetero-1024-r1 max_abs=1.9062 rel_l2=0.12267 kl=0.000050 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 
+merged_ffn_hetero-512-r0 max_abs=1.8438 rel_l2=0.14028 kl=0.000022 argmax_equal=True top5=4 repeat=0.0000 greedy=64/64 ppl=1.0019
+
+=== 00:57:26 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 63.0
+GPU[0]		: sclk clock level: 1: (1519Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 27.0
+
+=== 00:57:26 UTC done
+exit=0

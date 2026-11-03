@@ -1,0 +1,44 @@
+{
+  "hardware": {
+    "supported": [
+      "accumulation precision / partial-sum rounding (NPU excess error grows with K)",
+      "signed-input packing / sign handling (negative inputs are not handled symmetrically)",
+      "quantization metadata addressing (random metadata raises error; factor: scales)"
+    ],
+    "details": {
+      "k_n2048": {
+        "ratio_slope": 0.7304104585420836,
+        "raw_npu_slope": 1.242036454538903,
+        "raw_about_linear": true,
+        "ratios": {
+          "1536": 42.08723758485888,
+          "2048": 50.75003875284352,
+          "10240": 167.45059919795258,
+          "11264": 177.85558330779358
+        }
+      },
+      "k_n4096": {
+        "ratio_slope": 0.7816608261680289,
+        "raw_npu_slope": 1.2815718130832205,
+        "raw_about_linear": true,
+        "ratios": {
+          "4096": 82.28622668204221,
+          "14336": 219.08055113831617
+        }
+      },
+      "sign": {
+        "r_positive": 50.75003875284352,
+        "r_negative": 14.60394748416141,
+        "negative_over_positive": 0.2877622922670803,
+        "outputs_exact_negation": false,
+        "r_mixed_informational": 24.164546914555572
+      },
+      "metadata": {
+        "scales_equal_zeros_eight": 1.0,
+        "scales_equal_zeros_random": 1.7637528860691942,
+        "scales_random_zeros_eight": 4.6662746664235595,
+        "scales_random_zeros_random": 3.976685499881549
+      }
+    }
+  }
+}

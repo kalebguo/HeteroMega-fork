@@ -1,8 +1,10 @@
 # NPU W4A16 error probes (hardware) and arithmetic emulation (secondary)
 
-Status 2026-11-02: **not executed on hardware.** This cloud sandbox cannot reach the AUP
-hub (its egress proxy refuses `dub.aupcloud.io` with HTTP 403 at CONNECT). Scripts pass
-CPU unit tests and dry runs here. All emulation numbers below are **estimated** (CPU NumPy).
+Status 2026-11-02: **executed on hardware**, results in
+`docs/runs/2026-11-02-fix-step5-numerics/` and `docs/runs/2026-11-02-fix-step5b-sampled/`. Emulation numbers below stay
+**estimated** (CPU NumPy) and were written before those runs. Run the jobs in `tools/aup-kit/jobs/step5-numerics` and
+`step5b-sampled`: `aup_job.sh` assumes `/notebooks/hm-eval-main`. The box has no ninja, so `probe_sweep.py` compiles the
+binding directly with the model extension's flags.
 
 ## Why probes first
 
@@ -22,6 +24,7 @@ The probes measure it directly; the emulation only supplies predictions to compa
 | `probe_sweep.py` | Runs the cases in order, one fresh process per case (the native runtime is single-initialization); appends one JSON line per case to `probe.jsonl`, plus blocked lines. `--dry-run` works on CPU. |
 | `probe_report.py` | Table + verdicts with a fixed decision rule (docstring). `--emulate OUT` writes CPU predictions. |
 | `token_agreement.py` | Real weights, one process, `HETEROMEGA_FFN_CONFIG` switched per pass: greedy-token agreement over 64 tokens, first disagreement, step-1 logit max difference (+ original-vs-original control), small teacher-forced perplexity. Built on `run_model_ffn.py` because the box has no `transformers`/tokenizer (so `model_smoke` cannot import). |
+| `path_logits.py` | One method per fresh process, including the native paths `token_agreement.py` cannot reach: step-1 logits, greedy tokens, per-position logits; `--compare` reports each run against `gpu_original`; `--sample-prompt` writes model-sampled prompts. |
 | `aup_job.sh` | Detached AUP job: probes, report, token agreement, device snapshots. |
 | `emulation/` | Secondary: NumPy emulation of `w4a16_prefill_upstream.cc` + `silu_mul.cc`, its experiments and results. |
 
