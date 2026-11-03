@@ -1,0 +1,35 @@
+HEAD 4924976d aup-kit: job step3b, phase timers of merged_ffn_hetero
+enabled 4 down entries from py/unified_llm_w4a16/configs/configs_strixP_llama3_8b.json5
+
+=== 21:33:43 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 40.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.005
+    "merged_ffn_wrong_passes": 0,
+    "merged_ffn_verdict": "clean",
+    "npu_execution": "unverified"
+  }
+]
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- summary.csv
+method,prompt_tokens,dummy,samples,prefill_median_ms,prefill_min_ms,prefill_max_ms,speedup_vs_gpu,tokens_match_gpu,speedup_vs_heteromosaic,tokens_match_heteromosaic,matches_reference,gpu_ffn_active,merged_ffn_expected_per_pass,merged_ffn_passes,merged_ffn_completions,merged_ffn_wrong_passes,merged_ffn_verdict,npu_execution
+heteromosaic,1024,False,10,1333.7793455575593,1284.6250110305846,1363.528415095061,,,1.0,True,True,,0,22,0,0,clean,unverified
+heteromosaic_mdown,1024,False,10,1518.2532650069334,1510.544689022936,1579.173779929988,,,0.8784959507737126,True,True,,0,22,0,0,clean,unverified
+
+=== 21:38:03 UTC native calls per process
+heteromosaic-1024-r0.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic-1024-r1.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic_mdown-1024-r0.result.log:IOCTL_COUNTS ctx_ok=3 exec_ok=14176 exec_fail=0 legacy_ok=0 legacy_fail=14176 timeline_ok=14176 timeline_fail=0
+heteromosaic_mdown-1024-r1.result.log:IOCTL_COUNTS ctx_ok=3 exec_ok=14176 exec_fail=0 legacy_ok=0 legacy_fail=14176 timeline_ok=14176 timeline_fail=0
+
+=== 21:38:03 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 63.0
+GPU[0]		: sclk clock level: 1: (1759Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 26.075
+
+=== 21:38:03 UTC done
+exit=0

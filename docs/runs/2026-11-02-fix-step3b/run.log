@@ -1,0 +1,38 @@
+HEAD 4924976d aup-kit: job step3b, phase timers of merged_ffn_hetero
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+    "gpu_wait_ms": 0.002135,
+    "sum_ms": 0.3384085,
+    "calls": 640
+  },
+  "groups": {
+    "slot0_concurrent": {
+      "since_prev_end_ms": 10.310832,
+      "total_ms": 15.0586505,
+      "setup_ms": 0.0021,
+      "prev_wait_ms": 0.0101595,
+      "gpu_enqueue_ms": 0.0391895,
+      "input_wait_ms": 0.203216,
+      "serial_gpu_ms": 6e-05,
+      "d2h_ms": 0.150382,
+      "input_scan_ms": 0.1161175,
+      "mutex_wait_ms": 0.00065,
+      "bo_write_ms": 0.202211,
+      "bo_sync_ms": 0.092768,
+      "run_start_ms": 0.059794,
+      "run_wait_ms": 13.156072,
+      "y_sync_ms": 0.073268,
+      "y_read_ms": 0.207636,
+      "output_scan_ms": 0.057434,
+      "h2d_ms": 0.3423385,
+      "gpu_wait_ms": 0.002135,
+      "sum_ms": 0.3384085,
+      "calls": 640
+    }
+  }
+}
+method,prompt_tokens,prefill_median_ms,prefill_min_ms,prefill_max_ms,merged_ffn_verdict
+merged_ffn_hetero,1024,1643.360925023444,1618.4664540924132,1652.7082939865068,active
+model/merged_ffn_hetero-1024-r0.result.log:IOCTL_COUNTS ctx_ok=3 exec_ok=12768 exec_fail=0 legacy_ok=0 legacy_fail=12064 timeline_ok=12768 timeline_fail=0
+
+=== 21:39:36 UTC done
+exit=0
