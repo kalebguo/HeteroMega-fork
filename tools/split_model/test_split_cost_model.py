@@ -15,32 +15,32 @@ class SplitCostModelTests(unittest.TestCase):
         gpu = model.read_gpu_points()
         self.assertEqual(sorted(gpu), [10240, 14336])
         self.assertAlmostEqual(gpu[14336], 20.222 * 0.980, places=6)
-        self.assertAlmostEqual(self.cal["path_concurrent"], 32.46, delta=0.01)
-        self.assertEqual(self.cal["p_measured"], 6400)
-        ffn = self.cal["profile"]["ffn"]
-        self.assertAlmostEqual(ffn["hetero_serial-detail-sync"]["per_layer_chunk_ms"], (437.1 + 49.4 + 422.2) / 64, delta=0.05)
+        self.assertAlmostEqual(self.cal["t_npu_measured"], 11.098, delta=0.001)
+        self.assertAlmostEqual(self.cal["ffn_measured"], 12.601, delta=0.002)
+        self.assertEqual(sorted({s["npu_channels"] for s in self.cal["sweep"]}), [4352, 6144, 6400, 6656])
 
-    def test_every_scenario_reproduces_the_calibration_point(self):
-        for name in model.SCENARIOS:
-            m = model.scenario_model(self.cal, name)
-            self.assertAlmostEqual(m["predict"](6400)["code_ordered"], self.cal["path_concurrent"], places=9)
-            self.assertGreater(m["b_n"], 0)
+    def test_phases_explain_the_measured_prefill(self):
+        predicted = model.LAYER_CHUNKS * (self.cal["outside"] + self.cal["ffn_measured"])
+        self.assertLess(abs(predicted / self.cal["eval"][("merged_ffn", 1024)] - 1), 0.01)  # documents the observed 0.1%
+
+    def test_npu_bound_scenarios_reproduce_the_calibration_point(self):
+        for name, level in model.scenarios(self.cal).items():
+            self.assertAlmostEqual(model.predict(self.cal, level, model.P_MEASURED)["T"], self.cal["ffn_measured"], places=9, msg=name)
+
+    def test_fits_have_physical_signs(self):
+        self.assertGreater(self.cal["b_npu"], 0)
+        self.assertGreater(self.cal["b_gpu"], 0)
+        self.assertGreater(self.cal["gpu_upper"], self.cal["gpu_isolated"])
 
     def test_candidates_respect_the_contract(self):
-        self.assertTrue(all(p % 256 == 0 and 0 < p <= 8192 for p in model.VALID_P + model.CANDIDATES))
-        best = model.best(model.scenario_model(self.cal, "central"), "code_ordered")
-        self.assertIn(best["p"], model.VALID_P)
+        self.assertTrue(all(p % 256 == 0 and 0 < p <= 8192 for p in model.VALID_P + model.TABLE_P))
+        for level in model.scenarios(self.cal).values():
+            self.assertIn(model.best(self.cal, level)["p"], model.VALID_P)
 
-    def test_measured_evaluation_is_read_and_close_to_the_smoke_prediction(self):
-        ev = self.cal["evaluation"]
-        self.assertAlmostEqual(ev[("merged_ffn", 1024)], 2558.706, places=2)
-        extra = (ev[("merged_ffn", 1024)] - ev[("gpu_original", 1024)]) / 64
-        predicted = self.cal["path_concurrent"] - model._hm_total(self.cal)
-        self.assertLess(abs(predicted / extra - 1), 0.15)  # documents the observed 7%; not a tolerance on results
-
-    def test_report_labels_estimates_and_gaps(self):
+    def test_report_states_the_decision_corrections_and_gaps(self):
         text = model.report(self.cal)
-        for phrase in ("estimated", "What the data cannot determine", "Experiment on the AUP box", "Main B"):
+        for phrase in ("Do not build other split ratios", "Corrections to the previous version", "estimated",
+                       "What the data cannot determine", "heteromosaic_mdown"):
             self.assertIn(phrase, text)
 
 

@@ -1,0 +1,49 @@
+heteromosaic length=1024 round=0: [HETEROMEGA_GPU_FFN=0 HETEROMEGA_FFN_FINITE_CHECK=sampled HETEROMOSAIC_ROOT=/notebooks/hm-fix] /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/kernels/gpu/tools/run_model_ffn.py --ref /notebooks/hm-fix/docs/runs/2026-10-12-aup/gpu-model-result.json --out /notebooks/hm-results/2026-11-02/fix-step3c/head-to-head/heteromosaic-1024-r0.result.json --build build --config py/unified_llm_w4a16/configs/configs_strixP_llama3_8b.json5 --heterogeneity hetero --prompt-tokens 1024 --reps 5 --new-tokens 64 --gpu-chunk-size 512 --model /notebooks/hm-model/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
+merged_ffn length=1024 round=0: [HETEROMEGA_GPU_FFN=0 HETEROMEGA_FFN_CONFIG=/notebooks/hm-fix/deployment.json HETEROMEGA_FFN_FINITE_CHECK=sampled HETEROMOSAIC_ROOT=/notebooks/hm-fix] /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/kernels/gpu/tools/run_model_ffn.py --ref /notebooks/hm-fix/docs/runs/2026-10-12-aup/gpu-model-result.json --out /notebooks/hm-results/2026-11-02/fix-step3c/head-to-head/merged_ffn-1024-r0.result.json --build build --config py/unified_llm_w4a16/configs/configs_strixP_llama3_8b.json5 --heterogeneity gpu --prompt-tokens 1024 --reps 5 --new-tokens 64 --gpu-chunk-size 512 --model /notebooks/hm-model/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
+merged_ffn length=1024 round=1: [HETEROMEGA_GPU_FFN=0 HETEROMEGA_FFN_CONFIG=/notebooks/hm-fix/deployment.json HETEROMEGA_FFN_FINITE_CHECK=sampled HETEROMOSAIC_ROOT=/notebooks/hm-fix] /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/kernels/gpu/tools/run_model_ffn.py --ref /notebooks/hm-fix/docs/runs/2026-10-12-aup/gpu-model-result.json --out /notebooks/hm-results/2026-11-02/fix-step3c/head-to-head/merged_ffn-1024-r1.result.json --build build --config py/unified_llm_w4a16/configs/configs_strixP_llama3_8b.json5 --heterogeneity gpu --prompt-tokens 1024 --reps 5 --new-tokens 64 --gpu-chunk-size 512 --model /notebooks/hm-model/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
+heteromosaic length=1024 round=1: [HETEROMEGA_GPU_FFN=0 HETEROMEGA_FFN_FINITE_CHECK=sampled HETEROMOSAIC_ROOT=/notebooks/hm-fix] /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/kernels/gpu/tools/run_model_ffn.py --ref /notebooks/hm-fix/docs/runs/2026-10-12-aup/gpu-model-result.json --out /notebooks/hm-results/2026-11-02/fix-step3c/head-to-head/heteromosaic-1024-r1.result.json --build build --config py/unified_llm_w4a16/configs/configs_strixP_llama3_8b.json5 --heterogeneity hetero --prompt-tokens 1024 --reps 5 --new-tokens 64 --gpu-chunk-size 512 --model /notebooks/hm-model/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
+[
+  {
+    "method": "heteromosaic",
+    "prompt_tokens": 1024,
+    "dummy": false,
+    "samples": 10,
+    "prefill_median_ms": 1317.5793849513866,
+    "prefill_min_ms": 1290.6793820438907,
+    "prefill_max_ms": 1341.895119054243,
+    "speedup_vs_gpu": "",
+    "tokens_match_gpu": null,
+    "speedup_vs_heteromosaic": 1.0,
+    "tokens_match_heteromosaic": true,
+    "matches_reference": true,
+    "gpu_ffn_active": null,
+    "merged_ffn_expected_per_pass": 0,
+    "merged_ffn_passes": 22,
+    "merged_ffn_completions": 0,
+    "merged_ffn_wrong_passes": 0,
+    "merged_ffn_verdict": "clean",
+    "npu_execution": "unverified"
+  },
+  {
+    "method": "merged_ffn",
+    "prompt_tokens": 1024,
+    "dummy": false,
+    "samples": 10,
+    "prefill_median_ms": 1336.2181220436469,
+    "prefill_min_ms": 1329.1051849955693,
+    "prefill_max_ms": 1384.1188569786027,
+    "speedup_vs_gpu": "",
+    "tokens_match_gpu": null,
+    "speedup_vs_heteromosaic": 0.9860511268446549,
+    "tokens_match_heteromosaic": true,
+    "matches_reference": true,
+    "gpu_ffn_active": null,
+    "merged_ffn_expected_per_pass": 64,
+    "merged_ffn_passes": 22,
+    "merged_ffn_completions": 1408,
+    "merged_ffn_wrong_passes": 0,
+    "merged_ffn_verdict": "active",
+    "npu_execution": "merged_ffn_counted"
+  }
+]
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0

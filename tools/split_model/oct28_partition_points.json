@@ -1,0 +1,67 @@
+{
+ "source": "docs/runs/2026-10-28-merged-npu/ on origin/codex/npu-merged-kernel-parallel (e6ca183), medians of samples[] per mode",
+ "label": "measured on AUP, Python harness, synthetic weights, one layer, report numerical policy",
+ "gpu_branch_serial_ms": "serial wall minus NPU host branch, input D2H and output stage",
+ "points": [
+  {
+   "file": "p4352_partition.json",
+   "npu_channels": 4352,
+   "samples_per_mode": 10,
+   "concurrent_ms": 15.569,
+   "serial_ms": 26.265,
+   "gpu_baseline_ms": 21.948,
+   "npu_wait_concurrent_ms": 7.802,
+   "gpu_branch_serial_ms": 16.058
+  },
+  {
+   "file": "p6144_partition.json",
+   "npu_channels": 6144,
+   "samples_per_mode": 5,
+   "concurrent_ms": 14.184,
+   "serial_ms": 26.92,
+   "gpu_baseline_ms": 22.27,
+   "npu_wait_concurrent_ms": 11.235,
+   "gpu_branch_serial_ms": 13.572
+  },
+  {
+   "file": "p6400_partition.json",
+   "npu_channels": 6400,
+   "samples_per_mode": 5,
+   "concurrent_ms": 13.867,
+   "serial_ms": 26.391,
+   "gpu_baseline_ms": 22.458,
+   "npu_wait_concurrent_ms": 11.194,
+   "gpu_branch_serial_ms": 13.259
+  },
+  {
+   "file": "b0_p6400.json",
+   "npu_channels": 6400,
+   "samples_per_mode": 100,
+   "concurrent_ms": 14.274,
+   "serial_ms": 26.762,
+   "gpu_baseline_ms": 22.331,
+   "npu_wait_concurrent_ms": 11.514,
+   "gpu_branch_serial_ms": 13.125
+  },
+  {
+   "file": "b1_p6400.json",
+   "npu_channels": 6400,
+   "samples_per_mode": 100,
+   "concurrent_ms": 14.585,
+   "serial_ms": 27.257,
+   "gpu_baseline_ms": 22.275,
+   "npu_wait_concurrent_ms": 11.71,
+   "gpu_branch_serial_ms": 13.126
+  },
+  {
+   "file": "p6656_partition.json",
+   "npu_channels": 6656,
+   "samples_per_mode": 5,
+   "concurrent_ms": 14.348,
+   "serial_ms": 26.644,
+   "gpu_baseline_ms": 22.547,
+   "npu_wait_concurrent_ms": 11.579,
+   "gpu_branch_serial_ms": 12.667
+  }
+ ]
+}
