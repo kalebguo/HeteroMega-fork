@@ -223,6 +223,30 @@ class EvaluationTests(unittest.TestCase):
         configs = {method: cmd[cmd.index("--config") + 1] for method, _, _, cmd, _, _ in evaluation.cases(args)}
         self.assertEqual(configs, {"heteromosaic": "shipped.json5", "heteromosaic_mdown": "mdown.json"})
 
+    def test_gateup_and_p8192_methods_alone_receive_their_configs(self):
+        args = types.SimpleNamespace(prompt_tokens=[1024], rounds=1, out=Path("out"), ref=Path("ref.json"), build="build",
+                                     methods=["heteromosaic", "heteromosaic_gateup", "merged_ffn", "merged_ffn_p8192"],
+                                     config="shipped.json5", mdown_config=None, gateup_config="gateup.json", reps=1, new_tokens=1,
+                                     dummy=True, merged_ffn_config=Path("p6400.json"), p8192_ffn_config=Path("p8192.json"))
+        cases = list(evaluation.cases(args))
+        self.assertEqual({method: cmd[cmd.index("--config") + 1] for method, _, _, cmd, _, _ in cases},
+                         {"heteromosaic": "shipped.json5", "heteromosaic_gateup": "gateup.json",
+                          "merged_ffn": "shipped.json5", "merged_ffn_p8192": "shipped.json5"})
+        self.assertEqual({method: env.get("HETEROMEGA_FFN_CONFIG") for method, _, _, _, env, _ in cases},
+                         {"heteromosaic": None, "heteromosaic_gateup": None, "merged_ffn": "p6400.json", "merged_ffn_p8192": "p8192.json"})
+
+    def test_p8192_method_refuses_another_artifact(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            artifact = Path(tmp) / "artifact"
+            artifact.mkdir()
+            (artifact / "final.xclbin.json").write_text(json.dumps(dict(m=512, hidden=4096, weight_n=14336, channels=6400)))
+            config = Path(tmp) / "deployment.json"
+            config.write_text(json.dumps(dict(artifact_dir="artifact")))
+            result = subprocess.run([sys.executable, str(Path(evaluation.__file__)), "--out", tmp, "--model", tmp, "--methods", "merged_ffn_p8192",
+                                     "--p8192-ffn-config", str(config), "--gpu-chunk-size", "512"], capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("8192 NPU channels", result.stderr)
+
     def test_merged_cli_guards(self):
         def dry(*extra):
             return subprocess.run([sys.executable, str(Path(evaluation.__file__)), "--out", tmp, "--dry-run", *extra],

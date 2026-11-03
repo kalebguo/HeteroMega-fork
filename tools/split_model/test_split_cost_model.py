@@ -4,7 +4,19 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import make_gateup_config  # noqa: E402
 import split_cost_model as model  # noqa: E402
+
+
+class GateUpConfigTests(unittest.TestCase):
+    def test_moves_only_gate_and_up_at_1024_tokens(self):
+        entry = lambda layer: dict(use=True, layer=layer, npuM=256, fw_path="shipped/")  # noqa: E731
+        config = dict(kernels_gemm_chunked=[dict(prompt_len=1024, kernels=[entry("q"), entry("up"), entry("gate"), entry("down")]),
+                                            dict(prompt_len=2048, kernels=[entry("gate")])])
+        self.assertEqual(make_gateup_config.enable_all_rows(config), 2)
+        rows = {e["layer"]: e["npuM"] for e in config["kernels_gemm_chunked"][0]["kernels"]}
+        self.assertEqual(rows, dict(q=256, up=512, gate=512, down=256))
+        self.assertEqual(config["kernels_gemm_chunked"][1]["kernels"][0]["npuM"], 256)
 
 
 class SplitCostModelTests(unittest.TestCase):

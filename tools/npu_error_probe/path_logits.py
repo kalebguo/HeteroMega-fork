@@ -39,7 +39,8 @@ MAX_SEQ_LEN = 1600
 BOS = 128000
 # method: (heterogeneity, merged GPU+NPU FFN); same meaning as kernels/gpu/tools/evaluate_prefill.py METHODS
 METHODS = {"gpu_original": ("gpu", False), "merged_ffn": ("gpu", True), "heteromosaic": ("hetero", False),
-           "merged_ffn_hetero": ("hetero", True), "heteromosaic_mdown": ("hetero", False)}  # mdown: pass its --config
+           "merged_ffn_hetero": ("hetero", True), "heteromosaic_mdown": ("hetero", False),  # mdown: pass its --config
+           "heteromosaic_gateup": ("hetero", False), "merged_ffn_p8192": ("gpu", True)}  # pass --config, --merged-ffn-config
 REFERENCE = "gpu_original"
 SWITCHES = ("HETEROMEGA_FFN_CONFIG", "HETEROMEGA_GPU_FFN", "HETEROMEGA_GPU_FFN_SPLIT")
 
@@ -116,6 +117,12 @@ def load_model(args, heterogeneity, merged, prompt_tokens, out):
                   debug_verbosity=1, dummy_weights=False)
     chunking = dict(config.get("gpu_chunking") or {})
     chunking["gpu_chunk_size"] = CHUNK
+    inflight = getattr(args, "inflight", None)  # as run_model_ffn.py --inflight
+    if inflight is not None:
+        chunking["gpu_chunking_inflight"] = inflight
+        for group in config.get("kernels_gemm_chunked", []):
+            if group.get("prompt_len") == prompt_tokens:
+                group["hetero_inflight"] = inflight
     config["gpu_chunking"] = chunking
     out.parent.mkdir(parents=True, exist_ok=True)
     config_path = out.with_suffix(".config.json")
