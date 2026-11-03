@@ -28,7 +28,8 @@ for seed in 1 2; do
   path merged_ffn 0
   path merged_ffn_p8192 0 --merged-ffn-config "$PREP/deployment-p8192.json"
   path heteromosaic 0
-  path heteromosaic_gateup 0 --config "$PREP/gateup.config.json"
+  path heteromosaic_gateup 0 --config "$PREP/gateup-8192family.config.json"
+  path heteromosaic_gateup16384 0 --config "$PREP/gateup.config.json"
   path gpu_original 1
   step "seed $seed: comparison"
   python3 tools/npu_error_probe/path_logits.py --compare "$DIR" --json "$OUT/comparison-$seed.json" 2>&1 | cut -c1-260 || status=$?

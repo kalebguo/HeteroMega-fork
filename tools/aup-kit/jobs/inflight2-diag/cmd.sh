@@ -25,7 +25,7 @@ native() { # method inflight
     name=$1-i$2
     step "timed ioctls: $name"
     LD_PRELOAD=$TRACER HETEROMEGA_IOCTL_LOG=$OUT/ioctl-$name python3 kernels/gpu/tools/evaluate_prefill.py --model "$MODEL" --build build --out "$OUT/$name" \
-      --methods "$1" --gateup-config "$PREP/gateup.config.json" --inflight "$2" --prompt-tokens 1024 --rounds 1 --new-tokens 1 \
+      --methods "$1" --gateup-config "$PREP/gateup-8192family.config.json" --inflight "$2" --prompt-tokens 1024 --rounds 1 --new-tokens 1 \
       2>&1 | tee "$OUT/$name.log" | cut -c1-160 | tail -1
     cut -d, -f1,2,5,6,7,12 "$OUT/$name/summary.csv" | tail -1
 }

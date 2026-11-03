@@ -21,7 +21,7 @@ run() { # method inflight repeat [extra arguments]
       --out "$OUT/runs/$name.json" "$@" > "$OUT/$name.log" 2>&1
     tail -1 "$OUT/$name.log" | cut -c1-300
 }
-GATEUP=(--config "$PREP/gateup.config.json")
+GATEUP=(--config "$PREP/gateup-8192family.config.json")
 P8192=(--merged-ffn-config "$PREP/deployment-p8192.json")
 mkdir -p "$OUT/runs"
 step "energy, two inflight chunks, A B C D D C B A"
