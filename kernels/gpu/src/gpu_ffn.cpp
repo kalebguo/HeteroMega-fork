@@ -2,6 +2,9 @@
 
 #include "hipkernels/w4a16_gemm_packed.hpp"
 
+#include <cstdlib>
+#include <string>
+
 #ifndef HETEROMEGA_GPU_FUSE_ACT
 #define HETEROMEGA_GPU_FUSE_ACT 0
 #endif
@@ -47,12 +50,22 @@ void packed_linear(torch::Tensor &out, const torch::Tensor &in, const torch::Ten
     } else if (m == 1) {
         TORCH_CHECK(pk == k, "packed_linear: the HeteroMosaic GEMV cannot skip rows of the packed matrix");
         hipkernels::w4a16_gemv_fused_packed(out, in, packed, k, n, pn, 0, stream);
+    } else if (opt.gemm == GemmKernel::kHeteroMega && !opt.fuse_activation && gemm_w4a16_supports(m, k, n)) {
+        gemm_w4a16(out, in, packed, k, n, pk, pn, stream);
     } else {
         TORCH_CHECK(storage_has_rows(in, padded_rows(m)), "packed_linear: input storage must hold ", padded_rows(m),
                     " rows for M = ", m, " (the GEMM reads whole 128-row tiles)");
         hipkernels::w4a16_gemm_fused_packed_tiles(out, in, packed, k, n,
             pk / kTileK, pn / kTileN, stream, opt.fuse_activation);
     }
+}
+
+GemmKernel configured_gemm_kernel() {
+    static const GemmKernel kernel = [] {
+        const char *v = std::getenv("HETEROMEGA_GEMM");
+        return v != nullptr && std::string(v) == "fast" ? GemmKernel::kHeteroMega : GemmKernel::kHeteroMosaic;
+    }();
+    return kernel;
 }
 
 GpuFfnBuffers GpuFfnBuffers::allocate(int64_t max_m, int64_t channels, int64_t hidden, const torch::Device &device) {
@@ -82,11 +95,19 @@ void gpu_ffn_slice_forward(const FfnSliceWeights &w, const torch::Tensor &x_norm
         TORCH_CHECK(err == hipSuccess, "gpu_ffn_slice_forward: copy to x_pad failed: ", hipGetErrorString(err));
     }
 
+    // HETEROMEGA_FFN_FUSE=1 with the fast GEMM: one pass for gate, up and the activation. HeteroMosaic's own kernels never take this path.
+    static const bool fuse = std::getenv("HETEROMEGA_FFN_FUSE") != nullptr && std::atoi(std::getenv("HETEROMEGA_FFN_FUSE")) != 0;
+    if (fuse && configured_gemm_kernel() == GemmKernel::kHeteroMega && w.layout == GateUpLayout::kInterleaved && gemm_w4a16_ffn_supports(m, h, n)) {
+        gemm_w4a16_ffn(y, x, w.gate_up, w.down, h, n, stored, stream);
+        return;
+    }
+
     auto gate_up = leading(buf.gate_up, m, 2 * n);
     auto act = leading(buf.act, m, n);
     LinearOptions gate_up_opt, down_opt;
     gate_up_opt.packed_n = 2 * stored;
     down_opt.packed_k = stored;
+    gate_up_opt.gemm = down_opt.gemm = configured_gemm_kernel();
 #if HETEROMEGA_GPU_FUSE_ACT
     gate_up_opt.fuse_activation = true;
     packed_linear(act, x, w.gate_up, h, 2 * n, stream, gate_up_opt);

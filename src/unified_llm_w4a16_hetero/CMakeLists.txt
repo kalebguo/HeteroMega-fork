@@ -56,7 +56,9 @@ option(HETEROMEGA_GPU_FFN "Build the HeteroMega GPU FFN path into the model libr
 option(HETEROMEGA_MERGED_FFN "Build opt-in complete GPU-NPU FFN deployment through C++ XRT" OFF)
 if(HETEROMEGA_GPU_FFN OR HETEROMEGA_MERGED_FFN)
     set(HM_GPU_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../kernels/gpu)
-    set(HM_GPU_HIP_SOURCES ${HM_GPU_DIR}/src/silu_mul.cu ${HM_GPU_DIR}/src/residual_add.cu ${HM_GPU_DIR}/src/gemv_w4a16.cu)
+    set(HM_GPU_HIP_SOURCES ${HM_GPU_DIR}/src/silu_mul.cu ${HM_GPU_DIR}/src/residual_add.cu ${HM_GPU_DIR}/src/gemv_w4a16.cu
+        ${HM_GPU_DIR}/src/gemm_w4a16.cu
+        ${HM_GPU_DIR}/src/sdpa_bf16.cu ${HM_GPU_DIR}/src/residual_norm.cu)
     set_source_files_properties(${HM_GPU_HIP_SOURCES} PROPERTIES LANGUAGE HIP)
     add_library(heteromega_gpu_ffn STATIC
         ${HM_GPU_HIP_SOURCES}

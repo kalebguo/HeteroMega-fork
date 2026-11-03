@@ -153,6 +153,10 @@ class RMSNormImpl : public torch::nn::Module {
     // Setter for weight loading
     void set_weight(torch::Tensor weight);
 
+    const torch::Tensor &weight() const { return weight_; }
+    float eps() const { return eps_; }
+    bool gemma_style() const { return gemma_style_; }
+
   private:
     float eps_;
     bool gemma_style_;

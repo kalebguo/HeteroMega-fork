@@ -21,8 +21,9 @@ class MergedFfn {
     const MergedFfnConfig &config() const;
     bool supports(int64_t rows, int64_t hidden, int64_t intermediate) const;
     void add_layer(const torch::Tensor &gate, const torch::Tensor &up, const torch::Tensor &down);
+    // With sum = false, output stays unwritten and the caller adds the partials on current_stream.
     MergedFfnResult forward(int64_t layer, const torch::Tensor &normalized, torch::Tensor output,
-                            hipStream_t current_stream, bool serial = false);
+                            hipStream_t current_stream, bool serial = false, bool sum = true);
     uint64_t completed_dispatches() const;
 
   private:

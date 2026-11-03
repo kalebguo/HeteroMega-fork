@@ -3,6 +3,7 @@
 //   merged  + gate and up as one GEMM. SiLU and multiply are still two Torch ops
 //   fused   + one SiLU-and-multiply kernel. For M = 1 all three use HeteroMosaic's GEMV
 //   gemv    fused with gemv_w4a16 instead of HeteroMosaic's GEMV: the gpu_ffn_slice_forward path. M = 1 only
+//   fast    fused with gemm_w4a16
 //   dense   reference only: the same math with unquantized bf16 weights and torch::mm (hipBLASLt)
 // No variant syncs the host between stages (HeteroMosaic waits on futures there), so the numbers compare kernels only.
 //
@@ -149,6 +150,14 @@ int main(int argc, char **argv) {
                     {"dense", [&] { at::mm_out(gate_up, x, w.dense_gate_up); }, [&] { silu_mul(gate_up, act, stream); },
                      [&] { at::mm_out(y, act, w.dense_down); }, 3.0, dense},
                 };
+                // fused with gemm_w4a16. M must be a multiple of 128.
+                LinearOptions fast;
+                fast.gemm = GemmKernel::kHeteroMega;
+                variants.push_back({"fast", [&, fast] { packed_linear(gate_up, x, w.gate_up, kHidden, 2 * s, stream, fast); },
+                                    [&] { silu_mul(gate_up, act, stream); }, [&, fast] { packed_linear(y, act, w.down, s, kHidden, stream, fast); },
+                                    3.0, packed_merged});
+                // One pass for gate, up and the activation, all of it in the gemm1 column. The weights are random, so the layout of w.gate_up makes no difference.
+                variants.push_back({"fuse", [&] { gemm_w4a16_ffn(y, x, w.gate_up, w.down, kHidden, s, s, stream); }, [] {}, [] {}, 1.0, packed_merged});
                 std::vector<Variant> order;
                 for (auto &v : variants) {
                     if (wanted.find("," + v.name + ",") != std::string::npos && (v.name != "gemv" || m == 1)) {

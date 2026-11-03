@@ -98,6 +98,63 @@ void silu_mul(const torch::Tensor &gate_up, torch::Tensor &act, hipStream_t stre
 void gemv_w4a16(torch::Tensor &out, const torch::Tensor &x, const torch::Tensor &packed, int64_t k, int64_t n,
                 int64_t packed_k, int64_t packed_n, int split_k, hipStream_t stream);
 
+// W4A16 GEMM on the packed layout: out[M, n] = x[M, k] @ W[:k, :n], where W is a packed [packed_k, packed_n] matrix.
+// M, k and n must be multiples of 128 (gemm_w4a16_supports). Unlike HeteroMosaic's GEMM, WMMA gets exact integer weights, and
+// zero and scale are applied in fp32 once per tile. So its result differs from HeteroMosaic's by rounding.
+// Enqueues 2 kernels on `stream` and does not synchronize. Each stream keeps one scratch buffer of M * k * 2 bytes and the row sums.
+void gemm_w4a16(torch::Tensor &out, const torch::Tensor &x, const torch::Tensor &packed, int64_t k, int64_t n, int64_t packed_k,
+                int64_t packed_n, hipStream_t stream);
+bool gemm_w4a16_supports(int64_t m, int64_t k, int64_t n);
+// With HETEROMEGA_GEMM_UNCACHED=1: the same bytes in uncached memory, for a matrix that only gemm_w4a16 reads. The caller drops `packed`, so the
+// process does not hold the matrix twice. The result lives until the process ends. Otherwise, or without memory, this returns `packed`.
+torch::Tensor gemm_uncached_weights(const torch::Tensor &packed);
+// The FFN of n channels as one pass: gate_up is packed [h, 2 * stored] with GateUpLayout::kInterleaved and down is packed [stored, h]. The result is that of
+// gemm_w4a16, silu_mul and gemm_w4a16, without the gate and up outputs in memory and without a second input preparation.
+bool gemm_w4a16_ffn_supports(int64_t m, int64_t h, int64_t n);
+void gemm_w4a16_ffn(torch::Tensor &y, const torch::Tensor &x, const torch::Tensor &gate_up, const torch::Tensor &down, int64_t h, int64_t n, int64_t stored, hipStream_t stream);
+// While one of these lives on a thread, gemm_w4a16 calls with the same x, k and stream prepare the input once. x must not change
+// meanwhile. For Q, K and V of a layer, which read one input.
+class GemmInputReuse {
+  public:
+    GemmInputReuse();
+    ~GemmInputReuse();
+    GemmInputReuse(const GemmInputReuse &) = delete;
+    GemmInputReuse &operator=(const GemmInputReuse &) = delete;
+    // The next gemm_w4a16 with this x, k and stream finds its input in gemm_input_buffers already.
+    void mark_prepared(const void *x, int64_t k, hipStream_t stream);
+    // How many gemm_w4a16 calls on this thread have used an input that was already prepared.
+    int hits() const;
+};
+// Where gemm_w4a16 keeps its prepared input for M rows of k columns on this stream.
+void gemm_input_buffers(int64_t m, int64_t k, hipStream_t stream, float **sums, uint16_t **tiles);
+
+// ---- Between two GEMMs ------------------------------------------
+
+// One dispatch for x += a + b, RMSNorm of x with this weight and eps, and the prepared input of the next gemm_w4a16 of k = h on this thread and stream, which must have x = gemm_x.
+// a and b can be null, then x stays as it is. All are bf16 rows of h values. With normed, the result also goes to memory in row order.
+// Without normed, gemm_x stays unwritten: the caller checks gemm_input.hits() after the GEMMs, because a call that takes another kernel would read it.
+bool residual_norm_supports(int64_t m, int64_t h);
+void residual_norm_bf16(uint16_t *x, const uint16_t *a, const uint16_t *b, const uint16_t *weight, uint16_t *normed, const void *gemm_x, GemmInputReuse &gemm_input, int64_t m, int64_t h,
+                        int64_t x_stride, int64_t a_stride, int64_t b_stride, int64_t normed_stride, float eps, hipStream_t stream);
+
+// ---- Causal attention for prefill ------------------------------------------
+
+// Scaled dot product attention on bf16, with a causal mask, for a chunk of Q rows against the keys in the cache.
+//   out[row * out_row_stride + head * 128 + d] = attention output of Q row `row`, head `head`, dimension d
+//   q[row * q_row_stride + head * 128 + d]
+//   k_cache[(g * capacity + key) * 128 + d], g = head / (q_heads / kv_heads)
+//   v_tiles: V of the same layer, from sdpa_store_v
+// Q row r sees keys 0 .. r + mask_offset. Runs on `stream` with no host wait.
+// With gemm_x, `out` stays unwritten. The next gemm_w4a16 of x = out, k = q_heads * 128 on this thread and stream reads the result, as the input that it has prepared
+// already. The caller checks gemm_x->hits() after that GEMM, because a call that takes another kernel would read `out`.
+bool sdpa_bf16_supports(int64_t q_rows, int64_t keys, int64_t q_heads, int64_t kv_heads, int64_t head_dim);
+void sdpa_bf16(uint16_t *out, int64_t out_row_stride, const uint16_t *q, int64_t q_row_stride, const uint16_t *k_cache, const uint16_t *v_tiles, int64_t q_rows,
+               int64_t q_heads, int64_t kv_heads, int64_t capacity, int64_t keys, int64_t mask_offset, hipStream_t stream, GemmInputReuse *gemm_x = nullptr);
+// The buffer for V of one layer, allocated at first use. It lives until the process ends.
+uint16_t *sdpa_v_tiles(int64_t layer, int64_t kv_heads, int64_t capacity, int64_t head_dim);
+// Copies keys first_key .. first_key + keys - 1 from v_cache[(g * capacity + key) * 128 + d] to the tiles. Both are multiples of 32.
+void sdpa_store_v(uint16_t *tiles, const uint16_t *v_cache, int64_t kv_heads, int64_t capacity, int64_t first_key, int64_t keys, hipStream_t stream);
+
 // Reducer R-GPU: x += y_g + y_n. x is bf16 [M, H]. y_g and y_n are bf16 or fp32 [M, H].
 void residual_add2(torch::Tensor &x, const torch::Tensor &y_g, const torch::Tensor &y_n, hipStream_t stream);
 
@@ -130,12 +187,21 @@ enum class GemvKernel {
     kHeteroMosaic, // hipkernels::w4a16_gemv_fused_packed (the baseline's kernel)
 };
 
+enum class GemmKernel {
+    kHeteroMosaic, // hipkernels::w4a16_gemm_fused_packed_tiles (the baseline's kernel)
+    kHeteroMega,   // gemm_w4a16 where gemm_w4a16_supports() allows it, else the baseline's kernel
+};
+
+// The GEMM kernel that the merged path uses: kHeteroMega if HETEROMEGA_GEMM=fast at the first call, else kHeteroMosaic.
+GemmKernel configured_gemm_kernel();
+
 struct LinearOptions {
     int64_t packed_k = 0; // rows of the whole packed matrix; 0 means k
     int64_t packed_n = 0; // columns of the whole packed matrix; 0 means n
     GemvKernel gemv = GemvKernel::kHeteroMega;
     int gemv_split_k = 0; // see gemv_w4a16
     bool fuse_activation = false; // gate/up only: write SiLU(gate)*up [M,n/2]
+    GemmKernel gemm = GemmKernel::kHeteroMosaic;
 };
 
 // Packed matmul: out[M, n] = in[M, k] @ W[:k, :n]. GEMV for M == 1, GEMM otherwise.

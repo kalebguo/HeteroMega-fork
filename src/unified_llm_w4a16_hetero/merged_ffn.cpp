@@ -8,11 +8,13 @@
 #include <xrt/xrt_kernel.h>
 #include <xrt/xrt_hw_context.h>
 #include <openssl/evp.h>
+#include <sys/mman.h>
 #include <unistd.h>
 #include <array>
 #include <atomic>
 #include <chrono>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -82,13 +84,15 @@ struct Stream {
     Stream &operator=(const Stream &) = delete;
 };
 
-void require_finite_bf16(const torch::Tensor &host, const char *name, FiniteCheck mode) {
-    const auto first = find_nonfinite_bf16(static_cast<const uint16_t *>(host.data_ptr()), host.size(0), host.size(1), mode);
+void require_finite_bf16(const void *host, int64_t rows, int64_t columns, const char *name, FiniteCheck mode) {
+    const auto first = find_nonfinite_bf16(static_cast<const uint16_t *>(host), rows, columns, mode);
     TORCH_CHECK(first < 0, "merged FFN: nonfinite ", name, " at element ", first);
 }
 
 // HETEROMEGA_FFN_TIMERS=<directory> writes one CSV per process with one row per forward call. Diagnostic only: it adds
-// host waits for the H2D copy, the GPU branch and the sum, which the normal path leaves asynchronous.
+// host waits for the H2D copy, the GPU branch and the sum, which the normal path leaves asynchronous. start_abs is the steady clock at
+// the start of the call and gpu_branch_ns the GPU time from input ready to the end of the GPU branch.
+// HETEROMEGA_FFN_SERIAL_GPU=1 (diagnostic) runs the GPU branch before the NPU, so the branch runs without the NPU.
 enum Phase { kSetup, kPrevWait, kGpuEnqueue, kInputWait, kSerialGpu, kD2h, kInputScan, kMutexWait, kBoWrite, kBoSync,
              kRunStart, kRunWait, kYSync, kYRead, kOutputScan, kH2d, kGpuWait, kSum, kPhaseCount };
 constexpr std::array<const char *, kPhaseCount> kPhaseNames = {
@@ -157,6 +161,10 @@ struct Slot {
     bool pending = false;
     GpuFfnBuffers gpu;
     torch::Tensor host_x, host_y, y_gpu, y_npu;
+    // HETEROMEGA_FFN_SLOT_BO=2: own NPU buffers, so the host copies need not hold the NPU. x_map and y_map are the buffers' memory and HIP copies
+    // straight to it, which removes one copy per direction. GPU kernels do not use that memory directly: measured slower than the HIP copies.
+    xrt::bo x_bo, y_bo;
+    void *x_map = nullptr, *y_map = nullptr;
     Slot(const MergedFfnConfig &c, const torch::Device &device, int slot_id)
         : id(slot_id), device_index(device.index()),
           gpu(GpuFfnBuffers::allocate(c.m, c.intermediate - c.npu_channels, c.hidden, device)) {
@@ -173,6 +181,8 @@ struct Slot {
         (void)hipSetDevice(device_index);
         if (pending) (void)hipEventSynchronize(done.value);
         (void)hipStreamSynchronize(transfer.value);
+        if (x_map != nullptr) (void)hipHostUnregister(x_map);
+        if (y_map != nullptr) (void)hipHostUnregister(y_map);
         if (previous >= 0) (void)hipSetDevice(previous);
     }
 };
@@ -189,16 +199,19 @@ struct MergedFfn::Impl {
     FiniteCheck finite_check;
     std::mutex timer_mutex;
     std::ofstream timer_file;
+    const bool serial_gpu = std::getenv("HETEROMEGA_FFN_SERIAL_GPU") != nullptr;
+    const int slot_bo = std::getenv("HETEROMEGA_FFN_SLOT_BO") != nullptr ? std::atoi(std::getenv("HETEROMEGA_FFN_SLOT_BO")) : 0;
 
     explicit Impl(const std::string &path)
         : config(MergedFfnConfig::load(path)), finite_check(parse_finite_check(std::getenv("HETEROMEGA_FFN_FINITE_CHECK"))) {
+        TORCH_CHECK(slot_bo == 0 || slot_bo == 2, "merged FFN: HETEROMEGA_FFN_SLOT_BO must be 0 or 2");
         const char *directory = std::getenv("HETEROMEGA_FFN_TIMERS");
         if (directory == nullptr || *directory == '\0') return;
         std::filesystem::create_directories(directory);
         const auto file = std::filesystem::path(directory) / ("merged_ffn_phases_" + std::to_string(getpid()) + ".csv");
         timer_file.open(file);
         if (!timer_file) throw std::runtime_error("merged FFN: cannot write " + file.string());
-        timer_file << "layer,slot,serial,since_prev_end_ns,total_ns";
+        timer_file << "layer,slot,serial,start_abs,since_prev_end_ns,total_ns,gpu_branch_ns";
         for (const auto *name : kPhaseNames) timer_file << ',' << name << "_ns";
         timer_file << std::endl;
     }
@@ -223,6 +236,8 @@ struct MergedFfn::Impl {
                 config.hidden, config.intermediate, config.npu_channels, config.intermediate, GateUpLayout::kInterleaved);
             // Setup only: make packing visible to every future chunk stream.
             hip_check(hipStreamSynchronize(stream));
+            layer->gpu.gate_up = gemm_uncached_weights(layer->gpu.gate_up);
+            layer->gpu.down = gemm_uncached_weights(layer->gpu.down);
             std::lock_guard<std::mutex> npu_lock(npu_execution_mutex());
             if (!runtime) runtime = std::make_unique<Runtime>(config);
             TORCH_CHECK(!runtime->poisoned, "merged FFN: executor is poisoned after a launch failure");
@@ -236,7 +251,24 @@ struct MergedFfn::Impl {
             layer->ready = true;
         }
         auto &slot = slots[stream];
-        if (!slot) slot = std::make_shared<Slot>(config, x.device(), static_cast<int>(slots.size()) - 1);
+        if (!slot) {
+            slot = std::make_shared<Slot>(config, x.device(), static_cast<int>(slots.size()) - 1);
+            if (slot_bo == 2) {
+                // One memory for HIP and for the NPU: HIP cannot register a buffer that XRT allocated, but XRT can take a user pointer that HIP has registered.
+                const auto shared_memory = [&](int group, void **map) {
+                    constexpr size_t kHuge = 2 << 20;
+                    const size_t bytes = (config.activation_bytes() + kHuge - 1) / kHuge * kHuge;
+                    TORCH_CHECK(posix_memalign(map, kHuge, bytes) == 0, "merged FFN: cannot allocate the shared NPU buffer");
+                    (void)madvise(*map, bytes, MADV_HUGEPAGE);
+                    std::memset(*map, 0, bytes);
+                    hip_check(hipHostRegister(*map, bytes, hipHostRegisterDefault));
+                    return xrt::bo(runtime->device, *map, bytes, xrt::bo::flags::host_only, runtime->kernel.group_id(group));
+                };
+                std::lock_guard<std::mutex> npu_lock(npu_execution_mutex());
+                slot->x_bo = shared_memory(3, &slot->x_map);
+                slot->y_bo = shared_memory(8, &slot->y_map);
+            }
+        }
         return {layer, slot};
     }
 };
@@ -267,7 +299,7 @@ void MergedFfn::add_layer(const torch::Tensor &gate, const torch::Tensor &up, co
 }
 
 MergedFfnResult MergedFfn::forward(int64_t index, const torch::Tensor &x, torch::Tensor output,
-                                  hipStream_t current_stream, bool serial) {
+                                  hipStream_t current_stream, bool serial, bool sum) {
     const auto &c = config();
     TORCH_CHECK(x.is_cuda() && x.dim() == 2 && x.size(0) == c.m && x.size(1) == c.hidden &&
                 x.scalar_type() == torch::kBFloat16 && x.is_contiguous(), "merged FFN: expected contiguous GPU BF16 [M,H]");
@@ -287,6 +319,12 @@ MergedFfnResult MergedFfn::forward(int64_t index, const torch::Tensor &x, torch:
     timer.mark(kPrevWait);
     // Capture input readiness BEFORE queuing GPU FFN; the D2H branch need not wait for that FFN.
     hip_check(hipEventRecord(slot.input_ready.value, current_stream));
+    hipEvent_t branch_start = nullptr, branch_end = nullptr; // Timed, unlike the events of the normal path.
+    if (timer.enabled) {
+        hip_check(hipEventCreate(&branch_start));
+        hip_check(hipEventCreate(&branch_end));
+        hip_check(hipEventRecord(branch_start, current_stream));
+    }
     try {
         gpu_ffn_slice_forward(layer.gpu, x, slot.gpu, slot.y_gpu, current_stream);
         hip_check(hipGetLastError());
@@ -295,6 +333,7 @@ MergedFfnResult MergedFfn::forward(int64_t index, const torch::Tensor &x, torch:
         (void)hipStreamSynchronize(current_stream);
         throw;
     }
+    if (timer.enabled) hip_check(hipEventRecord(branch_end, current_stream));
     hip_check(hipEventRecord(slot.done.value, current_stream));
     slot.pending = true; // Also protects scratch if a subsequent host/XRT operation throws.
     timer.mark(kGpuEnqueue);
@@ -302,15 +341,22 @@ MergedFfnResult MergedFfn::forward(int64_t index, const torch::Tensor &x, torch:
     // branch and the NPU overlapping on every stream: without it the smoke's second stream ran them one after the other.
     hip_check(hipEventSynchronize(slot.input_ready.value));
     timer.mark(kInputWait);
-    if (serial) hip_check(hipEventSynchronize(slot.done.value));
+    if (serial || impl_->serial_gpu) hip_check(hipEventSynchronize(slot.done.value));
     timer.mark(kSerialGpu);
     hip_check(hipStreamWaitEvent(slot.transfer.value, slot.input_ready.value, 0));
-    hip_check(hipMemcpyAsync(slot.host_x.data_ptr(), x.data_ptr(), c.activation_bytes(), hipMemcpyDeviceToHost,
-                             slot.transfer.value));
+    const bool own_bo = impl_->slot_bo == 2;
+    void *const input_host = slot.x_map != nullptr ? slot.x_map : slot.host_x.data_ptr();
+    void *const output_host = slot.y_map != nullptr ? slot.y_map : slot.host_y.data_ptr();
+    hip_check(hipMemcpyAsync(input_host, x.data_ptr(), c.activation_bytes(), hipMemcpyDeviceToHost, slot.transfer.value));
     hip_check(hipStreamSynchronize(slot.transfer.value));
     timer.mark(kD2h);
-    require_finite_bf16(slot.host_x, "input", impl_->finite_check);
+    require_finite_bf16(input_host, c.m, c.hidden, "input", impl_->finite_check);
     timer.mark(kInputScan);
+    if (own_bo) {
+        timer.mark(kBoWrite);
+        slot.x_bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+        timer.mark(kBoSync);
+    }
     {
         std::lock_guard<std::mutex> npu_lock(npu_execution_mutex());
         timer.mark(kMutexWait);
@@ -319,13 +365,15 @@ MergedFfnResult MergedFfn::forward(int64_t index, const torch::Tensor &x, torch:
         xrt::run run;
         bool started = false;
         try {
-            r.x.write(slot.host_x.data_ptr(), c.activation_bytes(), 0);
-            timer.mark(kBoWrite);
-            r.x.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-            timer.mark(kBoSync);
+            if (!own_bo) {
+                r.x.write(input_host, c.activation_bytes(), 0);
+                timer.mark(kBoWrite);
+                r.x.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+                timer.mark(kBoSync);
+            }
             // Instruction length is BYTES, following the pinned Python XRTHostRuntime.
-            run = r.kernel(3, r.instructions, r.instruction_bytes,
-                           r.x, layer.npu[0], layer.npu[1], layer.npu[2], r.z, r.y);
+            run = r.kernel(3, r.instructions, r.instruction_bytes, own_bo ? slot.x_bo : r.x,
+                           layer.npu[0], layer.npu[1], layer.npu[2], r.z, own_bo ? slot.y_bo : r.y);
             started = true;
             timer.mark(kRunStart);
             const auto state = run.wait(c.timeout_ms);
@@ -333,28 +381,40 @@ MergedFfnResult MergedFfn::forward(int64_t index, const torch::Tensor &x, torch:
             started = false;
             ++impl_->completed;
             timer.mark(kRunWait);
-            r.y.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-            timer.mark(kYSync);
-            r.y.read(slot.host_y.data_ptr(), c.activation_bytes(), 0);
-            timer.mark(kYRead);
+            if (!own_bo) {
+                r.y.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
+                timer.mark(kYSync);
+                r.y.read(output_host, c.activation_bytes(), 0);
+                timer.mark(kYRead);
+            }
         } catch (...) {
             r.poisoned = true;
             if (started) (void)run.abort(); // Abort synchronously before permitting another NPU submission.
             throw;
         }
     }
-    require_finite_bf16(slot.host_y, "NPU output", impl_->finite_check);
+    if (own_bo) {
+        slot.y_bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
+        timer.mark(kYSync);
+        timer.mark(kYRead);
+    }
+    require_finite_bf16(output_host, c.m, c.hidden, "NPU output", impl_->finite_check);
     timer.mark(kOutputScan);
-    hip_check(hipMemcpyAsync(slot.y_npu.data_ptr(), slot.host_y.data_ptr(), c.activation_bytes(), hipMemcpyHostToDevice,
-                             slot.transfer.value));
+    hip_check(hipMemcpyAsync(slot.y_npu.data_ptr(), output_host, c.activation_bytes(), hipMemcpyHostToDevice, slot.transfer.value));
     hip_check(hipEventRecord(slot.output_ready.value, slot.transfer.value));
     hip_check(hipStreamWaitEvent(current_stream, slot.output_ready.value, 0));
     if (timer.enabled) hip_check(hipStreamSynchronize(slot.transfer.value));
     timer.mark(kH2d);
     if (timer.enabled) hip_check(hipEventSynchronize(slot.done.value)); // Still the GPU branch's event here.
     timer.mark(kGpuWait);
+    float gpu_branch_ms = 0;
+    if (timer.enabled) {
+        hip_check(hipEventElapsedTime(&gpu_branch_ms, branch_start, branch_end));
+        (void)hipEventDestroy(branch_start);
+        (void)hipEventDestroy(branch_end);
+    }
     // Both partials are on the caller stream now. No residual is included here.
-    torch::add_out(output, slot.y_gpu, slot.y_npu);
+    if (sum) torch::add_out(output, slot.y_gpu, slot.y_npu);
     hip_check(hipEventRecord(slot.done.value, current_stream));
     if (timer.enabled) {
         hip_check(hipEventSynchronize(slot.done.value));
@@ -362,7 +422,8 @@ MergedFfnResult MergedFfn::forward(int64_t index, const torch::Tensor &x, torch:
         const auto ns = [](Clock::duration d) { return std::chrono::duration_cast<std::chrono::nanoseconds>(d).count(); };
         const auto gap = slot.last_end == Clock::time_point{} ? -1 : ns(timer.start - slot.last_end);
         std::lock_guard<std::mutex> timer_lock(impl_->timer_mutex);
-        impl_->timer_file << index << ',' << slot.id << ',' << int(serial) << ',' << gap << ',' << ns(timer.last - timer.start);
+        impl_->timer_file << index << ',' << slot.id << ',' << int(serial || impl_->serial_gpu) << ',' << ns(timer.start.time_since_epoch()) << ','
+                          << gap << ',' << ns(timer.last - timer.start) << ',' << int64_t(gpu_branch_ms * 1e6);
         for (const auto value : timer.ns) impl_->timer_file << ',' << value;
         impl_->timer_file << std::endl;
         slot.last_end = timer.last;

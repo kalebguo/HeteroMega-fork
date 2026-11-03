@@ -3,9 +3,12 @@
 # first evaluation). Flags mirror jobs/build-main/cmd.sh. Upload this file, then:
 # bg build-fix -- 'bash build.sh'. Rerun after pushing C++ changes: it fast-forwards and rebuilds in place.
 # SRC=<tree> NOOPT=1 builds a separate attribution tree with the -O3 line of the merged FFN target removed.
+# SRC=<tree> NOGIT=1 builds that tree as it is, without git commands (a tree with uncommitted files).
 set -eo pipefail
 export SRC=${SRC:-/notebooks/hm-fix}
-if [ ! -d "$SRC/.git" ]; then
+if [ -n "${NOGIT:-}" ]; then
+    :
+elif [ ! -d "$SRC/.git" ]; then
     git clone --reference /notebooks/hm-eval-main --branch merged-ffn-fix \
         https://github.com/kalebguo/HeteroMega-fork.git "$SRC" 2>&1 | tail -2
 else

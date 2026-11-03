@@ -36,7 +36,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include <vector>
-#ifdef HETEROMEGA_GPU_FFN
+#if defined(HETEROMEGA_GPU_FFN) || defined(HETEROMEGA_MERGED_FFN)
 #include "heteromega/gpu_ffn.hpp"
 #endif
 #ifdef HETEROMEGA_MERGED_FFN
@@ -1055,6 +1055,13 @@ std::future<int> QuantizedLinearImpl::forward(torch::Tensor output_buffer, torch
             if (is_decode) {
                 hipkernels::w4a16_gemv_fused_packed(output_2d, input_2d, packed_params_, K_internal, N_internal, -1, 0, current_stream);
             } else {
+#ifdef HETEROMEGA_MERGED_FFN
+                // Attention of the merged path. HETEROMEGA_GEMM is unset in the baselines, so they keep the kernel below.
+                if (heteromega::configured_gemm_kernel() == heteromega::GemmKernel::kHeteroMega && input_2d.size(-1) == K_internal &&
+                    input_2d.is_contiguous() && heteromega::gemm_w4a16_supports(input_2d.size(0), K_internal, N_internal)) {
+                    heteromega::gemm_w4a16(output_2d, input_2d, packed_params_, K_internal, N_internal, K_internal, N_internal, current_stream);
+                } else
+#endif
                 hipkernels::w4a16_gemm_fused_packed(output_2d, input_2d, packed_params_, K_internal, N_internal, current_stream);
             }
         } else {
@@ -2387,6 +2394,89 @@ heteromega::GpuFfnModel *UnifiedLLMW4A16Impl::heteromega_gpu_ffn() {
 #endif
 }
 
+namespace {
+// HETEROMEGA_STAGE_EVENTS=<directory> writes one CSV per process with the GPU timestamp of each stage of each layer of a prefill chunk,
+// in ms from the first marker of the process. Diagnostic only: each stage adds one marker to the stream.
+#ifdef HETEROMEGA_MERGED_FFN
+static bool heteromega_fast_sdpa() {
+    static const bool enabled = [] {
+        const char *value = std::getenv("HETEROMEGA_SDPA");
+        return value != nullptr && std::string(value) == "fast";
+    }();
+    return enabled;
+}
+
+static int64_t heteromega_sdpa_mask_offset(int64_t start_pos) { return start_pos; }
+
+// HETEROMEGA_RESIDUAL_NORM=1: one dispatch for the residual, the norm and the input of the next GEMM (kernels/gpu/src/residual_norm.cu).
+static bool heteromega_residual_norm() {
+    static const bool enabled = std::getenv("HETEROMEGA_RESIDUAL_NORM") != nullptr && std::atoi(std::getenv("HETEROMEGA_RESIDUAL_NORM")) != 0;
+    return enabled;
+}
+
+// HETEROMEGA_SDPA_TO_O=1: sdpa_bf16 writes the prepared input of the o projection directly.
+static bool heteromega_sdpa_to_o() {
+    static const bool enabled = std::getenv("HETEROMEGA_SDPA_TO_O") != nullptr && std::atoi(std::getenv("HETEROMEGA_SDPA_TO_O")) != 0;
+    return enabled;
+}
+#endif
+
+class StageEvents {
+  public:
+    StageEvents(int64_t chunk_id, int64_t slot_id, bool prefill) : chunk_id_(chunk_id), slot_id_(slot_id) {
+        const char *directory = std::getenv("HETEROMEGA_STAGE_EVENTS");
+        if (prefill && directory != nullptr && *directory != '\0') {
+            enabled_ = true;
+            directory_ = directory;
+            stream_ = c10::hip::getCurrentHIPStream().stream();
+        }
+    }
+    void mark(int64_t layer, const char *stage) {
+        if (!enabled_) return;
+        hipEvent_t event = nullptr;
+        HIP_CHECK(hipEventCreate(&event));
+        HIP_CHECK(hipEventRecord(event, stream_));
+        std::lock_guard<std::mutex> lock(mutex());
+        if (reference() == nullptr) reference() = event;
+        marks_.push_back({layer, stage, event});
+    }
+    ~StageEvents() {
+        if (!enabled_) return;
+        (void)hipStreamSynchronize(stream_);
+        std::lock_guard<std::mutex> lock(mutex());
+        (void)hipEventSynchronize(reference());
+        std::filesystem::create_directories(directory_);
+        std::ofstream out(std::filesystem::path(directory_) / ("stages_" + std::to_string(getpid()) + ".csv"), std::ios::app);
+        for (const auto &mark : marks_) {
+            float ms = -1;
+            (void)hipEventElapsedTime(&ms, reference(), mark.event);
+            out << chunk_id_ << ',' << slot_id_ << ',' << mark.layer << ',' << mark.stage << ',' << ms << '\n';
+            if (mark.event != reference()) (void)hipEventDestroy(mark.event);
+        }
+    }
+
+  private:
+    struct Mark {
+        int64_t layer;
+        const char *stage;
+        hipEvent_t event;
+    };
+    static std::mutex &mutex() {
+        static std::mutex value;
+        return value;
+    }
+    static hipEvent_t &reference() {
+        static hipEvent_t value = nullptr;
+        return value;
+    }
+    int64_t chunk_id_, slot_id_;
+    bool enabled_ = false;
+    std::string directory_;
+    hipStream_t stream_ = nullptr;
+    std::vector<Mark> marks_;
+};
+} // namespace
+
 torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
     torch::Tensor x, int64_t start_pos, bool return_logits, bool last_token_only, torch::Tensor &queries_buffer_base,
     torch::Tensor &keys_buffer_base, torch::Tensor &values_buffer_base, torch::Tensor &attn_output_buffer_base,
@@ -2430,17 +2520,52 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
     heteromega::GpuFfnModel *gpu_ffn = heteromega_gpu_ffn();
 #endif
 
+    StageEvents stage_events(chunk_id, slot_id, seq_len > 1);
+#ifdef HETEROMEGA_MERGED_FFN
+    // HETEROMEGA_SDPA=fast computes prefill attention with heteromega::sdpa_bf16. Keys and rows are then multiples of 32 for the V tiles.
+    const int64_t kv_capacity = caches_k[0].size(2);
+    const bool fast_sdpa = heteromega_fast_sdpa() && bsz == 1 && seq_len > 1 && seq_len % 32 == 0 && start_pos % 32 == 0 && kv_capacity % 16 == 0 &&
+                           heteromega::sdpa_bf16_supports(seq_len, start_pos + seq_len, num_attention_heads_, num_key_value_heads_, head_dim_);
+    const bool fast_boundary = heteromega_residual_norm() && merged_ffn != nullptr && bsz == 1 && heteromega::configured_gemm_kernel() == heteromega::GemmKernel::kHeteroMega &&
+                               heteromega::residual_norm_supports(seq_len, hidden_size_) && heteromega::gemm_w4a16_supports(seq_len, hidden_size_, hidden_size_) &&
+                               x.stride(2) == 1 && normed.stride(2) == 1 && attn_proj_buf.stride(2) == 1;
+    // Between the FFN of a layer and the attention of the next one.
+    std::unique_ptr<heteromega::GemmInputReuse> prepared_qkv;
+    const auto boundary = [&](const torch::Tensor &a, const torch::Tensor &b, const RMSNorm &norm, uint16_t *row_order, heteromega::GemmInputReuse &input) {
+        TORCH_CHECK(!norm->gemma_style() && norm->weight().scalar_type() == torch::kBFloat16 && norm->weight().is_contiguous(), "residual_norm_bf16 needs a plain RMSNorm");
+        heteromega::residual_norm_bf16(reinterpret_cast<uint16_t *>(x.data_ptr()), a.defined() ? reinterpret_cast<const uint16_t *>(a.data_ptr()) : nullptr,
+                                       b.defined() ? reinterpret_cast<const uint16_t *>(b.data_ptr()) : nullptr, reinterpret_cast<const uint16_t *>(norm->weight().data_ptr()),
+                                       row_order, normed.data_ptr(), input, seq_len, hidden_size_, x.stride(1), a.defined() ? a.stride(a.dim() - 2) : 0,
+                                       b.defined() ? b.stride(b.dim() - 2) : 0, normed.stride(1), norm->eps(), c10::hip::getCurrentHIPStream().stream());
+    };
+#endif
     for (int64_t i = 0; i < num_hidden_layers_; ++i) {
         auto g1_trace = begin_stage_trace(chunk_id, slot_id, i, "G1", start_pos, seq_len);
         mark_stage_trace_started(g1_trace);
+        stage_events.mark(i, "start");
         // Pre-attention norm (write to norm_buffer)
         // Use sliced buffer to avoid allocation
         // Pre-attention norm (write to norm_buffer)
         // Use sliced buffer to avoid allocation
+#ifdef HETEROMEGA_MERGED_FFN
+        std::unique_ptr<heteromega::GemmInputReuse> qkv_input = std::move(prepared_qkv);
+        if (fast_boundary) {
+            if (qkv_input == nullptr) {
+                qkv_input = std::make_unique<heteromega::GemmInputReuse>();
+                boundary(torch::Tensor(), torch::Tensor(), input_norms[i], nullptr, *qkv_input);
+            }
+        } else
+#endif
         input_norms[i]->forward_out(normed, x);
+        stage_events.mark(i, "norm");
 
         // Async calls for Q, K, V
         torch::Tensor q, k, v;
+#ifdef HETEROMEGA_MERGED_FFN
+        if (!fast_boundary) {
+            qkv_input = std::make_unique<heteromega::GemmInputReuse>();
+        }
+#endif
         auto f_q = q_layers[i]->forward(q_buf, normed, "q", static_cast<int>(chunk_id));
         auto f_k = k_layers[i]->forward(k_buf, normed, "k", static_cast<int>(chunk_id));
         auto f_v = v_layers[i]->forward(v_buf, normed, "v", static_cast<int>(chunk_id));
@@ -2450,6 +2575,12 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
             f_k.wait();
         if (f_v.valid())
             f_v.wait();
+#ifdef HETEROMEGA_MERGED_FFN
+        // Without 3 hits a GEMM read `normed`, which stayed unwritten. That must not pass silently.
+        TORCH_CHECK(!fast_boundary || qkv_input->hits() == 3, "fast boundary: Q, K and V did not use the prepared input");
+        qkv_input.reset();
+#endif
+        stage_events.mark(i, "qkv");
 
         // Slice padded buffers to valid dimensions before usage
         q = q_buf.slice(-1, 0, num_attention_heads_ * head_dim_);
@@ -2468,6 +2599,7 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
         } else {
             launch_rope(q, k, start_pos, rope_theta_);
         }
+        stage_events.mark(i, "rope");
 
         v = v_buf.slice(-1, 0, num_key_value_heads_ * head_dim_);
         v = v.view({bsz, seq_len, num_key_value_heads_, head_dim_});
@@ -2478,6 +2610,15 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
 
         caches_k[i].narrow(0, 0, bsz).narrow(2, start_pos, seq_len).copy_(k_transposed);
         caches_v[i].narrow(0, 0, bsz).narrow(2, start_pos, seq_len).copy_(v_transposed);
+#ifdef HETEROMEGA_MERGED_FFN
+        uint16_t *v_tiles = nullptr;
+        if (fast_sdpa) {
+            v_tiles = heteromega::sdpa_v_tiles(i, num_key_value_heads_, kv_capacity, head_dim_);
+            heteromega::sdpa_store_v(v_tiles, reinterpret_cast<const uint16_t *>(caches_v[i].data_ptr()), num_key_value_heads_, kv_capacity, start_pos, seq_len,
+                                     c10::hip::getCurrentHIPStream().stream());
+        }
+#endif
+        stage_events.mark(i, "kv");
 
         // Async chunk pipeline ordering for chunked prefill:
         // 1) Wait on previous chunk's same-layer KV-ready event (transitive prefix guarantee),
@@ -2508,11 +2649,28 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
             HIP_CHECK(hipEventRecord(ready_event, stream));
             (*chunk_layer_progress)[static_cast<size_t>(chunk_id)].store(static_cast<int>(i), std::memory_order_release);
         }
+        stage_events.mark(i, "dep");
         end_stage_trace(std::move(g1_trace));
 
         // Retrieve full cache in [B, H, S, D]
         auto a_trace = begin_stage_trace(chunk_id, slot_id, i, "A", start_pos, seq_len);
         mark_stage_trace_started(a_trace);
+        torch::Tensor attn_output;
+#ifdef HETEROMEGA_MERGED_FFN
+        std::unique_ptr<heteromega::GemmInputReuse> o_input;
+        if (fast_sdpa) {
+            auto fast_out = attn_output_buffer_base.narrow(0, 0, bsz).narrow(1, 0, seq_len);
+            TORCH_CHECK(q.stride(2) == head_dim_ && q.stride(3) == 1 && fast_out.stride(2) == 1, "fast attention needs Q and the output in row order");
+            if (heteromega_sdpa_to_o() && heteromega::configured_gemm_kernel() == heteromega::GemmKernel::kHeteroMega &&
+                get_layer_padded_k_dim("o", hidden_size_) == hidden_size_ && heteromega::gemm_w4a16_supports(seq_len, hidden_size_, hidden_size_)) {
+                o_input = std::make_unique<heteromega::GemmInputReuse>();
+            }
+            heteromega::sdpa_bf16(reinterpret_cast<uint16_t *>(fast_out.data_ptr()), fast_out.stride(1), reinterpret_cast<const uint16_t *>(q.data_ptr()), q.stride(1),
+                                  reinterpret_cast<const uint16_t *>(caches_k[i].data_ptr()), v_tiles, seq_len, num_attention_heads_, num_key_value_heads_, kv_capacity,
+                                  start_pos + seq_len, heteromega_sdpa_mask_offset(start_pos), c10::hip::getCurrentHIPStream().stream(), o_input.get());
+        } else
+#endif
+        {
         k = caches_k[i].narrow(0, 0, bsz).narrow(2, 0, start_pos + seq_len);
         v = caches_v[i].narrow(0, 0, bsz).narrow(2, 0, start_pos + seq_len);
 
@@ -2540,7 +2698,6 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
         // torch::cuda::synchronize();
         // auto start_attn = std::chrono::high_resolution_clock::now();
 
-        torch::Tensor attn_output;
 #if LLAMA_USE_SCALED_ATTENTION == 1
         // Mode 1: PyTorch SDPA
         if (start_pos == 0 && seq_len > 1) {
@@ -2603,6 +2760,7 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
         auto attn_weights = torch::softmax(att.to(torch::kFloat32), -1).to(q.dtype());
         attn_output = torch::matmul(attn_weights, v);
 #endif
+        }
         end_stage_trace(std::move(a_trace));
 
         // torch::cuda::synchronize();
@@ -2613,7 +2771,10 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
         // Reshape and output projection
         auto g2_trace = begin_stage_trace(chunk_id, slot_id, i, "G2", start_pos, seq_len);
         mark_stage_trace_started(g2_trace);
-        attn_output = attn_output.transpose(1, 2).contiguous().view({bsz, seq_len, hidden_size_});
+        stage_events.mark(i, "sdpa");
+        if (attn_output.defined()) {
+            attn_output = attn_output.transpose(1, 2).contiguous().view({bsz, seq_len, hidden_size_});
+        }
 
         const int64_t o_input_size = get_layer_padded_k_dim("o", hidden_size_);
         const int64_t gate_input_size = get_layer_padded_k_dim("gate", hidden_size_);
@@ -2623,15 +2784,32 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
 
         // Copy to attn_output_buffer to ensure contiguous memory and registered handle
         auto attn_out_buf = attn_output_buffer_base.narrow(0, 0, bsz).narrow(1, 0, seq_len);
-        attn_out_buf.slice(-1, 0, hidden_size_).copy_(attn_output);
+        if (attn_output.defined()) {
+            attn_out_buf.slice(-1, 0, hidden_size_).copy_(attn_output);
+        }
 
         auto attn_out_buf_proj = attn_output_buffer_base.narrow(0, 0, bsz).narrow(1, 0, seq_len);
+        stage_events.mark(i, "layout");
 
         // Input to o_proj: Slice to Padded K
         auto f_o = o_layers[i]->forward(attn_proj_buf, attn_out_buf_proj.slice(-1, 0, o_input_size), "o", static_cast<int>(chunk_id));
         if (f_o.valid())
             f_o.wait();
+#ifdef HETEROMEGA_MERGED_FFN
+        // Without a hit the GEMM read the output buffer, which stayed unwritten. That must not pass silently.
+        TORCH_CHECK(o_input == nullptr || o_input->hits() == 1, "fast attention: the o projection did not use the prepared input");
+        o_input.reset();
+#endif
+        stage_events.mark(i, "o");
 
+#ifdef HETEROMEGA_MERGED_FFN
+        std::unique_ptr<heteromega::GemmInputReuse> ffn_input;
+        if (fast_boundary) {
+            ffn_input = std::make_unique<heteromega::GemmInputReuse>();
+            boundary(attn_proj_buf.slice(-1, 0, hidden_size_), torch::Tensor(), post_attn_norms[i], reinterpret_cast<uint16_t *>(normed.data_ptr()), *ffn_input);
+        } else
+#endif
+        {
         // Residual connection: x = x + attn_output
         // x points to x_buf. We add attn_proj_buf to it in-place.
         x.add_(attn_proj_buf.slice(-1, 0, hidden_size_));
@@ -2641,6 +2819,8 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
         // RMSNorm (write to norm_buffer)
         // Slice x and normed to logical size to ensure correct Mean calculation
         post_attn_norms[i]->forward_out(normed.slice(-1, 0, hidden_size_), x.slice(-1, 0, hidden_size_));
+        }
+        stage_events.mark(i, "ready");
 
 #ifdef HETEROMEGA_MERGED_FFN
         if (merged_ffn != nullptr) {
@@ -2649,8 +2829,21 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
             auto y_2d = out_buf.slice(-1, 0, hidden_size_);
             y_2d = y_2d.is_contiguous() ? y_2d.view({rows, hidden_size_})
                                       : torch::empty({rows, hidden_size_}, y_2d.options());
-            merged_ffn->forward(i, xn_2d, y_2d, c10::hip::getCurrentHIPStream().stream());
-            x.add_(y_2d.view({bsz, seq_len, hidden_size_}));
+            if (fast_boundary) {
+                const auto partials = merged_ffn->forward(i, xn_2d, y_2d, c10::hip::getCurrentHIPStream().stream(), false, false);
+                ffn_input.reset();
+                if (i + 1 < num_hidden_layers_) {
+                    prepared_qkv = std::make_unique<heteromega::GemmInputReuse>();
+                    boundary(partials.gpu_partial, partials.npu_partial, input_norms[i + 1], nullptr, *prepared_qkv);
+                } else {
+                    auto x_2d = x.view({rows, hidden_size_});
+                    heteromega::residual_add2(x_2d, partials.gpu_partial, partials.npu_partial, c10::hip::getCurrentHIPStream().stream());
+                }
+            } else {
+                merged_ffn->forward(i, xn_2d, y_2d, c10::hip::getCurrentHIPStream().stream());
+                x.add_(y_2d.view({bsz, seq_len, hidden_size_}));
+            }
+            stage_events.mark(i, "end");
             end_stage_trace(std::move(g2_trace));
             continue;
         }
@@ -2697,6 +2890,7 @@ torch::Tensor UnifiedLLMW4A16Impl::forward_llama3_with_scratch(
         // Residual connection: x = x + mlp_output
         // x points to x_buf. We add out_buf to it in-place.
         x.add_(out_buf.slice(-1, 0, hidden_size_));
+        stage_events.mark(i, "end");
         end_stage_trace(std::move(g2_trace));
     }
 

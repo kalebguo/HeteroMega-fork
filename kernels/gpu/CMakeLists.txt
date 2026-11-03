@@ -120,7 +120,7 @@ target_link_libraries(hm_w4a16 PRIVATE hip::device "${TORCH_LIBRARIES}")
 target_link_libraries(hm_w4a16 PUBLIC hip::host)
 
 # HeteroMega GPU library.
-set(HETEROMEGA_HIP_SOURCES src/silu_mul.cu src/residual_add.cu src/gemv_w4a16.cu)
+set(HETEROMEGA_HIP_SOURCES src/silu_mul.cu src/residual_add.cu src/gemv_w4a16.cu src/gemm_w4a16.cu src/sdpa_bf16.cu src/residual_norm.cu)
 set_source_files_properties(${HETEROMEGA_HIP_SOURCES} PROPERTIES LANGUAGE HIP)
 add_library(heteromega_gpu STATIC
     ${HETEROMEGA_HIP_SOURCES}
