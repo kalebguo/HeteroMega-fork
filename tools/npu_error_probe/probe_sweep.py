@@ -74,22 +74,28 @@ def load_binding(root, library, driver_include=None, verbose=False):
     ldflags = [str(library), f"-Wl,-rpath,{library.parent}", f"-L{rocm / 'lib'}", f"-Wl,-rpath,{rocm / 'lib'}", "-lamdhip64"]
     name = "heteromega_npu_error_probe_" + tag
     if shutil.which("ninja") is None:
-        return compile_without_ninja(name, build, includes, cflags, ldflags), info
+        return compile_without_ninja(root, name, build, includes, ldflags), info
     module = load(name=name, sources=[str(BINDINGS)], extra_include_paths=includes, extra_cflags=cflags,
                   extra_ldflags=ldflags, with_cuda=False, build_directory=str(build), verbose=verbose)
     return module, info
 
 
-def compile_without_ninja(name, build, includes, cflags, ldflags):
-    """cpp_extension.load's compile for a box without ninja (the AUP box has none, and jobs install no packages)."""
+def compile_without_ninja(root, name, build, includes, ldflags):
+    """cpp_extension.load's compile for a box without ninja (the AUP box has none, and jobs install no packages).
+
+    Uses the compile flags of the model extension's merged FFN target, so the adapter sees the same Torch and HIP ABI
+    and the same torch211-hip-compat.hpp.
+    """
     import torch
     from torch.utils.cpp_extension import include_paths
     output = build / (name + sysconfig.get_config_var("EXT_SUFFIX"))
     if not output.exists():
+        flags = (root / "build/src/unified_llm_w4a16_hetero/CMakeFiles/heteromega_merged_ffn.dir/flags.make").read_text()
+        values = dict(line.split(" = ", 1) for line in flags.splitlines() if " = " in line and not line.startswith("#"))
         torch_lib = Path(torch.__file__).parent / "lib"
-        temporary = output.with_name(f"{output.name}.{os.getpid()}.tmp")  # concurrent or killed builds leave no partial module
-        subprocess.run(["c++", "-shared", "-fPIC", f"-DTORCH_EXTENSION_NAME={name}", "-DTORCH_API_INCLUDE_EXTENSION_H",
-                        f"-D_GLIBCXX_USE_CXX11_ABI={int(torch._C._GLIBCXX_USE_CXX11_ABI)}", *cflags,
+        temporary = output.with_name(f"{output.name}.{os.getpid()}.tmp")  # a killed build leaves no partial module
+        subprocess.run(["c++", "-shared", f"-DTORCH_EXTENSION_NAME={name}", "-DTORCH_API_INCLUDE_EXTENSION_H",
+                        *shlex.split(" ".join(values.get(k, "") for k in ("CXX_DEFINES", "CXX_INCLUDES", "CXX_FLAGS"))),
                         *[f"-I{p}" for p in [sysconfig.get_path("include"), *include_paths(), *includes]],
                         str(BINDINGS), f"-L{torch_lib}", f"-Wl,-rpath,{torch_lib}", "-lc10", "-ltorch_cpu", "-ltorch",
                         "-ltorch_python", *ldflags, "-o", str(temporary)], check=True)
