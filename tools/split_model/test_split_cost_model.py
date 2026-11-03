@@ -4,6 +4,7 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import heteromosaic_records as records  # noqa: E402
 import make_gateup_config  # noqa: E402
 import split_cost_model as model  # noqa: E402
 
@@ -17,6 +18,15 @@ class GateUpConfigTests(unittest.TestCase):
         rows = {e["layer"]: e["npuM"] for e in config["kernels_gemm_chunked"][0]["kernels"]}
         self.assertEqual(rows, dict(q=256, up=512, gate=512, down=256))
         self.assertEqual(config["kernels_gemm_chunked"][1]["kernels"][0]["npuM"], 256)
+
+
+class HeteromosaicRecordsTests(unittest.TestCase):
+    def test_reads_records_and_leaves_out_instrumented_runs(self):
+        found = {r["source"]: r for r in records.records()}
+        self.assertAlmostEqual(found["2026-11-02-fix-step3c/head-to-head"]["median_ms"], 1317.6, delta=0.1)
+        self.assertEqual(found["2026-11-02-inflight2-repeat/repeat"]["inflight"], 2)
+        self.assertEqual(found["2026-11-02-inflight2-repeat/repeat"]["samples"], 30)
+        self.assertFalse([s for s in found if "diag" in s or "trace" in s])
 
 
 class SplitCostModelTests(unittest.TestCase):

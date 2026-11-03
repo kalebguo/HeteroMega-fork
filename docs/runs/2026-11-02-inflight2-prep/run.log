@@ -1,0 +1,60 @@
+HEAD 0ae17f64 Two-inflight comparison: gate/up-on-NPU and P8192 methods, power probe, box jobs
+
+=== 02:32:58 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 37.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.02
+
+=== 02:32:59 UTC config 3: gate and up artifacts
+8007c2040fb730a19502b6f816345584c32e8c7dcea32aed91cbf3a6f8a15ac5  hw_bins/npu2/8192x4096x14336/bf16_int4AWQ_bf16_M/final_512x4096x14336_64x128x64_8c_bf16_int4AWQ_bf16.pdi
+8c467862e6348a0e1139c8eebfdc29d0cba76c58a39ab7eded3fb8d68fd28ba1  hw_bins/npu2/8192x4096x14336/bf16_int4AWQ_bf16_M/insts_512x4096x14336_64x128x64_8c_bf16_int4AWQ_bf16.txt
+6d731d2216c483720beb5d3f489dc1751ce9dbc8fdc630ad3c4d7f5f312912ff  hw_bins/npu2/16384x4096x14336/bf16_int4AWQ_bf16_M/final_512x4096x14336_64x128x64_8c_bf16_int4AWQ_bf16.pdi
+a7a2f07d0766bceb8bdbaeb3487140e600c907555345c7529597220008da2f8d  hw_bins/npu2/16384x4096x14336/bf16_int4AWQ_bf16_M/insts_512x4096x14336_64x128x64_8c_bf16_int4AWQ_bf16.txt
+moved 8 gate/up entries from py/unified_llm_w4a16/configs/configs_strixP_llama3_8b.json5
+
+=== 02:32:59 UTC config 3: first run, one process, native calls counted
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+WARMUP 2.3488388429395854 [2628, 596, 11, 323, 11, 323, 11, 323] DIFFERS from the reference
+REP 0 prefill_s=1.7201 generate_s=5.5078 decode_tok_s=16.633077170508553 merged_ffn_completions=0,0
+DONE /notebooks/hm-results/2026-11-02/inflight2-prep/try-gateup/heteromosaic_gateup-1024-r0.result.json
+IOCTL_COUNTS ctx_ok=2 exec_ok=3104 exec_fail=0 legacy_ok=0 legacy_fail=3104 timeline_ok=3104 timeline_fail=0
+method,prompt_tokens,samples,prefill_median_ms,prefill_min_ms,prefill_max_ms,merged_ffn_expected_per_pass
+heteromosaic_gateup,1024,1,1720.143852988258,1720.143852988258,1720.143852988258,0
+
+=== 02:33:38 UTC P8192: build
+Tue Nov  3 02:33:38 AM UTC 2026
+{
+  "artifact_dir": "/notebooks/hm-results/2026-11-02/inflight2-prep/artifact-p8192",
+  "accuracy_policy": "report",
+  "timeout_ms": 10000,
+  "device_index": 0
+}
+Tue Nov  3 02:33:49 AM UTC 2026
+total 812
+drwxr-xr-x  3 mliraie aup   4096 Nov  3 02:33 .
+drwxr-xr-x  4 mliraie aup   4096 Nov  3 02:33 ..
+-rw-r--r--  1 mliraie aup      0 Nov  3 02:33 compile.log
+-rw-r--r--  1 mliraie aup 307584 Nov  3 02:33 final.pdi
+drwxr-xr-x 67 mliraie aup  12288 Nov  3 02:33 final.prj
+-rw-r--r--  1 mliraie aup 314396 Nov  3 02:33 final.xclbin
+-rw-r--r--  1 mliraie aup   2576 Nov  3 02:33 final.xclbin.json
+-rw-r--r--  1 mliraie aup 178192 Nov  3 02:33 insts.bin
+?? py/unified_llm_w4a16/model_weights
+
+=== 02:33:49 UTC P8192: smoke, no timers
+    "outside_tolerance_count": 24,
+    "accuracy_status": "reported_deviations"
+  }
+}
+
+=== 02:34:09 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 46.0
+GPU[0]		: sclk clock level: 1: (962Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 20.021
+
+=== 02:34:09 UTC done status=0
+exit=0

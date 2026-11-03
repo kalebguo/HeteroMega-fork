@@ -1,0 +1,112 @@
+{
+  "gpu_ffn_env": "0",
+  "backend": "/notebooks/hm-fix/build/py/unified_llm_w4a16/unified_llm_w4a16_hetero_libtorch.so",
+  "config": "/notebooks/hm-results/2026-11-02/inflight2-diag/heteromosaic-i2/heteromosaic-1024-r0.result.config.json",
+  "input_sha256": "2c11d2476f8b0d68744bec04b88ae434fa2c7f2e1f15a66f6db8785ec5e481c7",
+  "new_tokens": 1,
+  "dummy": false,
+  "merged_ffn_config_env": "",
+  "merged_ffn_finite_check_env": "sampled",
+  "merged_ffn_timers_env": "",
+  "heteromosaic_root_env": "/notebooks/hm-fix",
+  "gpu_chunk_size": null,
+  "inflight": 2,
+  "prompt_tokens": 1024,
+  "heterogeneity": "hetero",
+  "model": "/notebooks/hm-model/Meta-Llama-3.1-8B-Instruct-AWQ-INT4",
+  "torch_version": "2.11.0+rocm7.2",
+  "gpu_name": "AMD Radeon 890M",
+  "load_s": 28.071757611935027,
+  "merged_ffn_counter": true,
+  "warmup_s": 2.0597746400162578,
+  "warmup_ids": [
+    4221,
+    1646,
+    45478,
+    389,
+    98882,
+    37686,
+    13,
+    1115
+  ],
+  "warmup_merged_ffn_completions": 0,
+  "matches_reference": true,
+  "reps": [
+    {
+      "rep": 0,
+      "prefill_s": 1.3195021260762587,
+      "generate_s": 1.3726774079259485,
+      "decode_tok_s": 0.0,
+      "generated_ids": [
+        4221
+      ],
+      "prefill_ids": [
+        4221
+      ],
+      "prefill_merged_ffn_completions": 0,
+      "generate_merged_ffn_completions": 0
+    },
+    {
+      "rep": 1,
+      "prefill_s": 1.310367617988959,
+      "generate_s": 1.3198081580922008,
+      "decode_tok_s": 0.0,
+      "generated_ids": [
+        4221
+      ],
+      "prefill_ids": [
+        4221
+      ],
+      "prefill_merged_ffn_completions": 0,
+      "generate_merged_ffn_completions": 0
+    },
+    {
+      "rep": 2,
+      "prefill_s": 1.3265709590632468,
+      "generate_s": 1.3246981329284608,
+      "decode_tok_s": null,
+      "generated_ids": [
+        4221
+      ],
+      "prefill_ids": [
+        4221
+      ],
+      "prefill_merged_ffn_completions": 0,
+      "generate_merged_ffn_completions": 0
+    },
+    {
+      "rep": 3,
+      "prefill_s": 1.324958377983421,
+      "generate_s": 1.3324700349476188,
+      "decode_tok_s": 0.0,
+      "generated_ids": [
+        4221
+      ],
+      "prefill_ids": [
+        4221
+      ],
+      "prefill_merged_ffn_completions": 0,
+      "generate_merged_ffn_completions": 0
+    },
+    {
+      "rep": 4,
+      "prefill_s": 1.3308111459482461,
+      "generate_s": 1.3250537440180779,
+      "decode_tok_s": null,
+      "generated_ids": [
+        4221
+      ],
+      "prefill_ids": [
+        4221
+      ],
+      "prefill_merged_ffn_completions": 0,
+      "generate_merged_ffn_completions": 0
+    }
+  ],
+  "peak_allocated_GiB": 7.523704528808594,
+  "method": "heteromosaic",
+  "round": 0,
+  "gpu_ffn_active": false,
+  "merged_ffn_configured": false,
+  "merged_ffn_expected_per_pass": 0
+}

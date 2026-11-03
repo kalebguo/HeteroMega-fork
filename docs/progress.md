@@ -1,5 +1,31 @@
 # HeteroMega progress
 
+## 2026-11-02 (merged-ffn-fix): two inflight chunks with a larger NPU share
+
+Evidence: `docs/runs/2026-11-02-inflight2-{prep,timing,diag,numerics,repeat,energy}/`. C++ build `9dac460`, 1024 tokens unless noted.
+
+- **Measured:** at two inflight chunks `merged_ffn_p8192` beats `heteromosaic`: 1274.8 ms against 1331.0 ms, 1.044x, 30 samples each, 6 processes
+  per method in alternating order. All 6 P8192 process medians (1273.0-1276.1) are below all 6 `heteromosaic` medians (1300.0-1336.4).
+- **Measured,** paired in one job, 10 samples per cell, inflight 2 / inflight 1: `heteromosaic` 1309.6 / 1355.5, config 3 (all gate/up rows on the NPU)
+  1342.5 / 1748.8, `merged_ffn` P6400 1355.5 / 1340.9, P8192 1269.2 / 1534.6 ms. 512 tokens at inflight 1: `gpu_original` 895.0, P6400 649.3, P8192 747.5 ms.
+  NPU calls per prefill as expected: 288 on both native methods, 64 on both merged methods.
+- **Estimated before the runs, against measured:** P8192 at inflight 2, 1140-1180 against 1269.2; P8192 at inflight 1, about 1540 against 1534.6; config 3
+  at inflight 2, 1010-1050 against 1342.5. The inflight 1 estimate held. The inflight 2 estimates were too low.
+- **Measured:** neither device saturates at inflight 2. Config 3's gate/up waits are 6.4 ms as expected, and the NPU is busy for 74.8% of the prefill. P8192's
+  cycle is 19.85 ms against a GPU load of about 17.6 ms (estimated). **Hypothesis:** the overhead grows near balance, or the GPU slows under the NPU's load.
+- **Measured:** the task's named artifact for config 3, `16384x4096x14336/.../final_512x4096x14336_*`, gives wrong tokens with no error (step-1 relative L2
+  0.83 / 0.93). The logs show its instructions running on the 8192 family's PDI, because `minimal_pdi` reuses the PDI. **Hypothesis:** that mismatch is the cause.
+  The 8192 family's file of the same shape gives correct tokens, so config 3 above uses it.
+- **Measured,** step-1 relative L2 on the step 5b prompts, seed 1 / seed 2: `merged_ffn` 0.0050 / 0.0173, P8192 0.0073 / 0.0105, `heteromosaic` 0.0204 / 0.0619,
+  config 3 0.0190 / 0.0620. So more native rows do not raise the error at step 1, and P8192 shows no consistent direction on two prompts.
+- **Not measured:** energy per prefill. The user paused that job. Only the coverage test ran: the `PPT` reading moves with CPU, NPU and GPU load (idle 3.41 W, NPU
+  loop 18.06 W, GPU loop 47.16 W), and it does not cover DRAM.
+- **Suspect label (requested by the starting session):** `heteromosaic_mdown`'s numerical failure rests on one artifact in the `16384x14336x4096/_M` family. The
+  run's PDI and instructions come from that one directory, so it is not the mismatch above; whether the artifact or native down causes it is not established.
+- Held at the user's request, no report for now: `tools/split_model/REPORT.md` keeps its inflight 1 decision with a pointer to these runs, and the report page is
+  not updated, including the suspect label. `tools/split_model/heteromosaic_records.py` compares new runs with the archived `heteromosaic` records.
+- Next, for the user to decide: a new W4A16 GEMM kernel, the design in `kernels/gpu/README.md` (not implemented).
+
 ## 2026-11-02 (merged-ffn-fix): outcome across steps 1-5
 
 Branch `merged-ffn-fix` on the fork. **Measured:** `merged_ffn` is 1.36x `gpu_original` at 1024 tokens (1340.8 vs 1827.8 ms) and
@@ -27,6 +53,8 @@ loses (0.820x) because of NPU context changes. Other split ratios are not worth 
 
 - **Measured:** `heteromosaic_mdown`'s first predicted token is wrong on both seeds, with no shared top-5 token. Native M-split down
   with the existing artifact is therefore not a usable competitor, on either latency or numerics.
+  **Suspect (label added 2026-11-02):** that verdict rests on one artifact, `hw_bins/npu2/16384x14336x4096/bf16_int4AWQ_bf16_M/final_256x14336x4096_*`,
+  which no shipped entry uses. Whether the failure comes from this artifact or from native down is not established.
 - **Estimated:** `merged_ffn_hetero` is about equal to `heteromosaic`, so native attention dominates the native path's deviation.
   Most of `merged_ffn`'s lead comes from GPU attention. Per FFN, Oct 28 measured 0.0148 (merged) against 0.1167 (native).
 - Limits: these prompts run away to near-random tokens (mean NLL about 10 nats against a uniform 11.76), so this is a stress test.
@@ -42,7 +70,8 @@ loses (0.820x) because of NPU context changes. Other split ratios are not worth 
 - **Measured** (`docs/runs/2026-11-02-fix-step3c/`): each NPU context change costs 2.0-3.0 ms. Native down needs a third
   context, and each layer-chunk changes context twice: 5.78 ms per layer-chunk, 370 ms per prefill.
 - **Estimated:** without those two changes, M-split down reaches 1148 ms in latency. **Hypothesis:** whether one PDI can serve
-  K=4096 and K=14336; no artifact exists. Step 5 shows that M-split down with this artifact also fails numerically.
+  K=4096 and K=14336; no artifact exists. Step 5 shows that M-split down with this artifact also fails numerically; that verdict is
+  suspect (see the step 5 entry). All numbers here are for the `16384x14336x4096/bf16_int4AWQ_bf16_M` artifact.
 - `tools/split_model/REPORT.md` is refit and its old claims are corrected: the merged graph is about 7.2 TFLOPS (estimated
   from the Oct 28 sweep slope), not 2.8-3.4; native gate/up is 9.3. **Decision: do not build other split ratios for prefill
   latency.** P6400 is within 28 ms of the best valid split in every scenario (estimated), and the measured sweep shows no

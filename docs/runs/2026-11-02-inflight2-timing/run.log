@@ -1,0 +1,77 @@
+HEAD 9c864388 Config 3 uses the 8192x4096x14336 family's artifact; time and score the 16384 family's apart
+
+=== 02:41:34 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 36.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.002
+
+=== 02:41:34 UTC inflight2-1024
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+method,prompt_tokens,samples,prefill_median_ms,prefill_min_ms,prefill_max_ms,speedup_vs_gpu,tokens_match_gpu,speedup_vs_heteromosaic,tokens_match_heteromosaic,matches_reference,merged_ffn_verdict
+heteromosaic,1024,10,1309.612388489768,1259.7989990608767,1337.0352250058204,,,1.0,True,True,clean
+heteromosaic_gateup,1024,10,1342.4570770002902,1337.4777589924634,1358.848674921319,,,0.975533900432844,True,True,clean
+merged_ffn,1024,10,1355.4850509972312,1346.1443779524416,1837.1773679973558,,,0.9661577510768453,True,True,active
+merged_ffn_p8192,1024,10,1269.1966050770134,1263.174180057831,1330.234611988999,,,1.0318435955872276,True,True,active
+heteromosaic-1024-r0.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic-1024-r1.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic_gateup-1024-r0.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic_gateup-1024-r1.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+merged_ffn-1024-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+
+=== 02:50:09 UTC inflight1-1024
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+method,prompt_tokens,samples,prefill_median_ms,prefill_min_ms,prefill_max_ms,speedup_vs_gpu,tokens_match_gpu,speedup_vs_heteromosaic,tokens_match_heteromosaic,matches_reference,merged_ffn_verdict
+heteromosaic,1024,10,1355.5294339894317,1337.391544948332,1379.9039110308513,,,1.0,True,True,clean
+heteromosaic_gateup,1024,10,1748.787742049899,1705.3833799436688,1779.585018986836,,,0.7751251918088717,True,True,clean
+merged_ffn,1024,10,1340.8748540095985,1335.6280600419268,1386.9438719702885,,,1.0109291183558344,True,True,active
+merged_ffn_p8192,1024,10,1534.586030000355,1524.3602320551872,1540.9574079094455,,,0.8833192844777286,True,True,active
+heteromosaic-1024-r0.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic-1024-r1.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic_gateup-1024-r0.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic_gateup-1024-r1.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+merged_ffn-1024-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+
+=== 02:58:54 UTC inflight1-512
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+method,prompt_tokens,samples,prefill_median_ms,prefill_min_ms,prefill_max_ms,speedup_vs_gpu,tokens_match_gpu,speedup_vs_heteromosaic,tokens_match_heteromosaic,matches_reference,merged_ffn_verdict
+gpu_original,512,10,895.0313659734093,893.3273860020563,971.9495279714465,1.0,True,,,,clean
+merged_ffn,512,10,649.321187462192,644.9489870574325,669.1163859795779,1.3784108439023086,True,,,,active
+merged_ffn_p8192,512,10,747.4611414945684,743.2769280858338,760.4308829177171,1.197428623759317,True,,,,active
+gpu_original-512-r0.result.log:IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+gpu_original-512-r1.result.log:IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+merged_ffn-512-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=352 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=352 timeline_fail=0
+merged_ffn-512-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=352 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=352 timeline_fail=0
+merged_ffn_p8192-512-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=352 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=352 timeline_fail=0
+merged_ffn_p8192-512-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=352 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=352 timeline_fail=0
+
+=== 03:04:37 UTC family16384-i2
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+method,prompt_tokens,samples,prefill_median_ms,prefill_min_ms,prefill_max_ms,speedup_vs_gpu,tokens_match_gpu,speedup_vs_heteromosaic,tokens_match_heteromosaic,matches_reference,merged_ffn_verdict
+heteromosaic_gateup,1024,10,1378.775776072871,1371.2112290086225,1397.5031280424446,,,,,False,clean
+heteromosaic_gateup-1024-r0.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic_gateup-1024-r1.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+
+=== 03:06:46 UTC family16384-i1
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+method,prompt_tokens,samples,prefill_median_ms,prefill_min_ms,prefill_max_ms,speedup_vs_gpu,tokens_match_gpu,speedup_vs_heteromosaic,tokens_match_heteromosaic,matches_reference,merged_ffn_verdict
+heteromosaic_gateup,1024,10,1752.1135994466022,1720.9593170555308,1802.9981780564412,,,,,False,clean
+heteromosaic_gateup-1024-r0.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic_gateup-1024-r1.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+
+=== 03:09:03 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 62.0
+GPU[0]		: sclk clock level: 1: (1782Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 31.014
+
+=== 03:09:03 UTC done
+exit=0

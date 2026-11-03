@@ -1,0 +1,166 @@
+HEAD 9c864388 Config 3 uses the 8192x4096x14336 family's artifact; time and score the 16384 family's apart
+
+=== 03:10:08 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 43.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.008
+
+=== 03:10:08 UTC timers: merged_ffn-i2
+]
+merged_ffn,1024,1358.3009189460427,1348.6284569371492,1470.948119997047,active
+      "run_start_ms": 0.021259,
+      "run_wait_ms": 11.063758,
+      "y_sync_ms": 0.061569,
+      "y_read_ms": 0.223591,
+      "output_scan_ms": 0.079949,
+      "h2d_ms": 0.176832,
+      "gpu_wait_ms": 10.505028,
+      "sum_ms": 0.270995,
+      "calls": 320
+    }
+  }
+}
+
+=== 03:11:14 UTC timers: merged_ffn_p8192-i2
+]
+merged_ffn_p8192,1024,1276.439834968187,1266.2034849636257,1332.7851090580225,active
+      "run_start_ms": 0.0345145,
+      "run_wait_ms": 14.2801715,
+      "y_sync_ms": 0.0746185,
+      "y_read_ms": 0.27589,
+      "output_scan_ms": 0.0775385,
+      "h2d_ms": 0.304909,
+      "gpu_wait_ms": 4.870543,
+      "sum_ms": 0.431992,
+      "calls": 320
+    }
+  }
+}
+
+=== 03:12:23 UTC timers: merged_ffn_p8192-i1
+]
+merged_ffn_p8192,1024,1535.3293810039759,1528.4100839635357,1548.01126208622,active
+      "run_start_ms": 0.045559,
+      "run_wait_ms": 14.3010455,
+      "y_sync_ms": 0.074093,
+      "y_read_ms": 0.208781,
+      "output_scan_ms": 0.058324,
+      "h2d_ms": 0.3417985,
+      "gpu_wait_ms": 0.00249,
+      "sum_ms": 0.336059,
+      "calls": 640
+    }
+  }
+}
+
+=== 03:13:30 UTC timed ioctls: heteromosaic-i1
+]
+heteromosaic,1024,1340.8439200138673,1322.245126008056,1349.2503879824653,True
+
+=== 03:14:15 UTC timed ioctls: heteromosaic_gateup-i1
+]
+heteromosaic_gateup,1024,1712.0833209482953,1706.0817340388894,1723.9347230643034,True
+
+=== 03:15:04 UTC timed ioctls: heteromosaic-i2
+]
+heteromosaic,1024,1324.958377983421,1310.367617988959,1330.8111459482461,True
+
+=== 03:15:49 UTC timed ioctls: heteromosaic_gateup-i2
+]
+heteromosaic_gateup,1024,1341.6298009688035,1337.6701220404357,1346.0285830078647,True
+
+=== 03:16:33 UTC trace report
+{
+ "ioctl-heteromosaic_gateup-i1.543281.csv": {
+  "calls": 2880,
+  "span_ms": 1692.3046275000002,
+  "union_wait_ms": 999.0882485,
+  "summed_wait_ms": 999.0882485,
+  "call_median_ms": 1.927908,
+  "in_order_chunk0_ms": [
+   1.927908,
+   1.0376155,
+   6.388484,
+   6.402899
+  ],
+  "in_order_chunk1_ms": [
+   1.024616,
+   0.3478685,
+   1.0170810000000001,
+   6.3552095,
+   6.369149999999999
+  ]
+ },
+ "ioctl-heteromosaic_gateup-i2.550495.csv": {
+  "calls": 2880,
+  "span_ms": 1322.888369,
+  "union_wait_ms": 983.8427495000001,
+  "summed_wait_ms": 983.8427495000001,
+  "call_median_ms": 1.893949,
+  "in_order_chunk0_ms": [
+   1.9185435,
+   1.922939,
+   1.87926,
+   1.865665
+  ],
+  "in_order_chunk1_ms": [
+   1.9088384999999999,
+   1.908664,
+   1.077579,
+   1.886869,
+   1.904274
+  ]
+ },
+ "ioctl-heteromosaic-i1.539720.csv": {
+  "calls": 2880,
+  "span_ms": 1323.29754,
+  "union_wait_ms": 582.1879445,
+  "summed_wait_ms": 582.1879445,
+  "call_median_ms": 1.898434,
+  "in_order_chunk0_ms": [
+   1.898434,
+   1.001671,
+   3.234089,
+   3.2359489999999997
+  ],
+  "in_order_chunk1_ms": [
+   1.0008409999999999,
+   0.327599,
+   0.9957215,
+   3.231579,
+   3.2337540000000002
+  ]
+ },
+ "ioctl-heteromosaic-i2.546884.csv": {
+  "calls": 2880,
+  "span_ms": 1305.5348045,
+  "union_wait_ms": 584.2840965,
+  "summed_wait_ms": 584.2840965,
+  "call_median_ms": 1.8883245,
+  "in_order_chunk0_ms": [
+   1.895349,
+   1.8899045,
+   1.878689,
+   1.9105935
+  ],
+  "in_order_chunk1_ms": [
+   1.8908795,
+   1.8764195,
+   1.0496005,
+   1.9173335,
+   1.916129
+  ]
+ }
+}
+
+=== 03:16:33 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 61.0
+GPU[0]		: sclk clock level: 1: (1231Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 21.028
+
+=== 03:16:34 UTC done
+exit=0

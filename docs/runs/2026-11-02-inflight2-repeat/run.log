@@ -1,0 +1,48 @@
+HEAD b035e2ea Add the repeat job for the P8192 against heteromosaic gap at two inflight chunks
+
+=== 03:35:21 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 41.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.098
+
+=== 03:35:21 UTC A B B A A B B A A B B A
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+method,prompt_tokens,dummy,samples,prefill_median_ms,prefill_min_ms,tokens_match_gpu,speedup_vs_heteromosaic,tokens_match_heteromosaic,merged_ffn_verdict
+heteromosaic,1024,False,30,1331.0067784623243,1283.395016915165,,1.0,True,clean
+merged_ffn_p8192,1024,False,30,1274.8215150204487,1264.3433979246765,,1.0440730429945515,True,active
+heteromosaic-1024-r0.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic-1024-r1.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic-1024-r2.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic-1024-r3.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic-1024-r4.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+heteromosaic-1024-r5.result.log:IOCTL_COUNTS ctx_ok=2 exec_ok=13472 exec_fail=0 legacy_ok=0 legacy_fail=13472 timeline_ok=13472 timeline_fail=0
+merged_ffn_p8192-1024-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r2.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r3.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r4.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r5.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+heteromosaic-1024-r0.result.json median 1300.0 samples [1320.5, 1283.4, 1297.7, 1300.0, 1309.8] matches_reference True
+merged_ffn_p8192-1024-r0.result.json median 1276.1 samples [1326.3, 1264.3, 1276.1, 1280.0, 1275.8] matches_reference True
+merged_ffn_p8192-1024-r1.result.json median 1273.6 samples [1332.1, 1270.6, 1270.7, 1274.7, 1273.6] matches_reference True
+heteromosaic-1024-r1.result.json median 1331.3 samples [1318.5, 1304.0, 1331.3, 1331.4, 1338.4] matches_reference True
+heteromosaic-1024-r2.result.json median 1333.3 samples [1340.4, 1333.5, 1333.0, 1333.3, 1330.7] matches_reference True
+merged_ffn_p8192-1024-r2.result.json median 1273.8 samples [1604.0, 1273.8, 1272.7, 1269.7, 1275.8] matches_reference True
+merged_ffn_p8192-1024-r3.result.json median 1273.6 samples [1332.5, 1274.9, 1273.6, 1264.6, 1271.7] matches_reference True
+heteromosaic-1024-r3.result.json median 1329.5 samples [1330.4, 1284.7, 1321.3, 1329.5, 1334.2] matches_reference True
+heteromosaic-1024-r4.result.json median 1336.4 samples [1333.0, 1326.9, 1336.4, 1337.0, 1339.4] matches_reference True
+merged_ffn_p8192-1024-r4.result.json median 1276.0 samples [1337.2, 1276.7, 1275.3, 1270.0, 1276.0] matches_reference True
+merged_ffn_p8192-1024-r5.result.json median 1273.0 samples [1329.1, 1270.6, 1279.1, 1267.3, 1273.0] matches_reference True
+heteromosaic-1024-r5.result.json median 1333.2 samples [1335.8, 1306.9, 1327.7, 1333.2, 1341.4] matches_reference True
+
+=== 03:48:26 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 64.0
+GPU[0]		: sclk clock level: 1: (1652Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 24.082
+
+=== 03:48:26 UTC done
+exit=0

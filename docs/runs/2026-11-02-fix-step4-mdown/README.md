@@ -5,6 +5,8 @@ prefill (0.878x, +184 ms). The earlier estimates of a 12.3 ms FFN and "up to 200
 artifact, because that artifact needs a third NPU context (`../2026-11-02-fix-step3c/README.md`). It also fails numerically
 on harder prompts (`../2026-11-02-fix-step5b-sampled/README.md`).
 
+**Suspect (label added 2026-11-02):** the numerical failure of `heteromosaic_mdown` rests on one artifact, `hw_bins/npu2/16384x14336x4096/bf16_int4AWQ_bf16_M/final_256x14336x4096_*`, which no shipped entry uses. It is not established whether the failure comes from this artifact or from native down itself. The run's log shows the PDI and the instructions from that one directory, so this is not the instructions-on-another-family's-PDI case of the two-inflight gate/up run (`../2026-11-02-inflight2-prep/README.md`). The shipped down entries use `8192x14336x4096/bf16_int4AWQ_bf16_K/`, a K-split slice, so the tree has no second M-split artifact to compare. The latency and context-change measurements used this same artifact and stand as measured for it.
+
 Job `aup-runs/step4-mdown`, 21:33-21:38 UTC (15:33-15:38 CST), commit `4924976`, C++ build `9dac460`. Settings:
 `tools/split_model/make_mdown_config.py` enables the four `down` entries at prompt length 1024 with `npuM: 256` and
 `hw_bins/npu2/16384x14336x4096/bf16_int4AWQ_bf16_M/` (`mdown.config.json` here). `evaluate_prefill.py`, synchronized

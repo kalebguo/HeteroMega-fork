@@ -1,0 +1,5 @@
+method,prompt_tokens,dummy,samples,prefill_median_ms,prefill_min_ms,prefill_max_ms,speedup_vs_gpu,tokens_match_gpu,speedup_vs_heteromosaic,tokens_match_heteromosaic,matches_reference,gpu_ffn_active,merged_ffn_expected_per_pass,merged_ffn_passes,merged_ffn_completions,merged_ffn_wrong_passes,merged_ffn_verdict,npu_execution
+heteromosaic,1024,False,10,1309.612388489768,1259.7989990608767,1337.0352250058204,,,1.0,True,True,,0,22,0,0,clean,unverified
+heteromosaic_gateup,1024,False,10,1342.4570770002902,1337.4777589924634,1358.848674921319,,,0.975533900432844,True,True,,0,22,0,0,clean,unverified
+merged_ffn,1024,False,10,1355.4850509972312,1346.1443779524416,1837.1773679973558,,,0.9661577510768453,True,True,,64,22,1408,0,active,merged_ffn_counted
+merged_ffn_p8192,1024,False,10,1269.1966050770134,1263.174180057831,1330.234611988999,,,1.0318435955872276,True,True,,64,22,1408,0,active,merged_ffn_counted

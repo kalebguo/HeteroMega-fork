@@ -1,0 +1,34 @@
+{
+ "ioctl-heteromosaic-i1.539720.csv.gz": {
+  "span_ms": 1323.29754,
+  "busy_ms": 585.9611935,
+  "idle_ms": 736.4241824999999,
+  "busy_percent": 44.308555913019006,
+  "long_calls": 0.0,
+  "long_calls_ms": 0.0
+ },
+ "ioctl-heteromosaic_gateup-i1.543281.csv.gz": {
+  "span_ms": 1692.3046275000002,
+  "busy_ms": 1003.7891485,
+  "idle_ms": 689.9150164999999,
+  "busy_percent": 59.256559697101935,
+  "long_calls": 128.0,
+  "long_calls_ms": 825.163764
+ },
+ "ioctl-heteromosaic-i2.546884.csv.gz": {
+  "span_ms": 1305.5348045,
+  "busy_ms": 588.612568,
+  "idle_ms": 717.404751,
+  "busy_percent": 45.06048559346081,
+  "long_calls": 0.0,
+  "long_calls_ms": 0.0
+ },
+ "ioctl-heteromosaic_gateup-i2.550495.csv.gz": {
+  "span_ms": 1322.888369,
+  "busy_ms": 987.709564,
+  "idle_ms": 334.15389300000004,
+  "busy_percent": 74.75078355932888,
+  "long_calls": 128.0,
+  "long_calls_ms": 816.0316345
+ }
+}

@@ -1,0 +1,73 @@
+{
+ "power_file": "/sys/class/hwmon/hwmon5/power1_input",
+ "interval_ms": 100,
+ "fast_interval_ms": 5,
+ "idle_update_period_ms": 6.899999920278788,
+ "active_update_period_ms": 101.20000003371388,
+ "settle_s": 5,
+ "phases": [
+  {
+   "name": "idle",
+   "start": 894024.10647804,
+   "end": 894054.106605055,
+   "main_process_cpu_fraction": 1.9893570603912844e-06,
+   "mean_w": 3.4091862348178137
+  },
+  {
+   "name": "cpu_one_thread",
+   "start": 894054.106635735,
+   "end": 894074.106640569,
+   "main_process_cpu_fraction": 0.999980536613849,
+   "mean_w": 16.96326666666667
+  },
+  {
+   "name": "idle_after_cpu",
+   "start": 894074.106654429,
+   "end": 894094.10707003,
+   "main_process_cpu_fraction": 2.909986935976233e-06,
+   "mean_w": 3.8523108108108106
+  },
+  {
+   "name": "cpu_all_threads",
+   "start": 894094.107098739,
+   "end": 894114.18954639,
+   "main_process_cpu_fraction": 0.012378503095037607,
+   "mean_w": 47.425533333333334
+  },
+  {
+   "name": "idle_after_all_threads",
+   "start": 894114.18955983,
+   "end": 894134.18964079,
+   "main_process_cpu_fraction": 1.2569941085598134e-06,
+   "mean_w": 3.8660067567567564
+  },
+  {
+   "name": "npu_only",
+   "start": 894134.18967481,
+   "end": 894154.190387544,
+   "main_process_cpu_fraction": 0.0561425721147998,
+   "mean_w": 18.064503355704698
+  },
+  {
+   "name": "idle_after_npu",
+   "start": 894154.190400324,
+   "end": 894174.190847033,
+   "main_process_cpu_fraction": 4.875433716268642e-06,
+   "mean_w": 3.8285608108108105
+  },
+  {
+   "name": "gpu_only",
+   "start": 894174.190903502,
+   "end": 894194.195407887,
+   "main_process_cpu_fraction": 0.9999698680526538,
+   "mean_w": 47.15685906040269
+  },
+  {
+   "name": "idle_after_gpu",
+   "start": 894194.195424786,
+   "end": 894214.195887561,
+   "main_process_cpu_fraction": 4.860430422631864e-06,
+   "mean_w": 4.012141891891892
+  }
+ ]
+}

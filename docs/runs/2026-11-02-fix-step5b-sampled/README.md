@@ -5,6 +5,8 @@ in KL. Native M-split down fails: on both seeds its first predicted token is wro
 reference. The earlier token checks did not show this, because the fixed reference prompt is too easy
 (`../2026-11-02-fix-step5-numerics/README.md`).
 
+**Suspect (label added 2026-11-02):** the numerical failure of `heteromosaic_mdown` rests on one artifact, `hw_bins/npu2/16384x14336x4096/bf16_int4AWQ_bf16_M/final_256x14336x4096_*`, which no shipped entry uses. It is not established whether the failure comes from this artifact or from native down itself. The run's log shows the PDI and the instructions from that one directory, so this is not the instructions-on-another-family's-PDI case of the two-inflight gate/up run (`../2026-11-02-inflight2-prep/README.md`). The shipped down entries use `8192x14336x4096/bf16_int4AWQ_bf16_K/`, a K-split slice, so the tree has no second M-split artifact to compare. The latency and context-change measurements used this same artifact and stand as measured for it.
+
 Job `aup-runs/step5b-sampled`, 01:09-01:27 UTC Nov 3 (19:09-19:27 CST Nov 2), commit `7016bf6`, C++ build `9dac460`, default
 `full` check. `tools/npu_error_probe/path_logits.py`, one fresh process per method. `sampled-1.json` and `sampled-2.json`:
 1536 tokens sampled from `gpu_original` at temperature 1 from BOS, seeds 1 and 2. Each method prefills the first 1024 and

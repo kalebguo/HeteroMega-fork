@@ -4,6 +4,9 @@
 The shipped entries give the NPU 256 of 512 rows. The copy uses the existing
 hw_bins/npu2/16384x4096x14336/bf16_int4AWQ_bf16_M/final_512x4096x14336_* artifact, so the GPU slice has zero rows and
 the NPU call count per prefill stays the same.
+
+The default artifact gives wrong tokens with no error: with minimal_pdi its instructions run on another family's PDI. Pass
+--fw-path hw_bins/npu2/8192x4096x14336/bf16_int4AWQ_bf16_M/ for a usable config (docs/runs/2026-11-02-inflight2-prep/README.md).
 """
 import argparse
 import json

@@ -1,0 +1,25 @@
+heteromosaic_gateup length=1024 round=0: [HETEROMEGA_GPU_FFN=0 HETEROMOSAIC_ROOT=/notebooks/hm-fix] /notebooks/heteromosaic-venv/bin/python3 -u /notebooks/hm-fix/kernels/gpu/tools/run_model_ffn.py --ref /notebooks/hm-fix/docs/runs/2026-10-12-aup/gpu-model-result.json --out /notebooks/hm-results/2026-11-02/inflight2-prep/try-gateup-8192family/heteromosaic_gateup-1024-r0.result.json --build build --config /notebooks/hm-results/2026-11-02/inflight2-prep/gateup-8192family.config.json --heterogeneity hetero --prompt-tokens 1024 --reps 1 --new-tokens 64 --model /notebooks/hm-model/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
+[
+  {
+    "method": "heteromosaic_gateup",
+    "prompt_tokens": 1024,
+    "dummy": false,
+    "samples": 1,
+    "prefill_median_ms": 1754.5797360362485,
+    "prefill_min_ms": 1754.5797360362485,
+    "prefill_max_ms": 1754.5797360362485,
+    "speedup_vs_gpu": "",
+    "tokens_match_gpu": null,
+    "speedup_vs_heteromosaic": "",
+    "tokens_match_heteromosaic": null,
+    "matches_reference": true,
+    "gpu_ffn_active": null,
+    "merged_ffn_expected_per_pass": 0,
+    "merged_ffn_passes": 3,
+    "merged_ffn_completions": 0,
+    "merged_ffn_wrong_passes": 0,
+    "merged_ffn_verdict": "clean",
+    "npu_execution": "unverified"
+  }
+]
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0

@@ -1,0 +1,34 @@
+{
+  "heterogeneity": "hetero",
+  "warmup": false,
+  "dummy_weights": false,
+  "debug_verbosity": 0,
+  "usePackedWeights": true,
+  "padPackedWeights": false,
+  "usePreSavedWeights": false,
+  "prompt_len": 512,
+  "minimal_pdi": true,
+  "cpu_decode": false,
+  "gemv_driven_split_K": false,
+  "chunking": false,
+  "kernels_gemm": [
+    {
+      "use": true,
+      "layer": "gate",
+      "forM": 512,
+      "forK": 14336,
+      "forN": 4096,
+      "npuM": 512,
+      "npuK": 14336,
+      "npuN": 4096,
+      "chunk_id": 0,
+      "config": -1,
+      "num_tiles": 32,
+      "fw_path": "hw_bins/npu2/16384x14336x4096/bf16_int4AWQ_bf16_M/",
+      "tile_size": "64x128x64",
+      "col": "8c",
+      "dtype": "bf16_int4AWQ_bf16"
+    }
+  ],
+  "kernels_gemv": []
+}

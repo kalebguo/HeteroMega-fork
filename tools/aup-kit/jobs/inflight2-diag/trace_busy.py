@@ -18,16 +18,20 @@ LAYERS = 32
 CHUNK0_CALLS = 4
 
 
-def pairs(path):
+def pairs_from(lines):
     open_submit, result = {}, []
-    with open(path, newline="") as f:
-        for row in csv.DictReader(f):
-            if row["operation"] == "submit":
-                open_submit[row["tid"]] = row
-            elif row["operation"] == "timeline_wait" and row["tid"] in open_submit and row["ret"] == "0":
-                submit = open_submit.pop(row["tid"])
-                result.append((int(submit["start_ns"]), int(row["start_ns"]), int(row["end_ns"])))
+    for row in csv.DictReader(lines):
+        if row["operation"] == "submit":
+            open_submit[row["tid"]] = row
+        elif row["operation"] == "timeline_wait" and row["tid"] in open_submit and row["ret"] == "0":
+            submit = open_submit.pop(row["tid"])
+            result.append((int(submit["start_ns"]), int(row["start_ns"]), int(row["end_ns"])))
     return sorted(result)
+
+
+def pairs(path):
+    with open(path, newline="") as f:
+        return pairs_from(f)
 
 
 def union_ms(calls):
