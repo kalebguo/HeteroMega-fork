@@ -6,9 +6,16 @@
 > attention/projections). Only those jobs receive `HETEROMEGA_FFN_CONFIG`, taken
 > from `--merged-ffn-config`; every other job has it and
 > `HETEROMEGA_GPU_FFN_SPLIT` removed. Each job records merged completions per
-> prefill pass. This wiring passes CPU unit tests and dry runs only; it has
-> **not been executed on AUP**. Model smoke timing remains diagnostic and differs
-> from this runner's synchronized generate(1) measurement boundary.
+> prefill pass. Model smoke timing remains diagnostic and differs from this
+> runner's synchronized generate(1) measurement boundary.
+>
+> **Later on 2026-11-02:** this wiring has now run on AUP, measured results in
+> `docs/runs/2026-11-02-fix-*/` and `docs/progress.md`. `heteromosaic_mdown`
+> (`--mdown-config`, from `tools/split_model/make_mdown_config.py`) adds native
+> M-split down. `HETEROMEGA_FFN_FINITE_CHECK=sampled` and
+> `HETEROMEGA_FFN_TIMERS=<dir>` pass through to the jobs; see
+> [ffn-deployment.md](ffn-deployment.md). Timers add host waits, so report
+> headline numbers from runs without them.
 
 Reuse `kernels/gpu/tools/run_model_ffn.py` from GPU PR #1: one excluded warmup,
 then five measured pairs of synchronized `generate(1)` / `generate(64)` calls.

@@ -303,6 +303,20 @@ before inference and use the normal frontend. Check
 prove execution. Unset the variable to use the original FFN. Fixed-artifact M
 must match actual chunk rows, not total prompt length.
 
+Two opt-in runtime variables (read when the merged FFN is created; the startup log
+line states both):
+
+- `HETEROMEGA_FFN_FINITE_CHECK=full|sampled`. The executor checks X and Y_npu for
+  nonfinite BF16 on the host. `full` (default) checks every element, about 2.0 ms per
+  call at `-O3`. `sampled` checks every row at 1 in 64 columns, about 0.17 ms per call.
+  An isolated nonfinite at an unsampled column of layer L reaches layer L+1's input
+  across its whole row, because the Q/K/V and O projections mix columns (code-confirmed
+  by reading; not injected). In the last layer, only the token checks would see it. The
+  smoke's NaN-row control passes in both modes.
+- `HETEROMEGA_FFN_TIMERS=<dir>` writes `merged_ffn_phases_<pid>.csv` per process, and
+  `python -m experiments.ffn_deploy.phase_report <dir>` prints medians. Timers add host
+  waits on the input, the H2D copy, the GPU branch and the sum: use them as diagnostics.
+
 ## Local checks
 
 Portable C++ tests do not require Torch/ROCm/XRT:

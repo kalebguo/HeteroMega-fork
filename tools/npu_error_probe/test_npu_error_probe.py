@@ -189,6 +189,14 @@ class PathLogitsTests(unittest.TestCase):
         self.assertEqual((native["greedy"]["agree"], native["greedy"]["first_disagreement"]), (2, 2))
         self.assertAlmostEqual(native["mean_abs_nll_difference"], 0.25)
 
+    def test_scored_stats_compare_every_position(self):
+        reference = np.array([[3.0, 1.0, 0.0], [0.0, 3.0, 1.0]], dtype=np.float32)
+        other = np.array([[3.0, 1.0, 0.0], [3.0, 0.0, 1.0]], dtype=np.float32)
+        stats = pl.scored_stats(other, reference)
+        self.assertEqual((stats["positions"], stats["argmax_agreement"]), (2, 0.5))
+        self.assertEqual(pl.scored_stats(reference, reference)["mean_kl_nats"], 0.0)
+        self.assertGreater(stats["max_kl_nats"], stats["median_kl_nats"])
+
 
 class EmulationTests(unittest.TestCase):
     """Secondary CPU emulation (estimates only)."""

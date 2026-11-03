@@ -1,5 +1,10 @@
 # Host-side serialization review (report only, 2026-11-02)
 
+> **Correction, later on 2026-11-02 (measured on AUP).** The estimates in this review for `-O3` and for removing the
+> scans were pessimistic (856 / 1757 and 799 / 1643 ms estimated; 709.2 / 1473.8 and 649.4 / 1351.2 ms measured at 512 /
+> 1024 tokens), and native M-split down did not save time with the existing artifact (1518.3 vs 1333.8 ms). See
+> `docs/runs/2026-11-02-fix-step1/README.md`, `docs/runs/2026-11-02-fix-step4-mdown/README.md` and `docs/runs/2026-11-02-fix-step3c/README.md`.
+
 Scope: `generate`, `forward_llama3_chunked`, `forward_llama3_with_scratch` and chunk
 scheduling in `src/unified_llm_w4a16_hetero/unified_llm_w4a16.cpp`; the merged FFN
 executor in `src/unified_llm_w4a16_hetero/merged_ffn.cpp`; `npu_execution_mutex()` in
