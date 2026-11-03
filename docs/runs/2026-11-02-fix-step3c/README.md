@@ -55,7 +55,8 @@ another). The merged kernel alone waits 11.098 ms in `../2026-11-02-fix-step2/`.
 Per layer-chunk (estimated, arithmetic on these medians):
 
 1. `heteromosaic_mdown`: 2.85 + 2.93 = 5.78 ms, or 370 ms per prefill. The measured net loss is 184 ms. So M-split down
-   would save about 186 ms if both changes were free: 1518.3 - 370 = 1148 ms.
+   would save about 186 ms if both changes were free: 1518.3 - 370 = 1148 ms. This is latency only: M-split down with this
+   artifact fails numerically (`../2026-11-02-fix-step5b-sampled/README.md`).
 2. `merged_ffn_hetero`: 2.93 + 2.04 = 4.97 ms, or 318 ms per prefill: 1612.3 - 318 = 1294 ms. The Oct 14 stage sum gives
    a lower floor of 1227 ms, so 67 ms stay unexplained.
 3. Why a change costs this much is a hypothesis: the driver loads the other PDI's instructions and tile state. It was not

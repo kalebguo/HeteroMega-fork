@@ -1,0 +1,64 @@
+HEAD 7016bf6e Numerics on model-sampled prompts, with per-position logits; document finite check and timers
+
+=== 01:09:01 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 36.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.014
+
+=== 01:09:01 UTC seed 1: sample prompt
+{"tokens": 1536, "distinct": 1456, "first": [128000, 54322, 110169, 21043, 125240, 23706, 234, 111571, 9554, 54493, 40053, 90070, 41007, 102378, 105142, 103048], "seed": 1}
+--- gpu_original-1024-r0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- merged_ffn-1024-r0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+--- heteromosaic-1024-r0
+IOCTL_COUNTS ctx_ok=2 exec_ok=19520 exec_fail=0 legacy_ok=0 legacy_fail=19520 timeline_ok=19520 timeline_fail=0
+--- merged_ffn_hetero-1024-r0
+IOCTL_COUNTS ctx_ok=3 exec_ok=19264 exec_fail=0 legacy_ok=0 legacy_fail=19008 timeline_ok=19264 timeline_fail=0
+--- heteromosaic_mdown-1024-r0
+IOCTL_COUNTS ctx_ok=3 exec_ok=19776 exec_fail=0 legacy_ok=0 legacy_fail=19776 timeline_ok=19776 timeline_fail=0
+--- gpu_original-1024-r1
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+
+=== 01:18:10 UTC seed 1: comparison
+gpu_original-1024-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29289.9934 scored_argmax=1.0000 scored_kl=0.000000
+gpu_original-1024-r1 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29289.9934 scored_argmax=1.0000 scored_kl=0.000000
+heteromosaic-1024-r0 max_abs=0.5625 rel_l2=0.02037 kl=0.004407 argmax_equal=True top5=4 repeat=0.0000 greedy=64/64 ppl=29305.3766 scored_argmax=0.9355 scored_kl=0.002624
+heteromosaic_mdown-1024-r0 max_abs=6.8984 rel_l2=0.32815 kl=0.639507 argmax_equal=False top5=0 repeat=0.0000 greedy=0/64 ppl=29710.2240 scored_argmax=0.8164 scored_kl=0.013005
+merged_ffn-1024-r0 max_abs=0.1250 rel_l2=0.00502 kl=0.000164 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29326.8585 scored_argmax=0.9922 scored_kl=0.000084
+merged_ffn_hetero-1024-r0 max_abs=0.4688 rel_l2=0.01865 kl=0.005388 argmax_equal=True top5=4 repeat=0.0000 greedy=64/64 ppl=29330.2425 scored_argmax=0.9473 scored_kl=0.002417
+
+=== 01:18:13 UTC seed 2: sample prompt
+{"tokens": 1536, "distinct": 1321, "first": [128000, 22517, 287, 1203, 311, 2978, 1306, 264, 1317, 1464, 649, 387, 264, 8815, 369, 2225], "seed": 2}
+--- gpu_original-1024-r0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- merged_ffn-1024-r0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+--- heteromosaic-1024-r0
+IOCTL_COUNTS ctx_ok=2 exec_ok=19520 exec_fail=0 legacy_ok=0 legacy_fail=19520 timeline_ok=19520 timeline_fail=0
+--- merged_ffn_hetero-1024-r0
+IOCTL_COUNTS ctx_ok=3 exec_ok=19264 exec_fail=0 legacy_ok=0 legacy_fail=19008 timeline_ok=19264 timeline_fail=0
+--- heteromosaic_mdown-1024-r0
+IOCTL_COUNTS ctx_ok=3 exec_ok=19776 exec_fail=0 legacy_ok=0 legacy_fail=19776 timeline_ok=19776 timeline_fail=0
+--- gpu_original-1024-r1
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+
+=== 01:27:26 UTC seed 2: comparison
+gpu_original-1024-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24917.5857 scored_argmax=1.0000 scored_kl=0.000000
+gpu_original-1024-r1 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24917.5857 scored_argmax=1.0000 scored_kl=0.000000
+heteromosaic-1024-r0 max_abs=1.1250 rel_l2=0.06194 kl=0.013516 argmax_equal=True top5=5 repeat=0.0000 greedy=4/64 ppl=24902.9375 scored_argmax=0.7520 scored_kl=0.001509
+heteromosaic_mdown-1024-r0 max_abs=10.5469 rel_l2=0.56609 kl=1.197360 argmax_equal=False top5=0 repeat=0.0000 greedy=1/64 ppl=25027.1762 scored_argmax=0.3711 scored_kl=0.014615
+merged_ffn-1024-r0 max_abs=0.2500 rel_l2=0.01735 kl=0.000688 argmax_equal=True top5=5 repeat=0.0000 greedy=9/64 ppl=24912.5421 scored_argmax=0.9785 scored_kl=0.000059
+merged_ffn_hetero-1024-r0 max_abs=1.0000 rel_l2=0.05079 kl=0.012565 argmax_equal=True top5=4 repeat=0.0000 greedy=4/64 ppl=24929.3329 scored_argmax=0.7676 scored_kl=0.001214
+
+=== 01:27:29 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 61.0
+GPU[0]		: sclk clock level: 1: (674Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 19.07
+
+=== 01:27:29 UTC done
+exit=0

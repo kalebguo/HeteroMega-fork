@@ -1,5 +1,99 @@
 # HeteroMega progress
 
+## 2026-11-02 (merged-ffn-fix): outcome across steps 1-5
+
+Branch `merged-ffn-fix` on the fork. **Measured:** `merged_ffn` is 1.36x `gpu_original` at 1024 tokens (1340.8 vs 1827.8 ms) and
+ties `heteromosaic` (1336.2 vs 1317.6 ms, 0.986x), with 64 instead of 288 NPU calls per prefill, one NPU context instead of two, and
+the smallest logit deviation of any NPU method. It is not faster than `heteromosaic`. Combining it with native NPU attention
+loses (0.820x) because of NPU context changes. Other split ratios are not worth building (estimated, `tools/split_model/REPORT.md`).
+
+## 2026-11-02 (merged-ffn-fix step 5): numerics, and what the token checks missed
+
+- **Measured** (`docs/runs/2026-11-02-fix-step5-numerics/`): the first hardware run of the native GEMM probes. Native relative L2
+  grows with K, from 0.053 at K=1536 to 0.285 at K=14336, with the GPU control at 0.0017. The fixed decision rule supports
+  accumulation rounding, sign handling and scale metadata together. The 1.5 anchor repeats: maximum 1.375 at K=2048.
+  **Hypothesis:** asymmetric partial-sum rounding; the K16 emulation matches the maximum but not r or the sign effect.
+- **Measured:** the fixed reference prompt has 12 distinct tokens and a period of 10, and every path predicts it with a perplexity
+  near 1. So every earlier "tokens match" is weak evidence of accuracy. Step-1 logit relative L2 on it: `merged_ffn` 0.038,
+  `merged_ffn_hetero` 0.123, `heteromosaic` 0.155.
+- **Measured** (`docs/runs/2026-11-02-fix-step5b-sampled/`, two model-sampled prompts, seed 1 / seed 2), against `gpu_original`:
+
+  | Method | Step-1 relative L2 | Step-1 KL, nats | Argmax agreement, 512 positions |
+  | --- | ---: | ---: | ---: |
+  | `merged_ffn` | 0.0050 / 0.0173 | 0.00016 / 0.00069 | 99.2% / 97.9% |
+  | `heteromosaic` | 0.0204 / 0.0619 | 0.00441 / 0.01352 | 93.6% / 75.2% |
+  | `merged_ffn_hetero` | 0.0187 / 0.0508 | 0.00539 / 0.01256 | 94.7% / 76.8% |
+  | `heteromosaic_mdown` | 0.3281 / 0.5661 | 0.63951 / 1.19736 | 81.6% / 37.1% |
+
+- **Measured:** `heteromosaic_mdown`'s first predicted token is wrong on both seeds, with no shared top-5 token. Native M-split down
+  with the existing artifact is therefore not a usable competitor, on either latency or numerics.
+- **Estimated:** `merged_ffn_hetero` is about equal to `heteromosaic`, so native attention dominates the native path's deviation.
+  Most of `merged_ffn`'s lead comes from GPU attention. Per FFN, Oct 28 measured 0.0148 (merged) against 0.1167 (native).
+- Limits: these prompts run away to near-random tokens (mean NLL about 10 nats against a uniform 11.76), so this is a stress test.
+  Two seeds. No real-text perplexity or task accuracy. The box has no tokenizer.
+- Next, for the user to decide: (1) real-text perplexity from token IDs tokenized elsewhere; (2) whether a PDI can hold attention
+  and the merged graph, with the merged kernel's arithmetic; (3) a vectorized full scan as the default; (4) merging this branch.
+
+## 2026-11-02 (merged-ffn-fix step 4): native M-split down and cost-model refit
+
+- **Measured** (`docs/runs/2026-11-02-fix-step4-mdown/`): `heteromosaic` 1333.8 ms, `heteromosaic_mdown` 1518.3 ms at
+  1024 tokens (0.878x). Submissions 13472 → 14176, which confirms +64 NPU calls per prefill. The earlier estimate of a
+  12.3 ms FFN and "up to 200 ms saved" did not hold with the existing artifact.
+- **Measured** (`docs/runs/2026-11-02-fix-step3c/`): each NPU context change costs 2.0-3.0 ms. Native down needs a third
+  context, and each layer-chunk changes context twice: 5.78 ms per layer-chunk, 370 ms per prefill.
+- **Estimated:** without those two changes, M-split down reaches 1148 ms in latency. **Hypothesis:** whether one PDI can serve
+  K=4096 and K=14336; no artifact exists. Step 5 shows that M-split down with this artifact also fails numerically.
+- `tools/split_model/REPORT.md` is refit and its old claims are corrected: the merged graph is about 7.2 TFLOPS (estimated
+  from the Oct 28 sweep slope), not 2.8-3.4; native gate/up is 9.3. **Decision: do not build other split ratios for prefill
+  latency.** P6400 is within 28 ms of the best valid split in every scenario (estimated), and the measured sweep shows no
+  winner.
+- Next: step 5 numerics.
+
+## 2026-11-02 (merged-ffn-fix step 3): H2 and head-to-head
+
+- **Measured** (`docs/runs/2026-11-02-fix-step3-h2/`): `heteromosaic` 1322.3 ms, `merged_ffn_hetero` 1612.3 ms at 1024
+  tokens (0.820x). Native calls confirmed by the ioctl counter: 13472 and 12768 submissions, 0 failures. Tokens match.
+- **Measured** (`docs/runs/2026-11-02-fix-step3c/`): `heteromosaic` 1317.6 ms, `merged_ffn` 1336.2 ms (0.986x, paired). This
+  is a tie within the 36 ms between-process spread. NPU calls per prefill: 288 vs 64. Hardware contexts: 2 vs 1.
+- **Measured** (`docs/runs/2026-11-02-fix-step3b/`, `fix-step3c/`): in `merged_ffn_hetero` the merged kernel waits 13.15 ms
+  instead of 11.10 ms, and the first native call after it waits 4.86 ms instead of 1.91 ms. Context changes account for
+  318 ms of the 385 ms gap to the 1227 ms floor (estimated); 67 ms stay unexplained.
+- **Hypothesis:** the driver reloads PDI instructions and tile state on a context change. Not separated here.
+
+## 2026-11-02 (merged-ffn-fix step 2): phase timers locate the cost
+
+- **Measured** (`docs/runs/2026-11-02-fix-step2/`): one merged FFN takes 12.60 ms in the model, beyond waiting for attention,
+  which is faster than the Oct 28 harness (14.27-14.59 ms). 64 x (0.519 + 20.422) = 1340 ms against 1339.6 ms measured.
+- **Measured:** the NPU wait is 11.01-11.36 ms across all 32 layers, so per-layer weight BO switching costs nothing visible.
+  Copies, BO work and the sum total 1.18 ms. GPU branch alone 12.37 ms (smoke); it finished before the NPU path in the model.
+- **Measured** (`docs/runs/2026-11-02-fix-step2c/`): the "remaining 5 ms" is the scans. Without `-O` each original scan takes
+  9.8-10.2 ms in the model, against 7.16 ms in the earlier CPU-only test. The scan rows explain 19.87 of the 19.99 ms gap per
+  call. **Hypothesis:** the CPU scan is slower in situ because of shared package power and DRAM.
+- **Measured** (`docs/runs/2026-11-02-fix-step2b/`): the layer 1 / stream 1 effect came from not waiting for input readiness
+  before the D2H copy: 25.53 → 13.50 ms after commit `9dac460`. It never affected the single-chunk model path. Two inflight
+  chunks still gain nothing: `merged_ffn` 1352.5 ms. **Hypothesis:** cause is a shared HIP queue or delayed flush.
+
+## 2026-11-02 (merged-ffn-fix step 1): first trustworthy merged FFN number
+
+- **Code-confirmed:** `heteromega_merged_ffn` had no optimization flag. Commit `2ea8e6c` adds `-O3`, the opt-in
+  `HETEROMEGA_FFN_FINITE_CHECK=sampled` (every row at 1 in 64 columns) and `HETEROMEGA_FFN_TIMERS`. `full` stays the default.
+- **Measured** (`docs/runs/2026-11-02-fix-step1/`, `fix-step2b/`), prefill median at 512 / 1024 tokens, `merged_ffn` vs
+  `gpu_original`; 32 / 64 completions per pass, 0 wrong, 64 tokens identical:
+
+  | Build and check | 512 ms | 1024 ms | Speedup |
+  | --- | ---: | ---: | ---: |
+  | No `-O`, full (first evaluation) | 1257.1 | 2558.7 | 0.707 / 0.715 |
+  | `-O3`, full | 709.2 | 1473.8 | 1.257 / 1.241 |
+  | `-O3`, sampled | 649.4 | 1351.2 | 1.377 / 1.354 |
+  | `-O3`, sampled, input wait (`9dac460`) | 644.7 | 1340.8 | 1.383 / 1.363 |
+
+- **Estimated before the run:** 856 / 1757 and 799 / 1643 ms from the earlier scan cost; the Oct 28 rate gave 657 / 1359, which
+  the measurement matches. The earlier estimate overstated the `-O3` scan cost.
+- Why `sampled` and not a GPU-side check: a GPU `isfinite` needs a blocking readback or more kernels, and blocks the next
+  layer. **Code-confirmed by reading, not injected:** an isolated nonfinite at an unsampled column reaches the whole row of the
+  next layer's input. The last layer relies on token checks. A vectorizable full scan measures 0.105 ms in the CPU bench and
+  could become the default later (not in the executor).
+
 ## 2026-11-02 (H1): first paired prefill evaluation, gpu_original vs merged_ffn (measured)
 
 - **Measured** on AUP by the local session (`tools/aup-kit` job `eval-main`, 17:43-17:52 UTC),

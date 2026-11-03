@@ -159,7 +159,9 @@ def report(cal):
         cost = (back + forward) * LAYER_CHUNKS
         lines.append(f"- `{method}`: {back:.2f} + {forward:.2f} ms per layer-chunk, {cost:.0f} ms per prefill. Without it: "
                      f"{summary[(method, 1024)] - cost:.0f} ms.")
-    lines += ["", "No artifact exists that removes these changes; whether one PDI can hold both workloads is unknown.", "",
+    lines += ["", "No artifact exists that removes these changes; whether one PDI can hold both workloads is unknown. "
+              "These are latency estimates only: `heteromosaic_mdown` with the existing artifact also fails numerically "
+              "(`docs/runs/2026-11-02-fix-step5b-sampled/README.md`).", "",
               "## Inputs", "",
               "| Quantity | Value | Source | Status |", "| --- | --- | --- | --- |",
               f"| NPU wait in the model at P{P_MEASURED} | {cal['t_npu_measured']:.3f} ms | `{SOURCES['phases']}` | measured, 640 calls |",
@@ -204,7 +206,8 @@ def report(cal):
               f"which is more than the {cal['sweep'][5]['npu_wait_concurrent_ms'] - cal['sweep'][1]['npu_wait_concurrent_ms']:.2f} ms between P6144 and P6656.",
               "3. With overlapping attention (two inflight chunks) the balance could move toward more NPU channels. Two inflight "
               "chunks gain nothing today (`docs/runs/2026-11-02-fix-step2b/README.md`), so this model does not cover it.",
-              "4. This model is latency only. Numerics are in `docs/runs/2026-11-02-fix-step5-numerics/`.", ""]
+              "4. This model is latency only. Numerics are in `docs/runs/2026-11-02-fix-step5-numerics/` and "
+              "`docs/runs/2026-11-02-fix-step5b-sampled/`.", ""]
     return "\n".join(lines)
 
 

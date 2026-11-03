@@ -34,7 +34,7 @@ Context-change arithmetic from `docs/runs/2026-11-02-fix-step3c/README.md` (esti
 - `heteromosaic_mdown`: 2.85 + 2.93 ms per layer-chunk, 370 ms per prefill. Without it: 1148 ms.
 - `merged_ffn_hetero`: 2.93 + 2.04 ms per layer-chunk, 318 ms per prefill. Without it: 1294 ms.
 
-No artifact exists that removes these changes; whether one PDI can hold both workloads is unknown.
+No artifact exists that removes these changes; whether one PDI can hold both workloads is unknown. These are latency estimates only: `heteromosaic_mdown` with the existing artifact also fails numerically (`docs/runs/2026-11-02-fix-step5b-sampled/README.md`).
 
 ## Inputs
 
@@ -98,4 +98,4 @@ Scenario values are the in-model GPU branch at 7936 channels: upper bound 12.03 
 1. The in-model GPU branch has no end timer, only the upper bound above. A completion timestamp would fix its level.
 2. The sweep's NPU waits are noisy: three P6400 blocks range over 0.52 ms, which is more than the 0.34 ms between P6144 and P6656.
 3. With overlapping attention (two inflight chunks) the balance could move toward more NPU channels. Two inflight chunks gain nothing today (`docs/runs/2026-11-02-fix-step2b/README.md`), so this model does not cover it.
-4. This model is latency only. Numerics are in `docs/runs/2026-11-02-fix-step5-numerics/`.
+4. This model is latency only. Numerics are in `docs/runs/2026-11-02-fix-step5-numerics/` and `docs/runs/2026-11-02-fix-step5b-sampled/`.
