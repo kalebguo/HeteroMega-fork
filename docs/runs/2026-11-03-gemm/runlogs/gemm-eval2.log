@@ -1,0 +1,58 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 05:27:10 UTC configure kernels/gpu
+-- ROCm: /opt/rocm-7.2.0
+-- HIP architectures: gfx1150
+
+=== 05:27:12 UTC build
+[ 78%] Built target test_gpu_ffn
+[ 91%] Built target bench_ffn_ablation
+
+=== 05:27:27 UTC new kernel: instruction mix per kernel
+365:0000000000002600 <_ZN10heteromega12_GLOBAL__N_117gemm_w4a16_kernelEPtPKtPKfPKhiiii>:
+scratch ops in the file: 0   wmma: 128
+
+=== 05:27:28 UTC test_gpu_ffn
+ALL PASS (0 failed)
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 05:27:46 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 50.0
+GPU[0]		: sclk clock level: 1: (1506Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 34.013
+
+=== 05:27:46 UTC inflight 1
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+method,prompt_tokens,dummy,samples,prefill_median_ms,prefill_min_ms,tokens_match_gpu,speedup_vs_heteromosaic,tokens_match_heteromosaic,merged_ffn_verdict
+merged_ffn,1024,False,15,1283.6332389852032,1272.595145041123,,,,active
+merged_ffn_p8192,1024,False,15,1488.982105976902,1473.0803610291332,,,,active
+merged_ffn-1024-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r2.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r2.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+
+=== 05:34:15 UTC inflight 2
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+method,prompt_tokens,dummy,samples,prefill_median_ms,prefill_min_ms,tokens_match_gpu,speedup_vs_heteromosaic,tokens_match_heteromosaic,merged_ffn_verdict
+merged_ffn,1024,False,15,1204.0642659412697,1192.033122992143,,,,active
+merged_ffn_p8192,1024,False,15,1194.6335369721055,1187.9968420835212,,,,active
+merged_ffn-1024-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r2.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn_p8192-1024-r2.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+
+=== 05:40:35 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 63.0
+GPU[0]		: sclk clock level: 1: (1890Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 31.018
+
+=== 05:40:35 UTC done
+exit=0

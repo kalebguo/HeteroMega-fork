@@ -1,0 +1,84 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 07:07:38 UTC build the NPU load and the GPU probes
+
+=== 07:07:42 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 40.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 16.078
+
+=== 07:07:42 UTC round 1: NPU idle
+  alu          median   0.873 ms  p10   0.858  p90   0.882  n=1727
+  wmma         median   1.114 ms  p10   1.096  p90   1.129  n=1727
+  read_cached  median   0.624 ms  p10   0.610  p90   0.632  n=1727
+  read_dram    median   0.641 ms  p10   0.628  p90   0.651  n=1727
+  write_dram   median   1.383 ms  p10   1.361  p90   1.398  n=1727
+  bench fast s=6144: total 6.37 ms, gemm1 4.03, act 0.19, down 2.15
+  bench fast s=7680: total 7.92 ms, gemm1 5.01, act 0.24, down 2.67
+  sensors, GPU busy: n=70 freq1 2728 MHz, power 53.0 W, CPU cores 1.0
+
+=== 07:07:53 UTC round 1: NPU loop, P6400
+  alu          median   0.888 ms  p10   0.843  p90   0.952  n=1679
+  wmma         median   1.142 ms  p10   1.087  p90   1.224  n=1679
+  read_cached  median   0.625 ms  p10   0.598  p90   0.686  n=1679
+  read_dram    median   0.636 ms  p10   0.608  p90   0.706  n=1679
+  write_dram   median   1.384 ms  p10   1.317  p90   1.522  n=1679
+  bench fast s=6144: total 8.45 ms, gemm1 5.37, act 0.28, down 2.83
+  bench fast s=7680: total 10.75 ms, gemm1 6.80, act 0.37, down 3.44
+  sensors, GPU busy: n=77 freq1 2497 MHz, power 49.0 W, CPU cores 1.1
+npu_load run 1400: 10.93 ms
+
+=== 07:08:09 UTC round 1: NPU loop, P8192
+  alu          median   0.884 ms  p10   0.844  p90   0.953  n=1678
+  wmma         median   1.137 ms  p10   1.088  p90   1.228  n=1678
+  read_cached  median   0.623 ms  p10   0.599  p90   0.689  n=1678
+  read_dram    median   0.634 ms  p10   0.611  p90   0.708  n=1678
+  write_dram   median   1.379 ms  p10   1.321  p90   1.524  n=1678
+  bench fast s=6144: total 9.28 ms, gemm1 5.95, act 0.29, down 3.16
+  bench fast s=7680: total 11.63 ms, gemm1 7.39, act 0.36, down 3.92
+  sensors, GPU busy: n=77 freq1 2493 MHz, power 49.0 W, CPU cores 1.1
+npu_load run 1000: 14.17 ms
+
+=== 07:08:26 UTC round 2: NPU idle
+  alu          median   0.846 ms  p10   0.845  p90   0.848  n=1795
+  wmma         median   1.088 ms  p10   1.087  p90   1.091  n=1795
+  read_cached  median   0.596 ms  p10   0.594  p90   0.603  n=1795
+  read_dram    median   0.603 ms  p10   0.600  p90   0.612  n=1795
+  write_dram   median   1.308 ms  p10   1.306  p90   1.320  n=1795
+  bench fast s=6144: total 6.45 ms, gemm1 4.07, act 0.19, down 2.19
+  bench fast s=7680: total 7.97 ms, gemm1 5.04, act 0.24, down 2.69
+  sensors, GPU busy: n=80 freq1 2875 MHz, power 45.0 W, CPU cores 1.0
+
+=== 07:08:37 UTC round 2: NPU loop, P6400
+  alu          median   0.888 ms  p10   0.844  p90   0.963  n=1672
+  wmma         median   1.141 ms  p10   1.087  p90   1.237  n=1672
+  read_cached  median   0.624 ms  p10   0.600  p90   0.692  n=1672
+  read_dram    median   0.635 ms  p10   0.612  p90   0.711  n=1672
+  write_dram   median   1.383 ms  p10   1.327  p90   1.539  n=1672
+  bench fast s=6144: total 8.53 ms, gemm1 5.36, act 0.28, down 2.89
+  bench fast s=7680: total 10.72 ms, gemm1 6.62, act 0.36, down 3.77
+  sensors, GPU busy: n=76 freq1 2472 MHz, power 49.0 W, CPU cores 1.1
+npu_load run 1400: 10.77 ms
+
+=== 07:08:53 UTC round 2: NPU loop, P8192
+  alu          median   0.888 ms  p10   0.844  p90   0.961  n=1670
+  wmma         median   1.142 ms  p10   1.087  p90   1.238  n=1670
+  read_cached  median   0.626 ms  p10   0.601  p90   0.694  n=1670
+  read_dram    median   0.637 ms  p10   0.613  p90   0.713  n=1670
+  write_dram   median   1.384 ms  p10   1.325  p90   1.536  n=1670
+  bench fast s=6144: total 9.24 ms, gemm1 5.93, act 0.29, down 3.13
+  bench fast s=7680: total 11.63 ms, gemm1 7.40, act 0.36, down 3.91
+  sensors, GPU busy: n=77 freq1 2477 MHz, power 49.0 W, CPU cores 1.1
+npu_load run 1000: 13.67 ms
+
+=== 07:09:09 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 60.0
+GPU[0]		: sclk clock level: 1: (2111Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 40.028
+
+=== 07:09:09 UTC done
+exit=0

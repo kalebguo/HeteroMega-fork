@@ -1,0 +1,56 @@
+ALL PASS (0 failed)
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 10:44:57 UTC build unified_llm_w4a16_hetero_libtorch
+[ 75%] Linking HIP static library libheteromega_merged_ffn.a
+[ 81%] Linking HIP static library libunified_llm_w4a16_hetero_lib.a
+[ 94%] Built target unified_llm_w4a16_hetero_lib
+[ 97%] Linking HIP shared module ../../py/unified_llm_w4a16/unified_llm_w4a16_hetero_libtorch.so
+[100%] Built target unified_llm_w4a16_hetero_libtorch
+
+=== 10:45:25 UTC done status=0
+10:46:18 p8192-all: median,min,max 1012.8278660122305,1003.670900 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:47:10 p7168-all: median,min,max 1045.731520978734,1045.6804919 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:48:02 p6400-all: median,min,max 1023.0921941110864,1022.684062 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:48:53 p8192-all: median,min,max 1005.0687779439613,1004.285772 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:49:47 p7168-all: median,min,max 1046.6944659128785,1044.482138 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:50:38 p6400-all: median,min,max 1033.2048630807549,1032.308151 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:51:29 p8192-all: median,min,max 1005.5263739777729,995.6723129 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:52:22 p7168-all: median,min,max 1051.2711119372398,1044.824737 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:53:13 p6400-all: median,min,max 1028.8343420252204,1021.834108 native exec_ok=448  fallbacks=0 sdpa_lines=2
+peak GTT MB, lowest available MB: 10951, 6268
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+gpu_fast-1024-r0 max_abs=0.0938 rel_l2=0.00426 kl=0.000072 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29298.4822 scor
+gpu_original-1024-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29289.9934 
+gpu_original-1024-r1 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29289.9934 
+gpu_sdpa-1024-r0 max_abs=0.1250 rel_l2=0.00563 kl=0.000115 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29321.3861 scor
+merged_p6400_all-1024-r0 max_abs=0.0938 rel_l2=0.00407 kl=0.000150 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29311.2
+merged_p7168_all-1024-r0 max_abs=0.1250 rel_l2=0.00431 kl=0.000151 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29336.1
+merged_p8192_all-1024-r0 max_abs=0.1875 rel_l2=0.00802 kl=0.000282 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29308.1
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+gpu_fast-1024-r0 max_abs=0.1641 rel_l2=0.01099 kl=0.000323 argmax_equal=True top5=5 repeat=0.0000 greedy=9/64 ppl=24937.6152 score
+gpu_original-1024-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24917.5857 
+gpu_original-1024-r1 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24917.5857 
+gpu_sdpa-1024-r0 max_abs=0.1562 rel_l2=0.00540 kl=0.000339 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24934.6638 scor
+merged_p6400_all-1024-r0 max_abs=0.1562 rel_l2=0.00659 kl=0.000332 argmax_equal=True top5=5 repeat=0.0000 greedy=63/64 ppl=24940.2
+merged_p7168_all-1024-r0 max_abs=0.1875 rel_l2=0.00746 kl=0.000521 argmax_equal=True top5=5 repeat=0.0000 greedy=63/64 ppl=24925.4
+merged_p8192_all-1024-r0 max_abs=0.2031 rel_l2=0.00813 kl=0.000662 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24926.7
+=== 11:09:53 UTC done status=0
+merged_ffn,1024,5,1007.3932769009843,1001.7505059950054
+merged_ffn,1024,5,1040.7778640510514,1039.7131950594485
+merged_ffn,1024,5,1028.221333050169,1022.406806005165
+=== 11:13:00 UTC done
+final status=0
+exit=0

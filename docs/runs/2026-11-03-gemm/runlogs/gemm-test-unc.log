@@ -1,0 +1,10 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+cmd.sh: line 2: 781868 Aborted                 (core dumped) HETEROMEGA_GEMM_UNCACHED=1 ./build/gpu/bin/test_gpu_ffn > /notebooks/hm-results/2026-11-02/gemm-unc/test-unc.log 2>&1
+status=134
+L1 linear prefix [512 x 1024] of [4096 x 1024] M=128 PASS  max_rel=3.20e-03  rel_l2=2.20e-03  cos=0.9999976
+L1 linear prefix [512 x 1024] of [4096 x 1024] M=512 PASS  max_rel=3.16e-03  rel_l2=2.21e-03  cos=0.9999976
+L1 linear prefix [512 x 1024] of [4096 x 1024] M=2048 PASS  max_rel=3.11e-03  rel_l2=2.21e-03  cos=0.9999976
+L1 gemm_w4a16 gate_up [4096 x 2*7168] M=128          PASS  max_rel=3.04e-03  rel_l2=1.66e-03  cos=0.9999986
+L1 gemm_w4a16 gate_up [4096Memory access fault by GPU node-1 (Agent handle: 0x469d0590) on address 0x70242173f000. Reason: Page not present or supervisor privilege.
+77
+exit=1

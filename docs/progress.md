@@ -1,5 +1,22 @@
 # HeteroMega progress
 
+## 2026-11-03 (merged-ffn-fix): GPU branch, attention, NPU queue and copies at two inflight chunks
+
+Evidence and tables: `docs/runs/2026-11-03-gemm/`. New kernels `gemm_w4a16`, `sdpa_bf16`, `residual_norm_bf16`; every switch is off by default.
+
+- **Measured:** with all kept switches at two inflight chunks and 1024 tokens, `merged_ffn` P8192 is 1005.5 ms, P6400 1032.3 ms, P7168 1046.7 ms (9 samples, 3 processes each, `exec_ok=448`, 0 fallbacks,
+  reference tokens). Against the archived `heteromosaic` records, 1309.6-1355.5 ms, P8192 is 1.30-1.35x. Not paired, at the user's request. At the start of this work P8192 was 1274.8 ms.
+- **Measured, step gains within one job:** uncached weights 2-5%, `sdpa_bf16` 4-7%, fused FFN + shared NPU buffers about 4%, attention writing the `o` input 0-0.7%, layer boundary kernel 0-1.2%.
+- **Measured, rejected:** GPU kernels using the NPU buffers directly, which removes both HIP copies: 1.0-1.9% slower. The other negative results are listed in the run's README. My estimate of 3-5% for the
+  layer boundary kernel was too high.
+- **Measured:** numerics on the two sampled prompts stay close to GPU-only with the new kernels. Step 1 relative L2 at P8192 is 0.0080 / 0.0081, `gpu_fast` 0.0043 / 0.0110, `heteromosaic` 0.0204 / 0.0619. Argmax
+  agreement over 512 positions is 96.3-99.2%, `gpu_fast` 96.9-98.8%. Two prompts do not establish accuracy.
+- **Measured:** the GPU is busy 96.6-100% of the prefill and the NPU 66.3-87.1%. P8192 is close to balance. The non-GEMM stages of attention are about 6% of the cycle, the two HIP copies 0.3-0.4 ms, and the mutex wait is
+  not the bound. **Estimated:** the GEMMs take about 13.7 of the GPU's 15.7 ms per chunk-layer. I stopped here because the last two kept steps gave at most 1.2% and the zero copy step lost.
+- **Not measured:** energy, other prompt lengths, one inflight chunk with these switches. No final report or report-page update, at the user's request.
+- Peak GTT is 10951 of 11818 MB: the attention weights are held twice for uncached reads (about 0.7 GB).
+- Next, if more speed is wanted: only a new idea for the GEMMs under NPU memory load can give more than about 3%. No such idea is proposed now.
+
 ## 2026-11-02 (merged-ffn-fix): two inflight chunks with a larger NPU share
 
 Evidence: `docs/runs/2026-11-02-inflight2-{prep,timing,diag,numerics,repeat,energy}/`. C++ build `9dac460`, 1024 tokens unless noted.

@@ -1,0 +1,56 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 06:10:50 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 40.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.004
+
+=== 06:10:50 UTC seed 1
+--- gpu_original-1024-r0 (old)
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- gpu_fast-1024-r0 (fast)
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- merged_p6400_fast-1024-r0 (fast)
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+--- merged_p8192_fast-1024-r0 (fast)
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+--- gpu_original-1024-r1 (old)
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+
+=== 06:16:43 UTC seed 1: comparison
+gpu_fast-1024-r0 max_abs=0.0938 rel_l2=0.00426 kl=0.000072 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29298.4822 scored_argmax=0.9883 scored_kl=0.000083
+gpu_original-1024-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29289.9934 scored_argmax=1.0000 scored_kl=0.000000
+gpu_original-1024-r1 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29289.9934 scored_argmax=1.0000 scored_kl=0.000000
+merged_p6400_fast-1024-r0 max_abs=0.0938 rel_l2=0.00417 kl=0.000157 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29309.9003 scored_argmax=0.9863 scored_kl=0.000085
+merged_p8192_fast-1024-r0 max_abs=0.1562 rel_l2=0.00560 kl=0.000264 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29320.3640 scored_argmax=0.9883 scored_kl=0.000084
+
+=== 06:16:46 UTC seed 2
+--- gpu_original-1024-r0 (old)
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- gpu_fast-1024-r0 (fast)
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- merged_p6400_fast-1024-r0 (fast)
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+--- merged_p8192_fast-1024-r0 (fast)
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+--- gpu_original-1024-r1 (old)
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+
+=== 06:22:39 UTC seed 2: comparison
+gpu_fast-1024-r0 max_abs=0.1641 rel_l2=0.01099 kl=0.000323 argmax_equal=True top5=5 repeat=0.0000 greedy=9/64 ppl=24937.6152 scored_argmax=0.9688 scored_kl=0.000055
+gpu_original-1024-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24917.5857 scored_argmax=1.0000 scored_kl=0.000000
+gpu_original-1024-r1 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24917.5857 scored_argmax=1.0000 scored_kl=0.000000
+merged_p6400_fast-1024-r0 max_abs=0.1562 rel_l2=0.00674 kl=0.000309 argmax_equal=True top5=5 repeat=0.0000 greedy=9/64 ppl=24933.5615 scored_argmax=0.9707 scored_kl=0.000059
+merged_p8192_fast-1024-r0 max_abs=0.2031 rel_l2=0.00653 kl=0.000881 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24937.9262 scored_argmax=0.9746 scored_kl=0.000061
+
+=== 06:22:41 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 60.0
+GPU[0]		: sclk clock level: 1: (737Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 20.089
+
+=== 06:22:41 UTC done status=0
+exit=0

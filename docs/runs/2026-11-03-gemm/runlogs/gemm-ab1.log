@@ -1,0 +1,38 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 06:44:22 UTC build unified_llm_w4a16_hetero_libtorch
+[ 74%] Linking HIP static library libheteromega_merged_ffn.a
+[ 94%] Built target unified_llm_w4a16_hetero_lib
+[ 97%] Linking HIP shared module ../../py/unified_llm_w4a16/unified_llm_w4a16_hetero_libtorch.so
+[100%] Built target unified_llm_w4a16_hetero_libtorch
+
+=== 06:44:37 UTC done status=0
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 06:44:37 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 40.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 16.094
+06:45:40 base: median,min,max 1188.4432120714337,1178.431754 native exec_ok=704 
+06:46:43 low: median,min,max 1195.7333779428154,1190.990002 native exec_ok=704 
+06:47:46 normal: median,min,max 1202.989216079004,1191.5934539 native exec_ok=704 
+06:48:57 bo1: median,min,max 1214.9561101105064,1206.976793 native exec_ok=704 
+bo2: FAILED
+           ^^^^^^^^^^^^^^^^^^^^
+RuntimeError: merged FFN: cannot register the NPU buffers with HIP
+IOCTL_COUNTS ctx_ok=1 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+06:50:37 lowbo1: median,min,max 1186.9214170146734,1176.265862 native exec_ok=704 
+06:51:40 low6400: median,min,max 1190.6195590272546,1186.912960 native exec_ok=704 
+06:53:00 low7168: median,min,max 1205.5722860386595,1198.500650 native exec_ok=704 
+
+=== 06:53:00 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 62.0
+GPU[0]		: sclk clock level: 1: (1825Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 29.086
+
+=== 06:53:00 UTC done status=1
+exit=1

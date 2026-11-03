@@ -1,0 +1,56 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 06:30:23 UTC build unified_llm_w4a16_hetero_libtorch
+[ 74%] Linking HIP static library libheteromega_merged_ffn.a
+[ 80%] Linking HIP static library libunified_llm_w4a16_hetero_lib.a
+[ 94%] Built target unified_llm_w4a16_hetero_lib
+[ 97%] Linking HIP shared module ../../py/unified_llm_w4a16/unified_llm_w4a16_hetero_libtorch.so
+[100%] Built target unified_llm_w4a16_hetero_libtorch
+
+=== 06:30:51 UTC done status=0
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 06:30:51 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 42.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 17.088
+
+=== 06:30:51 UTC gpu-i1
+]
+gpu_original,1024,5,1438.9772680588067,1435.7091230340302
+
+=== 06:31:56 UTC p8192-i2
+]
+merged_ffn,1024,5,1228.215523995459,1219.947312027216
+
+=== 06:33:01 UTC p6400-i2
+]
+merged_ffn,1024,5,1200.0620989128947,1196.084494004026
+
+=== 06:34:10 UTC p7168-i2
+]
+merged_ffn,1024,5,1219.511418021284,1217.7094949875027
+
+=== 06:35:24 UTC p8192-i1
+]
+merged_ffn,1024,5,1496.834449004382,1483.4624390350655
+
+=== 06:36:31 UTC p6400-i1
+]
+merged_ffn,1024,5,1285.9765429748222,1277.0673310151324
+
+=== 06:37:34 UTC p6400-i1-ser
+]
+merged_ffn,1024,5,1849.963593063876,1846.7495390214026
+
+=== 06:38:44 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 62.0
+GPU[0]		: sclk clock level: 1: (1886Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 31.059
+
+=== 06:38:44 UTC done
+exit=0

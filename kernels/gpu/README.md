@@ -9,6 +9,8 @@ The handoff's proposed feasibility split, 4096 NPU / 10240 GPU channels, is `s =
 > `test_gpu_ffn` passes, quick and full (0 failed). Measurements are in [Results](#results-2026-10-17-hx-370).
 > The model switch (`HETEROMEGA_GPU_FFN`) is built and runs end to end with real weights: the same greedy tokens as without it, decode 16.49 → 18.09 tokens/s (see [End-to-end runs](#end-to-end-runs-aup)).
 > The NPU half is not part of this directory.
+>
+> **Update (2026-11-03):** the prefill kernels below `gemm_w4a16` replace HeteroMosaic's GEMM in `merged_ffn` when switched on. See [Prefill fast path](#prefill-fast-path-2026-11-03-hx-370).
 
 ```mermaid
 flowchart LR
@@ -27,6 +29,9 @@ flowchart LR
 | `src/pack_w4a16.cpp` | Packs a W4A16 matrix, or one device's channel slice of an FFN layer, into the HeteroMosaic tile layout. `slice_packed_ffn` cuts a slice out of matrices that are already packed (tile gather, no unpacking) |
 | `src/gpu_ffn.cpp` | `packed_linear`, `gpu_ffn_slice_forward` (gate_up matmul → SiLU-and-multiply → down matmul on one HIP stream), `GpuFfnModel` (all layers, for the model loop) |
 | `src/gemv_w4a16.cu` | W4A16 GEMV for M = 1: 16-byte weight loads, fp32 accumulation, optional K split |
+| `src/gemm_w4a16.cu` | W4A16 GEMM for prefill (`HETEROMEGA_GEMM=fast`), input reuse, uncached weight copies, and `gemm_w4a16_ffn`: gate_up, SiLU-and-multiply and down as one pipeline |
+| `src/sdpa_bf16.cu` | Prefill attention (`HETEROMEGA_SDPA=fast`), with the option to write the prepared input of the next GEMM |
+| `src/residual_norm.cu` | `x += a + b`, RMSNorm and the prepared input of the next GEMM as one dispatch |
 | `src/silu_mul.cu` | SiLU-and-multiply kernel (bf16, fp32 math), blocked or interleaved gate/up columns |
 | `src/residual_add.cu` | Boundary sum on the GPU (R-GPU): `x += y_g + y_n` |
 | `src/residual_add_cpu.cpp` | Boundary sum on the CPU (R-CPU): same math, AVX-512 with scalar fallback |
@@ -129,7 +134,7 @@ Where the `generic` kernel spends its instructions: static count of its K loop, 
 | global loads | 23 | A fragments (16), packed weights, scales, zeros |
 | `s_waitcnt` | 135 | |
 
-So the loop issues 11.8 other VALU and 7.6 LDS instructions per WMMA. Two changes would remove most of them (design, **not implemented**):
+So the loop issues 11.8 other VALU and 7.6 LDS instructions per WMMA. Two changes would remove most of them (design; `src/gemm_w4a16.cu` is the later implementation):
 
 1. Give WMMA exact integer weights and apply zero and scale in fp32 once per K step. `bf16(128 + q)` has the bit pattern `0x4300 | q`, so unpacking is 2 bit operations per weight pair and needs no rounding. With `P = Σ_k x_k · (128 + q_k)` from WMMA: `acc += s_n · (P − (128 + z_n) · Σ_k x_k)`. This is also more accurate: the weights are not rounded to bf16 after scaling.
 2. Store the unpacked tile in LDS in B-fragment order, so that each lane reads its 16 K values with 2 `ds_load_b128` instead of 16-bit loads and swizzles.
@@ -151,6 +156,33 @@ One agent alone already reads at about 96 GB/s. Two agents share it; the sum doe
 ### One weight copy for two split points
 
 `bench_gpu_ffn_slice --prefix` (all 14336 channels packed once, interleaved; each `s` as a prefix) gives the same latency as a separately packed slice for M ∈ {1, 512}, s ∈ {4096, 10240, 14336}. So prefill and decode can use different split points without a second copy of the weights.
+
+## Prefill fast path (2026-11-03, HX 370)
+
+**Measured:** at two inflight chunks and 1024 tokens, `merged_ffn` P8192 is 1005.5 ms with these switches, against archived `heteromosaic` records of 1309.6-1355.5 ms. Evidence, step gains, numerics and negative results: [docs/runs/2026-11-03-gemm](../../docs/runs/2026-11-03-gemm/README.md).
+
+```mermaid
+flowchart LR
+    B1["residual_norm_bf16<br/>x += attention, norm"] --> XT1["prepared input"]
+    B1 --> RN["row order x"]
+    XT1 --> F["gemm_w4a16_ffn<br/>gate_up, SiLU, down"]
+    RN --> N["NPU, NPU owns [0, p)"]
+    F --> B2["residual_norm_bf16<br/>x += Y_G + Y_N, norm"]
+    N --> B2
+    B2 --> XT2["prepared input"] --> Q["gemm_w4a16<br/>Q, K, V"] --> S["sdpa_bf16"] --> XT3["prepared input"] --> O["gemm_w4a16<br/>o"] --> B1
+```
+
+| Switch, off by default | What it does |
+|---|---|
+| `HETEROMEGA_GEMM=fast` | `gemm_w4a16` for prefill GEMMs. Q, K and V share one prepared input |
+| `HETEROMEGA_GEMM_UNCACHED=1` | Weights in memory that the GPU's L2 does not cache, so weight reads do not evict the activations. Weight addresses must stay fixed: `test_gpu_ffn` frees and reuses addresses, so do not run it with this switch |
+| `HETEROMEGA_SDPA=fast` | `sdpa_bf16` for prefill attention, for both chunks |
+| `HETEROMEGA_SDPA_TO_O=1` | `sdpa_bf16` writes the prepared input of the `o` GEMM |
+| `HETEROMEGA_FFN_FUSE=1` | `gemm_w4a16_ffn` for the GPU branch of `merged_ffn` |
+| `HETEROMEGA_FFN_SLOT_BO=2` | Each stream has own NPU buffers, in memory that HIP copies to directly. Removes the CPU copies. Not a way for GPU kernels to use that memory: that was measured slower |
+| `HETEROMEGA_RESIDUAL_NORM=1` | `residual_norm_bf16` at each layer boundary. Needs `merged_ffn` and `HETEROMEGA_GEMM=fast` |
+
+`HETEROMEGA_FFN_SERIAL_GPU=1` is diagnostic: it runs the GPU branch before the NPU, so the branch runs without NPU load.
 
 ## Model integration
 
@@ -286,7 +318,5 @@ Nothing else should use the GPU, or many CPU cores, while a benchmark runs.
 
 ## Next steps
 
-1. Measure the GPU share of DRAM bandwidth next to an NPU load (needs the NPU side).
-2. Make the W4A16 GEMM faster for prefill: the two changes in [GEMM kernel variants](#gemm-kernel-variants--dheteromega_gemm_autotuneon) (integer weights into WMMA, B-fragment order in LDS). Check each with `isa_loop_stats.py` and `bench_ffn_ablation`.
-3. Build the root project with the option OFF and compare it with the baseline build.
-4. Stretch: fuse SiLU-and-multiply into the gate/up GEMM epilogue.
+1. Build the root project with the option OFF and compare it with the baseline build.
+2. Done on 2026-11-03, see [Prefill fast path](#prefill-fast-path-2026-11-03-hx-370): the GPU's DRAM bandwidth next to an NPU load, a faster W4A16 GEMM for prefill, and SiLU-and-multiply fused into the GEMM.

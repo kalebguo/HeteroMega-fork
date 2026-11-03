@@ -1,0 +1,108 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 05:55:52 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 44.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.025
+
+=== 05:55:52 UTC timers: p5120-i1
+]
+merged_ffn,1024,1261.1883119679987,1259.9398309830576,1305.9937639627606,active
+    "mutex_wait_ms": 0.00023,
+    "run_wait_ms": 8.965947,
+    "gpu_wait_ms": 1.931129,
+      "since_prev_end_ms": 0.3301785,
+      "total_ms": 19.559574,
+      "input_wait_ms": 7.067343,
+
+=== 05:57:06 UTC timers: p5120-i2
+]
+merged_ffn,1024,1277.617716928944,1271.7552370158955,1514.9776720209047,active
+      "mutex_wait_ms": 0.000155,
+      "run_wait_ms": 8.838349,
+      "gpu_wait_ms": 12.2518895,
+      "since_prev_end_ms": 0.210571,
+      "total_ms": 41.842029,
+      "input_wait_ms": 18.1288545,
+
+=== 05:58:10 UTC timers: p6400-i1
+]
+merged_ffn,1024,1286.9143360294402,1282.5772740179673,1295.0066750636324,active
+    "mutex_wait_ms": 0.0005,
+    "run_wait_ms": 11.16499,
+    "gpu_wait_ms": 0.002,
+      "since_prev_end_ms": 0.5195155,
+      "total_ms": 19.491123,
+      "input_wait_ms": 6.842371,
+
+=== 05:59:28 UTC timers: p6400-i2
+]
+merged_ffn,1024,1193.4936670586467,1187.8776300000027,1255.8283829130232,active
+      "mutex_wait_ms": 0.00026,
+      "run_wait_ms": 11.037062,
+      "gpu_wait_ms": 6.4349535,
+      "since_prev_end_ms": 0.245405,
+      "total_ms": 33.92357,
+      "input_wait_ms": 13.9728565,
+
+=== 06:00:31 UTC timers: p7168-i1
+]
+merged_ffn,1024,1385.494741029106,1374.2005639942363,1392.417504102923,active
+    "mutex_wait_ms": 0.00055,
+    "run_wait_ms": 12.593777,
+    "gpu_wait_ms": 0.00212,
+      "since_prev_end_ms": 0.5227105,
+      "total_ms": 20.9591135,
+      "input_wait_ms": 6.9400935,
+
+=== 06:01:35 UTC timers: p7168-i2
+]
+merged_ffn,1024,1221.436836058274,1216.0960839828476,1270.916366018355,active
+      "mutex_wait_ms": 0.000305,
+      "run_wait_ms": 12.338176,
+      "gpu_wait_ms": 4.2325595,
+      "since_prev_end_ms": 0.2397705,
+      "total_ms": 34.308776,
+      "input_wait_ms": 14.8501045,
+
+=== 06:02:38 UTC timers: p8192-i1
+]
+merged_ffn,1024,1494.954974972643,1486.7770040873438,1499.4701150571927,active
+    "mutex_wait_ms": 0.00048,
+    "run_wait_ms": 14.296539,
+    "gpu_wait_ms": 0.0022995,
+      "since_prev_end_ms": 0.52034,
+      "total_ms": 22.684375,
+      "input_wait_ms": 6.9729125,
+
+=== 06:03:48 UTC timers: p8192-i2
+]
+merged_ffn,1024,1201.5442090341821,1190.6481509795412,1226.1974859284237,active
+      "mutex_wait_ms": 0.000405,
+      "run_wait_ms": 14.122782,
+      "gpu_wait_ms": 1.7086475,
+      "since_prev_end_ms": 0.315444,
+      "total_ms": 35.5637205,
+      "input_wait_ms": 13.8966665,
+
+=== 06:04:50 UTC gpu_original with the new kernel, 512-token chunks
+]
+method,prompt_tokens,samples,prefill_median_ms,prefill_min_ms,prefill_max_ms
+gpu_original,1024,10,1448.048640973866,1446.2326620705426,1558.928049984388
+
+=== 06:06:59 UTC gpu_original with the old kernel, 512-token chunks, same session
+]
+method,prompt_tokens,samples,prefill_median_ms,prefill_min_ms,prefill_max_ms
+gpu_original,1024,10,1831.1398430378176,1828.298305044882,1897.1099640475586
+
+=== 06:09:17 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 62.0
+GPU[0]		: sclk clock level: 1: (2176Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 34.092
+
+=== 06:09:17 UTC done
+exit=0

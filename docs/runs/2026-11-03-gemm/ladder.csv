@@ -1,0 +1,120 @@
+job,pass,split,case,switches,samples,median_ms,min_ms,max_ms,matches_reference,npu_completions
+gemm-ab3,pass1,p6400,off,input reuse off,3,1199.1,1195.5,1448.2,True,448
+gemm-ab3,pass1,p6400,reuse,input reuse,3,1185.7,1180.6,1489.0,True,448
+gemm-ab3,pass1,p6400,unc,+ uncached weights,3,1163.0,1162.1,1804.6,True,448
+gemm-ab3,pass1,p7168,off,input reuse off,3,1226.7,1226.3,1335.6,True,448
+gemm-ab3,pass1,p7168,reuse,input reuse,3,1215.7,1214.3,1352.8,True,448
+gemm-ab3,pass1,p7168,unc,+ uncached weights,3,1181.6,1176.8,1225.3,True,448
+gemm-ab3,pass1,p8192,off,input reuse off,3,1224.9,1196.0,1887.8,True,448
+gemm-ab3,pass1,p8192,reuse,input reuse,3,1182.5,1178.7,1917.8,True,448
+gemm-ab3,pass1,p8192,unc,+ uncached weights,3,1127.2,1121.6,2336.4,True,448
+gemm-ab3,pass2,p6400,off,input reuse off,3,1202.6,1201.2,1643.7,True,448
+gemm-ab3,pass2,p6400,reuse,input reuse,3,1187.2,1185.4,1652.7,True,448
+gemm-ab3,pass2,p7168,off,input reuse off,3,1223.8,1222.2,1268.9,True,448
+gemm-ab3,pass2,p7168,reuse,input reuse,3,1216.7,1211.8,1359.7,True,448
+gemm-ab3,pass2,p7168,unc,+ uncached weights,3,1183.0,1180.1,1224.8,True,448
+gemm-ab3,pass2,p8192,off,input reuse off,3,1210.9,1208.5,1693.0,True,448
+gemm-ab3,pass2,p8192,reuse,input reuse,3,1187.7,1184.8,1882.9,True,448
+gemm-ab3,pass2,p8192,unc,+ uncached weights,3,1148.9,1141.2,1967.4,True,448
+gemm-ab3,pass3,p6400,off,input reuse off,3,1200.7,1198.6,1657.4,True,448
+gemm-ab3,pass3,p6400,reuse,input reuse,3,1192.4,1189.9,1408.7,True,448
+gemm-ab3,pass3,p6400,unc,+ uncached weights,3,1156.3,1152.0,1208.3,True,448
+gemm-ab3,pass3,p7168,off,input reuse off,3,1215.3,1214.3,1662.4,True,448
+gemm-ab3,pass3,p7168,reuse,input reuse,3,1225.1,1225.0,1594.6,True,448
+gemm-ab3,pass3,p7168,unc,+ uncached weights,3,1177.4,1174.1,1226.1,True,448
+gemm-ab3,pass3,p8192,off,input reuse off,3,1198.5,1180.4,1694.6,True,448
+gemm-ab3,pass3,p8192,reuse,input reuse,3,1186.8,1183.8,1839.1,True,448
+gemm-ab3,pass3,p8192,unc,+ uncached weights,3,1099.8,1095.7,1966.3,True,448
+gemm-ab4,pass1,p7168,unc,+ uncached weights,9,1179.8,1165.6,1234.3,True,1344
+gemm-ab4,pass1,p8192,unc,+ uncached weights,9,1141.0,1095.8,2139.9,True,1344
+gemm-ab4,pass2,p7168,sdpa,+ fast attention,9,1097.2,1087.4,1158.7,True,1344
+gemm-ab4,pass2,p7168,unc,+ uncached weights,9,1179.6,1165.3,1237.2,True,1344
+gemm-ab4,pass2,p8192,unc,+ uncached weights,9,1155.6,1132.5,1706.6,True,1344
+gemm-ab4,pass3,p8192,unc,+ uncached weights,9,1149.6,1102.1,1265.4,True,1344
+gemm-ab5,pass1,p6400,sdpa,+ fast attention,3,1068.0,1066.0,1132.4,True,448
+gemm-ab5,pass1,p6400,unc,+ uncached weights,3,1149.2,1146.3,1218.4,True,448
+gemm-ab5,pass1,p7168,sdpa,+ fast attention,3,1098.8,1094.5,1718.8,True,448
+gemm-ab5,pass1,p7168,unc,+ uncached weights,3,1181.1,1178.6,1583.4,True,448
+gemm-ab5,pass1,p8192,sdpa,+ fast attention,3,1050.3,1047.6,1622.1,True,448
+gemm-ab5,pass1,p8192,unc,+ uncached weights,3,1096.1,1095.6,1212.1,True,448
+gemm-ab5,pass2,p6400,sdpa,+ fast attention,3,1075.9,1070.1,1422.6,True,448
+gemm-ab5,pass2,p6400,unc,+ uncached weights,3,1154.5,1149.2,1544.9,True,448
+gemm-ab5,pass2,p7168,sdpa,+ fast attention,3,1083.4,1080.1,1565.3,True,448
+gemm-ab5,pass2,p7168,unc,+ uncached weights,3,1209.7,1203.3,1268.7,True,448
+gemm-ab5,pass2,p8192,sdpa,+ fast attention,3,1044.3,1044.2,1087.6,True,448
+gemm-ab5,pass2,p8192,unc,+ uncached weights,3,1097.0,1094.4,1758.6,True,448
+gemm-ab5,pass3,p6400,sdpa,+ fast attention,3,1079.8,1072.2,1656.7,True,448
+gemm-ab5,pass3,p6400,unc,+ uncached weights,3,1150.8,1145.4,1695.2,True,448
+gemm-ab5,pass3,p7168,sdpa,+ fast attention,3,1096.9,1094.4,1571.0,True,448
+gemm-ab5,pass3,p7168,unc,+ uncached weights,3,1163.5,1163.4,1670.5,True,448
+gemm-ab5,pass3,p8192,sdpa,+ fast attention,3,1059.7,1059.2,1718.7,True,448
+gemm-ab5,pass3,p8192,unc,+ uncached weights,3,1147.4,1142.2,1563.4,True,448
+gemm-ab6,pass1,p6400,base,uncached + fast attention,3,1074.6,1072.8,1373.5,True,448
+gemm-ab6,pass1,p6400,both,base + fused FFN + shared NPU buffers,3,1038.7,1037.3,1418.1,True,448
+gemm-ab6,pass1,p6400,fuse,base + fused FFN,3,1049.3,1047.4,1373.4,True,448
+gemm-ab6,pass1,p6400,slot2,base + shared NPU buffers,3,1058.2,1056.0,1696.6,True,448
+gemm-ab6,pass1,p7168,base,uncached + fast attention,3,1091.4,1087.3,1141.7,True,448
+gemm-ab6,pass1,p7168,both,base + fused FFN + shared NPU buffers,3,1045.5,1044.3,1088.4,True,448
+gemm-ab6,pass1,p7168,fuse,base + fused FFN,3,1069.5,1069.4,1124.7,True,448
+gemm-ab6,pass1,p7168,slot2,base + shared NPU buffers,3,1085.4,1082.2,1473.3,True,448
+gemm-ab6,pass1,p8192,base,uncached + fast attention,3,1060.1,1044.2,1629.6,True,448
+gemm-ab6,pass1,p8192,both,base + fused FFN + shared NPU buffers,3,1006.3,1004.0,1047.3,True,448
+gemm-ab6,pass1,p8192,fuse,base + fused FFN,3,1026.7,1012.1,1065.3,True,448
+gemm-ab6,pass1,p8192,slot2,base + shared NPU buffers,3,1038.9,1037.9,1253.8,True,448
+gemm-ab6,pass2,p6400,base,uncached + fast attention,3,1079.0,1073.8,1135.9,True,448
+gemm-ab6,pass2,p6400,both,base + fused FFN + shared NPU buffers,3,1038.0,1037.1,1526.4,True,448
+gemm-ab6,pass2,p6400,fuse,base + fused FFN,3,1054.4,1053.2,1113.6,True,448
+gemm-ab6,pass2,p6400,slot2,base + shared NPU buffers,3,1058.4,1053.4,1125.6,True,448
+gemm-ab6,pass2,p7168,base,uncached + fast attention,3,1101.7,1101.2,1348.1,True,448
+gemm-ab6,pass2,p7168,both,base + fused FFN + shared NPU buffers,3,1052.9,1051.4,1574.9,True,448
+gemm-ab6,pass2,p7168,fuse,base + fused FFN,3,1060.7,1055.3,1530.2,True,448
+gemm-ab6,pass2,p7168,slot2,base + shared NPU buffers,3,1077.0,1073.1,1872.7,True,448
+gemm-ab6,pass2,p8192,base,uncached + fast attention,3,1042.5,1038.3,1272.5,True,448
+gemm-ab6,pass2,p8192,both,base + fused FFN + shared NPU buffers,3,1011.0,1009.8,1380.6,True,448
+gemm-ab6,pass2,p8192,fuse,base + fused FFN,3,1008.7,1002.0,1656.4,True,448
+gemm-ab6,pass2,p8192,slot2,base + shared NPU buffers,3,1040.1,1038.5,1717.4,True,448
+gemm-ab7,pass1,p6400,both,base + fused FFN + shared NPU buffers,3,1040.4,1036.6,1587.0,True,448
+gemm-ab7,pass1,p6400,too,both + attention writes o input,3,1034.9,1034.1,1253.7,True,448
+gemm-ab7,pass1,p7168,both,base + fused FFN + shared NPU buffers,3,1052.7,1046.8,1328.3,True,448
+gemm-ab7,pass1,p7168,too,both + attention writes o input,3,1046.2,1043.9,1667.3,True,448
+gemm-ab7,pass1,p8192,both,base + fused FFN + shared NPU buffers,3,1007.5,1004.7,1045.6,True,448
+gemm-ab7,pass1,p8192,too,both + attention writes o input,3,1003.1,1002.1,1049.3,True,448
+gemm-ab7,pass2,p6400,both,base + fused FFN + shared NPU buffers,3,1039.0,1039.0,1590.7,True,448
+gemm-ab7,pass2,p6400,too,both + attention writes o input,3,1029.0,1028.1,1256.3,True,448
+gemm-ab7,pass2,p7168,both,base + fused FFN + shared NPU buffers,3,1056.2,1053.1,1624.4,True,448
+gemm-ab7,pass2,p7168,too,both + attention writes o input,3,1052.8,1051.8,1463.5,True,448
+gemm-ab7,pass2,p8192,both,base + fused FFN + shared NPU buffers,3,1012.2,1005.2,1455.5,True,448
+gemm-ab7,pass2,p8192,too,both + attention writes o input,3,1022.1,1017.4,1329.3,True,448
+gemm-ab8,pass1,p6400,all,both + attention writes o input,3,1035.4,1026.9,1374.9,True,448
+gemm-ab8,pass1,p6400,bnd,all + layer boundary kernel,3,1032.0,1030.3,1080.9,True,448
+gemm-ab8,pass1,p7168,all,both + attention writes o input,3,1048.1,1047.2,1595.4,True,448
+gemm-ab8,pass1,p7168,bnd,all + layer boundary kernel,3,1050.4,1040.9,1399.1,True,448
+gemm-ab8,pass1,p8192,all,both + attention writes o input,3,1024.4,1017.0,1733.2,True,448
+gemm-ab8,pass1,p8192,bnd,all + layer boundary kernel,3,1010.1,1005.3,1117.6,True,448
+gemm-ab8,pass2,p6400,all,both + attention writes o input,3,1037.0,1031.3,1676.7,True,448
+gemm-ab8,pass2,p6400,bnd,all + layer boundary kernel,3,1026.2,1024.1,1235.7,True,448
+gemm-ab8,pass2,p7168,all,both + attention writes o input,3,1051.7,1050.7,1959.7,True,448
+gemm-ab8,pass2,p7168,bnd,all + layer boundary kernel,3,1051.0,1047.7,1704.3,True,448
+gemm-ab8,pass2,p8192,all,both + attention writes o input,3,1024.2,1019.8,1067.8,True,448
+gemm-ab8,pass2,p8192,bnd,all + layer boundary kernel,3,1014.4,1013.6,1401.6,True,448
+gemm-ab9,pass1,p6400,bnd,all + layer boundary kernel,3,1019.5,1017.2,1219.3,True,448
+gemm-ab9,pass1,p6400,zc,all + boundary + zero copy (rejected),3,1043.2,1040.7,1450.9,True,448
+gemm-ab9,pass1,p7168,bnd,all + layer boundary kernel,3,1048.8,1043.2,1719.2,True,448
+gemm-ab9,pass1,p7168,zc,all + boundary + zero copy (rejected),3,1053.9,1053.2,1678.3,True,448
+gemm-ab9,pass1,p8192,bnd,all + layer boundary kernel,3,1017.2,1007.3,1637.5,True,448
+gemm-ab9,pass1,p8192,zc,all + boundary + zero copy (rejected),3,1019.6,1016.1,1564.2,True,448
+gemm-ab9,pass2,p6400,bnd,all + layer boundary kernel,3,1027.8,1023.5,1349.9,True,448
+gemm-ab9,pass2,p6400,zc,all + boundary + zero copy (rejected),3,1042.3,1035.8,1918.3,True,448
+gemm-ab9,pass2,p7168,bnd,all + layer boundary kernel,3,1044.1,1034.9,1625.0,True,448
+gemm-ab9,pass2,p7168,zc,all + boundary + zero copy (rejected),3,1059.2,1054.8,1680.5,True,448
+gemm-ab9,pass2,p8192,bnd,all + layer boundary kernel,3,1000.8,1000.0,1240.7,True,448
+gemm-ab9,pass2,p8192,zc,all + boundary + zero copy (rejected),3,1033.3,1033.0,1660.3,True,448
+gemm-final,pass1,p6400,all,all kept switches,3,1023.1,1022.7,1085.5,True,448
+gemm-final,pass1,p7168,all,all kept switches,3,1045.7,1045.7,1409.0,True,448
+gemm-final,pass1,p8192,all,all kept switches,3,1012.8,1003.7,1632.7,True,448
+gemm-final,pass2,p6400,all,all kept switches,3,1033.2,1032.3,1081.2,True,448
+gemm-final,pass2,p7168,all,all kept switches,3,1046.7,1044.5,1699.4,True,448
+gemm-final,pass2,p8192,all,all kept switches,3,1005.1,1004.3,1254.3,True,448
+gemm-final,pass3,p6400,all,all kept switches,3,1028.8,1021.8,1081.0,True,448
+gemm-final,pass3,p7168,all,all kept switches,3,1051.3,1044.8,1108.8,True,448
+gemm-final,pass3,p8192,all,all kept switches,3,1005.5,995.7,1041.5,True,448

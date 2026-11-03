@@ -1,0 +1,6 @@
+{
+  "artifact_dir": "/notebooks/hm-gemm/docs/runs/2026-10-31-ffn-deploy/deployment-results/artifact",
+  "accuracy_policy": "report",
+  "timeout_ms": 10000,
+  "device_index": 0
+}

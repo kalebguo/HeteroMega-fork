@@ -1,0 +1,44 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 07:45:22 UTC build
+mem_info_vram_total 8589934592 
+mem_info_vram_used 179634176 
+mem_info_gtt_total 12392415232 
+mem_info_gtt_used 33337344 
+THP always [madvise] never
+AnonHugePages:         0 kB
+HugePages_Total:       0
+Hugepagesize:       2048 kB
+
+=== 07:45:26 UTC where the VRAM allocation goes
+    GEM_CREATE 32.0 MB: VRAM +32.0 GTT +0.0
+    import: VRAM +0.0 GTT +32.0
+    mapped: VRAM +0.0 GTT +32.0
+    after first GPU use: VRAM +0.0 GTT +32.1
+
+=== 07:45:26 UTC round 1: NPU idle
+  now          median   5.164 ms  p10   5.157  p90   5.173
+  helper       median   6.930 ms  p10   6.918  p90   7.214
+  W64k         median   5.137 ms  p10   5.113  p90   5.417
+
+=== 07:45:29 UTC round 1: NPU loop, P8192
+during run: mem_info_vram_used 179920896 
+during run: mem_info_gtt_used 243245056 
+  now          median   7.080 ms  p10   6.643  p90   7.153
+  helper       median  10.143 ms  p10   9.795  p90  10.312
+  W64k         median   5.656 ms  p10   4.883  p90   6.032
+
+=== 07:45:37 UTC round 2: NPU idle
+  now          median   5.183 ms  p10   5.178  p90   5.200
+  helper       median   6.968 ms  p10   6.954  p90   7.249
+  W64k         median   5.145 ms  p10   5.128  p90   5.429
+
+=== 07:45:40 UTC round 2: NPU loop, P8192
+during run: mem_info_vram_used 179920896 
+during run: mem_info_gtt_used 243245056 
+  now          median   7.151 ms  p10   6.653  p90   7.228
+  helper       median  10.271 ms  p10   9.902  p90  10.398
+  W64k         median   5.671 ms  p10   4.772  p90   6.076
+
+=== 07:45:48 UTC done
+exit=0

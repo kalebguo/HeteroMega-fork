@@ -1,0 +1,36 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+hip devices 1
+integrated 1, multiProcessMemorySpace AMD Radeon Graphics, totalGlobalMem 11.5 GB
+hipMalloc status 0
+  hipMalloc                    vram +   0.0 MB, gtt + 256.0 MB
+hipExtMalloc default status 0
+  hipExtMalloc default         vram +   0.0 MB, gtt + 256.0 MB
+hipExtMalloc finegrained status 0
+  hipExtMalloc finegrained     vram +   0.0 MB, gtt + 256.0 MB
+hipExtMalloc uncached status 0
+  hipExtMalloc uncached        vram +   0.0 MB, gtt + 256.0 MB
+hipExtMalloc contiguous status 0
+  hipExtMalloc contiguous      vram +   0.0 MB, gtt + 256.0 MB
+hipHostMalloc noncoherent status 0
+  hipHostMalloc noncoherent    vram +   0.5 MB, gtt +   0.0 MB
+agents: 1 gpu, 2 cpu
+gpu pool 0: segment 0, global flags 0x4, size 11.5 GB, runtime alloc 1
+  allocate status 0x0
+  hsa pool                     vram +   0.0 MB, gtt + 256.0 MB
+gpu pool 1: segment 0, global flags 0x8, size 11.5 GB, runtime alloc 1
+  allocate status 0x0
+  hsa pool                     vram +   0.0 MB, gtt + 256.0 MB
+gpu pool 2: segment 3, global flags 0x0, size 0.0 GB, runtime alloc 0
+cpu pool 0: segment 0, global flags 0x2, size 23.1 GB, runtime alloc 1
+  allocate status 0x0
+  hsa pool                     vram +   0.0 MB, gtt +   0.0 MB
+cpu pool 1: segment 0, global flags 0x8, size 23.1 GB, runtime alloc 1
+  allocate status 0x0
+  hsa pool                     vram +   0.0 MB, gtt +   0.0 MB
+cpu pool 2: segment 0, global flags 0x3, size 23.1 GB, runtime alloc 1
+  allocate status 0x0
+  hsa pool                     vram +   0.0 MB, gtt +   0.0 MB
+cpu pool 3: segment 0, global flags 0x4, size 23.1 GB, runtime alloc 1
+  allocate status 0x0
+  hsa pool                     vram +   0.0 MB, gtt +   0.0 MB
+exit=1

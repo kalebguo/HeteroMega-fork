@@ -1,0 +1,53 @@
+stage          p8192-i2     p7168-i2     p6400-i2
+chunk 0
+norm               0.30         0.80         0.60
+qkv                3.15         5.80         4.50
+rope               0.20         0.40         0.31
+kv                 0.14         0.20         0.19
+dep                0.00         0.00         0.00
+sdpa               0.45         0.50         0.47
+layout             0.00         0.00         0.00
+o                  1.90         3.21         2.70
+ready              0.70         0.80         0.90
+end               24.20        21.20        22.20
+gap                0.00         0.00         0.00
+to ready           6.84        11.70         9.66
+chunk 1
+norm               0.60         0.60         0.20
+qkv                5.47         5.60         4.07
+rope               0.50         0.50         0.30
+kv                 0.22         0.25         0.13
+dep                0.00         0.00         0.00
+sdpa               1.10         1.10         0.80
+layout             0.00         0.00         0.00
+o                  4.10         4.20         2.80
+ready              1.00         1.10         0.70
+end               18.01        19.30        23.19
+gap                0.00         0.00         0.00
+to ready          12.99        13.35         9.01
+
+sensors (samples with busy>=30): busy, sclk, fclk, mclk, power, busy CPU cores
+p8192-i2     n=585 busy 99 sclk 2740 fclk 1960.0 mclk 937.0 power 38.0 cores 1.1
+p7168-i2     n=583 busy 100 sclk 2772 fclk 1960.0 mclk 937.0 power 43.0 cores 1.1
+p6400-i2     n=589 busy 98 sclk 2742 fclk 1960.0 mclk 937.0 power 38.1 cores 1.1
+
+prefill and phases
+p8192-i2     prefill 1003.7 branch 15.36 input 8.49 run 13.97 mutex 0.00 gpu_wait 0.00 total 30.82 serial_gpu 0.00
+p7168-i2     prefill 1049.8 branch 19.53 input 13.05 run 12.22 mutex 0.00 gpu_wait 1.51 total 32.42 serial_gpu 0.00
+p6400-i2     prefill 1036.6 branch 21.14 input 9.40 run 10.99 mutex 0.00 gpu_wait 0.00 total 31.76 serial_gpu 0.00
+slot 0 is chunk 1
+p8192-i2 fraction of time, layers 2-29
+ GPU streams active 0: NPU idle 0.0%  NPU busy 1.6%
+ GPU streams active 1: NPU idle 2.6%  NPU busy 34.6%
+ GPU streams active 2: NPU idle 9.0%  NPU busy 52.3%
+ whole forward span median 985.9 ms
+p7168-i2 fraction of time, layers 2-29
+ GPU streams active 0: NPU idle 0.0%  NPU busy 0.0%
+ GPU streams active 1: NPU idle 1.1%  NPU busy 2.1%
+ GPU streams active 2: NPU idle 27.3%  NPU busy 69.6%
+ whole forward span median 1038.1 ms
+p6400-i2 fraction of time, layers 2-29
+ GPU streams active 0: NPU idle 0.9%  NPU busy 0.8%
+ GPU streams active 1: NPU idle 4.5%  NPU busy 7.1%
+ GPU streams active 2: NPU idle 27.9%  NPU busy 58.8%
+ whole forward span median 1020.7 ms

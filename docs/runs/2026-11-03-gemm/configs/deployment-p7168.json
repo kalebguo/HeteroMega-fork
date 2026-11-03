@@ -1,0 +1,6 @@
+{
+  "artifact_dir": "/notebooks/hm-results/2026-11-02/gemm-splits/artifact-p7168",
+  "accuracy_policy": "report",
+  "timeout_ms": 10000,
+  "device_index": 0
+}

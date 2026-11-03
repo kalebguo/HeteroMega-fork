@@ -1,0 +1,5 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+[ 76%] Built target test_gpu_ffn
+[ 96%] Built target bench_ffn_ablation
+finished
+exit=0

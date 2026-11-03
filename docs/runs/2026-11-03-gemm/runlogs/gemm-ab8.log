@@ -1,0 +1,27 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 10:19:40 UTC build unified_llm_w4a16_hetero_libtorch
+//  if(ret !=VerSuccess )  // error occured
+//  if(ret !=VerSuccess )  // error occured
+[ 70%] Linking HIP static library libheteromega_gpu_ffn.a
+[ 75%] Linking HIP static library libheteromega_merged_ffn.a
+[ 86%] Linking HIP static library libunified_llm_w4a16_hetero_lib.a
+[ 94%] Built target unified_llm_w4a16_hetero_lib
+[100%] Linking HIP shared module ../../py/unified_llm_w4a16/unified_llm_w4a16_hetero_libtorch.so
+[100%] Built target unified_llm_w4a16_hetero_libtorch
+
+=== 10:20:57 UTC done status=0
+10:21:47 p8192-all: median,min,max 1024.3824350181967,1017.012028 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:22:42 p8192-bnd: median,min,max 1010.0541230058298,1005.282144 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:23:32 p7168-all: median,min,max 1048.1212000595406,1047.234131 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:24:25 p7168-bnd: median,min,max 1050.3678560489789,1040.911380 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:25:17 p6400-all: median,min,max 1035.4026779532433,1026.875146 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:26:09 p6400-bnd: median,min,max 1031.9708179449663,1030.281803 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:27:01 p8192-all: median,min,max 1024.175749043934,1019.8375689 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:27:51 p8192-bnd: median,min,max 1014.4223580136895,1013.557747 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:28:43 p7168-all: median,min,max 1051.724095013924,1050.6501470 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:29:36 p7168-bnd: median,min,max 1050.9991460712627,1047.732730 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:30:28 p6400-all: median,min,max 1037.0032460195944,1031.262272 native exec_ok=448  fallbacks=0 sdpa_lines=2
+10:31:21 p6400-bnd: median,min,max 1026.1515829479322,1024.132632 native exec_ok=448  fallbacks=0 sdpa_lines=2
+peak GTT MB, lowest available MB: 10951, 6175
+exit=0

@@ -1,0 +1,37 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 05:02:36 UTC configure kernels/gpu
+-- ROCm: /opt/rocm-7.2.0
+-- HIP architectures: gfx1150
+
+=== 05:02:38 UTC build
+[ 86%] Built target test_gpu_ffn
+[100%] Built target bench_ffn_ablation
+
+=== 05:03:01 UTC new kernel: instruction mix per kernel
+365:0000000000004000 <_ZN10heteromega12_GLOBAL__N_117gemm_w4a16_kernelILi4ELi2ELi0EEEvPtPKtPKfPKhiiii>:
+2753:0000000000007d00 <_ZN10heteromega12_GLOBAL__N_117gemm_w4a16_kernelILi8ELi1ELi0EEEvPtPKtPKfPKhiiii>:
+5696:000000000000c700 <_ZN10heteromega12_GLOBAL__N_117gemm_w4a16_kernelILi4ELi2ELi1EEEvPtPKtPKfPKhiiii>:
+8067:0000000000010300 <_ZN10heteromega12_GLOBAL__N_117gemm_w4a16_kernelILi4ELi2ELi2EEEvPtPKtPKfPKhiiii>:
+10155:0000000000013700 <_ZN10heteromega12_GLOBAL__N_117gemm_w4a16_kernelILi4ELi2ELi3EEEvPtPKtPKfPKhiiii>:
+12086:0000000000016600 <_ZN10heteromega12_GLOBAL__N_117gemm_w4a16_kernelILi2ELi4ELi0EEEvPtPKtPKfPKhiiii>:
+scratch ops in the file: 12   wmma: 704
+
+=== 05:03:01 UTC bench_ffn_ablation --m 512 --s 7680 --variants fused,fast4,tune14,tune24,tune34 --rounds 3 --iters 20 --warmup 3
+round,pos,variant,M,s,gemm1_ms,act_ms,down_ms,total_ms,gemm_TFLOPS,weight_GBps,act_GBps,sclk_MHz_median,sclk_M
+0,0,fast4,512,7680,5.5326,0.2403,2.9382,8.7033,11.41,5.9,98.2,2273,2269,52.0,69
+0,1,fused,512,7680,7.6045,0.2410,3.8936,11.7324,8.40,4.4,97.9,2276,2265,52.1,69
+0,2,tune14,512,7680,5.4580,0.2734,2.8614,8.5948,11.62,6.0,86.3,2278,2277,52.1,71
+0,3,tune24,512,7680,6.1516,0.2742,4.9409,11.3707,8.71,4.5,86.0,2322,2281,52.1,69
+0,4,tune34,512,7680,5.3575,0.2403,2.8613,8.4645,11.76,6.1,98.2,2352,2347,53.0,70
+1,0,fused,512,7680,7.6371,0.2408,3.8840,11.7584,8.39,4.4,98.0,2344,2342,53.0,70
+1,1,tune14,512,7680,5.4842,0.2735,2.8496,8.6013,11.60,6.0,86.3,2336,2333,53.0,72
+1,2,fast4,512,7680,5.5082,0.2409,2.9234,8.6705,11.46,5.9,97.9,2316,2310,53.1,71
+1,3,tune34,512,7680,5.3821,0.2403,2.8581,8.4754,11.73,6.1,98.2,2299,2298,53.1,70
+1,4,tune24,512,7680,6.1415,0.2736,4.9439,11.3641,8.72,4.5,86.2,2338,2301,53.0,69
+2,0,tune24,512,7680,6.0771,0.2739,4.9476,11.2986,8.77,4.5,86.1,2410,2378,53.1,70
+2,1,fused,512,7680,7.6357,0.2407,3.8934,11.7712,8.38,4.3,98.0,2422,2416,53.1,71
+2,2,tune34,512,7680,5.3829,0.2408,2.8643,8.4850,11.72,6.1,98.0,2396,2388,53.1,71
+2,3,tune14,512,7680,5.4969,0.2735,2.8526,8.6224,11.57,6.0,86.3,2373,2367,53.1,72
+2,4,fast4,512,7680,5.5053,0.2407,2.9226,8.6755,11.47,5.9,98.0,2344,2334,53.1,72
+exit=0

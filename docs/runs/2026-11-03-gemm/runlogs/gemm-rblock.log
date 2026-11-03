@@ -1,0 +1,38 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 07:21:26 UTC round 1: NPU idle
+  RBLOCK=1 s=6144: total 6.958 gemm1 4.404 act 0.194 down 2.361
+  RBLOCK=1 s=7680: total 8.657 gemm1 5.509 act 0.240 down 2.908
+  RBLOCK=2 s=6144: total 7.125 gemm1 4.510 act 0.202 down 2.420
+  RBLOCK=2 s=7680: total 8.856 gemm1 5.618 act 0.247 down 2.991
+  RBLOCK=4 s=6144: total 8.011 gemm1 5.097 act 0.193 down 2.718
+  RBLOCK=4 s=7680: total 9.940 gemm1 6.346 act 0.243 down 3.351
+
+=== 07:21:36 UTC round 1: NPU loop, P8192
+  RBLOCK=1 s=6144: total 9.650 gemm1 6.214 act 0.292 down 3.279
+  RBLOCK=1 s=7680: total 12.037 gemm1 7.744 act 0.359 down 4.067
+  RBLOCK=2 s=6144: total 10.389 gemm1 6.726 act 0.292 down 3.518
+  RBLOCK=2 s=7680: total 12.495 gemm1 7.941 act 0.358 down 4.264
+  RBLOCK=4 s=6144: total 10.705 gemm1 6.875 act 0.295 down 3.640
+  RBLOCK=4 s=7680: total 13.271 gemm1 8.443 act 0.366 down 4.491
+npu_load run 1000: 14.01 ms
+
+=== 07:21:52 UTC round 2: NPU idle
+  RBLOCK=1 s=6144: total 6.390 gemm1 4.052 act 0.193 down 2.147
+  RBLOCK=1 s=7680: total 7.980 gemm1 5.035 act 0.243 down 2.701
+  RBLOCK=2 s=6144: total 6.613 gemm1 4.158 act 0.202 down 2.251
+  RBLOCK=2 s=7680: total 8.208 gemm1 5.179 act 0.247 down 2.787
+  RBLOCK=4 s=6144: total 7.630 gemm1 4.881 act 0.193 down 2.556
+  RBLOCK=4 s=7680: total 9.442 gemm1 6.008 act 0.244 down 3.187
+
+=== 07:22:02 UTC round 2: NPU loop, P8192
+  RBLOCK=1 s=6144: total 9.685 gemm1 6.208 act 0.289 down 3.276
+  RBLOCK=1 s=7680: total 12.076 gemm1 7.747 act 0.358 down 4.049
+  RBLOCK=2 s=6144: total 10.127 gemm1 6.500 act 0.291 down 3.414
+  RBLOCK=2 s=7680: total 12.468 gemm1 8.022 act 0.361 down 4.261
+  RBLOCK=4 s=6144: total 10.735 gemm1 6.849 act 0.292 down 3.599
+  RBLOCK=4 s=7680: total 13.223 gemm1 8.431 act 0.363 down 4.461
+npu_load run 1000: 13.73 ms
+
+=== 07:22:19 UTC done
+exit=0

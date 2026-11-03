@@ -1,0 +1,74 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 07:31:29 UTC build
+mem_info_vram_total 8589934592 
+mem_info_vram_used 179634176 
+mem_info_gtt_total 12392415232 
+mem_info_gtt_used 33337344 
+THP always [madvise] never
+AnonHugePages:         0 kB
+HugePages_Total:       0
+Hugepagesize:       2048 kB
+
+=== 07:31:33 UTC round 1: NPU idle
+  base               median   5.420 ms  p10   4.691  p90   5.441
+  X_small            median   5.388 ms  p10   4.696  p90   5.421
+  O_small            median   5.413 ms  p10   4.728  p90   5.430
+  W_0.0625MB         median   5.428 ms  p10   4.720  p90   5.437
+  W_0.5000MB         median   5.435 ms  p10   4.726  p90   5.460
+  W_1.0000MB         median   5.535 ms  p10   4.825  p90   5.552
+  W_2.0000MB         median   5.387 ms  p10   4.680  p90   5.417
+  W_4.0000MB         median   5.394 ms  p10   4.694  p90   5.405
+  W_8.0000MB         median   5.436 ms  p10   4.742  p90   5.481
+  W_16.000MB         median   5.462 ms  p10   4.758  p90   5.478
+  W_64k_X_small      median   5.418 ms  p10   4.729  p90   5.440
+  W_64k_X_O_small    median   5.436 ms  p10   4.665  p90   5.456
+
+=== 07:31:43 UTC round 1: NPU loop, P8192
+during run: mem_info_vram_used 179920896 
+during run: mem_info_gtt_used 243236864 
+  base               median   6.958 ms  p10   6.656  p90   7.454
+  X_small            median   6.270 ms  p10   5.910  p90   6.947
+  O_small            median   6.730 ms  p10   6.448  p90   7.348
+  W_0.0625MB         median   5.107 ms  p10   4.801  p90   6.046
+  W_0.5000MB         median   5.223 ms  p10   4.857  p90   6.044
+  W_1.0000MB         median   5.439 ms  p10   5.197  p90   6.167
+  W_2.0000MB         median   5.431 ms  p10   5.357  p90   6.160
+  W_4.0000MB         median   5.480 ms  p10   5.447  p90   6.180
+  W_8.0000MB         median   5.970 ms  p10   5.943  p90   6.588
+  W_16.000MB         median   6.829 ms  p10   6.798  p90   7.349
+  W_64k_X_small      median   5.144 ms  p10   5.092  p90   6.062
+  W_64k_X_O_small    median   5.242 ms  p10   5.205  p90   6.078
+
+=== 07:31:58 UTC round 2: NPU idle
+  base               median   4.762 ms  p10   4.671  p90   4.789
+  X_small            median   4.748 ms  p10   4.670  p90   4.766
+  O_small            median   4.762 ms  p10   4.686  p90   4.772
+  W_0.0625MB         median   4.766 ms  p10   4.659  p90   4.775
+  W_0.5000MB         median   4.729 ms  p10   4.634  p90   4.744
+  W_1.0000MB         median   4.829 ms  p10   4.724  p90   4.832
+  W_2.0000MB         median   4.692 ms  p10   4.588  p90   4.712
+  W_4.0000MB         median   4.711 ms  p10   4.620  p90   4.721
+  W_8.0000MB         median   4.773 ms  p10   4.683  p90   4.787
+  W_16.000MB         median   4.744 ms  p10   4.655  p90   4.751
+  W_64k_X_small      median   4.749 ms  p10   4.647  p90   4.768
+  W_64k_X_O_small    median   4.736 ms  p10   4.653  p90   4.746
+
+=== 07:32:08 UTC round 2: NPU loop, P8192
+during run: mem_info_vram_used 179920896 
+during run: mem_info_gtt_used 243236864 
+  base               median   7.037 ms  p10   6.783  p90   7.519
+  X_small            median   6.288 ms  p10   6.041  p90   6.962
+  O_small            median   6.797 ms  p10   6.574  p90   7.350
+  W_0.0625MB         median   5.226 ms  p10   5.136  p90   6.122
+  W_0.5000MB         median   5.321 ms  p10   5.271  p90   6.152
+  W_1.0000MB         median   5.565 ms  p10   5.502  p90   6.286
+  W_2.0000MB         median   5.544 ms  p10   5.508  p90   6.268
+  W_4.0000MB         median   5.606 ms  p10   5.585  p90   6.305
+  W_8.0000MB         median   6.001 ms  p10   5.942  p90   6.622
+  W_16.000MB         median   6.920 ms  p10   6.773  p90   7.374
+  W_64k_X_small      median   5.192 ms  p10   5.170  p90   6.124
+  W_64k_X_O_small    median   5.246 ms  p10   5.216  p90   6.088
+
+=== 07:32:23 UTC done
+exit=0

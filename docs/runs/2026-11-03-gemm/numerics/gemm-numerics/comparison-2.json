@@ -1,0 +1,252 @@
+[
+  {
+    "run": "gpu_fast-1024-r0",
+    "method": "gpu_fast",
+    "prompt_tokens": 1024,
+    "meta": {
+      "method": "gpu_original",
+      "heterogeneity": "gpu",
+      "merged": false,
+      "prompt_tokens": 1024,
+      "new_tokens": 64,
+      "load_s": 29.04648931103293,
+      "torch": "2.11.0+rocm7.2"
+    },
+    "step1": {
+      "max_abs_diff": 0.1640625,
+      "argmax_equal": true,
+      "top5_overlap": 5
+    },
+    "step1_relative_l2": 0.01098757825567047,
+    "step1_kl_nats": 0.00032280860659748964,
+    "within_process_repeat_max_abs": 0.0,
+    "greedy": {
+      "agree": 9,
+      "total": 64,
+      "first_disagreement": 9,
+      "lengths": [
+        64,
+        64
+      ]
+    },
+    "perplexity": {
+      "tokens": 512,
+      "mean_nll": 10.124132592495176,
+      "perplexity": 24937.61518316099
+    },
+    "reference_perplexity": {
+      "tokens": 512,
+      "mean_nll": 10.123329086974962,
+      "perplexity": 24917.58571967022
+    },
+    "mean_abs_nll_difference": 0.008123724239196016,
+    "scored": {
+      "positions": 512,
+      "argmax_agreement": 0.96875,
+      "mean_kl_nats": 5.541091926100896e-05,
+      "median_kl_nats": 4.794974241646759e-05,
+      "max_kl_nats": 0.00043498635370489637,
+      "median_relative_l2": 0.003123832925780926
+    }
+  },
+  {
+    "run": "gpu_original-1024-r0",
+    "method": "gpu_original",
+    "prompt_tokens": 1024,
+    "meta": {
+      "method": "gpu_original",
+      "heterogeneity": "gpu",
+      "merged": false,
+      "prompt_tokens": 1024,
+      "new_tokens": 64,
+      "load_s": 29.098502611974254,
+      "torch": "2.11.0+rocm7.2"
+    },
+    "step1": {
+      "max_abs_diff": 0.0,
+      "argmax_equal": true,
+      "top5_overlap": 5
+    },
+    "step1_relative_l2": 0.0,
+    "step1_kl_nats": 0.0,
+    "within_process_repeat_max_abs": 0.0,
+    "greedy": {
+      "agree": 64,
+      "total": 64,
+      "first_disagreement": null,
+      "lengths": [
+        64,
+        64
+      ]
+    },
+    "perplexity": {
+      "tokens": 512,
+      "mean_nll": 10.123329086974962,
+      "perplexity": 24917.58571967022
+    },
+    "reference_perplexity": {
+      "tokens": 512,
+      "mean_nll": 10.123329086974962,
+      "perplexity": 24917.58571967022
+    },
+    "mean_abs_nll_difference": 0.0,
+    "scored": {
+      "positions": 512,
+      "argmax_agreement": 1.0,
+      "mean_kl_nats": 0.0,
+      "median_kl_nats": 0.0,
+      "max_kl_nats": 0.0,
+      "median_relative_l2": 0.0
+    }
+  },
+  {
+    "run": "gpu_original-1024-r1",
+    "method": "gpu_original",
+    "prompt_tokens": 1024,
+    "meta": {
+      "method": "gpu_original",
+      "heterogeneity": "gpu",
+      "merged": false,
+      "prompt_tokens": 1024,
+      "new_tokens": 64,
+      "load_s": 29.060927195008844,
+      "torch": "2.11.0+rocm7.2"
+    },
+    "step1": {
+      "max_abs_diff": 0.0,
+      "argmax_equal": true,
+      "top5_overlap": 5
+    },
+    "step1_relative_l2": 0.0,
+    "step1_kl_nats": 0.0,
+    "within_process_repeat_max_abs": 0.0,
+    "greedy": {
+      "agree": 64,
+      "total": 64,
+      "first_disagreement": null,
+      "lengths": [
+        64,
+        64
+      ]
+    },
+    "perplexity": {
+      "tokens": 512,
+      "mean_nll": 10.123329086974962,
+      "perplexity": 24917.58571967022
+    },
+    "reference_perplexity": {
+      "tokens": 512,
+      "mean_nll": 10.123329086974962,
+      "perplexity": 24917.58571967022
+    },
+    "mean_abs_nll_difference": 0.0,
+    "scored": {
+      "positions": 512,
+      "argmax_agreement": 1.0,
+      "mean_kl_nats": 0.0,
+      "median_kl_nats": 0.0,
+      "max_kl_nats": 0.0,
+      "median_relative_l2": 0.0
+    }
+  },
+  {
+    "run": "merged_p6400_fast-1024-r0",
+    "method": "merged_p6400_fast",
+    "prompt_tokens": 1024,
+    "meta": {
+      "method": "merged_ffn",
+      "heterogeneity": "gpu",
+      "merged": true,
+      "prompt_tokens": 1024,
+      "new_tokens": 64,
+      "load_s": 28.742240824969485,
+      "torch": "2.11.0+rocm7.2"
+    },
+    "step1": {
+      "max_abs_diff": 0.15625,
+      "argmax_equal": true,
+      "top5_overlap": 5
+    },
+    "step1_relative_l2": 0.006738517531053698,
+    "step1_kl_nats": 0.0003092639888000146,
+    "within_process_repeat_max_abs": 0.0,
+    "greedy": {
+      "agree": 9,
+      "total": 64,
+      "first_disagreement": 9,
+      "lengths": [
+        64,
+        64
+      ]
+    },
+    "perplexity": {
+      "tokens": 512,
+      "mean_nll": 10.123970027754854,
+      "perplexity": 24933.561535723496
+    },
+    "reference_perplexity": {
+      "tokens": 512,
+      "mean_nll": 10.123329086974962,
+      "perplexity": 24917.58571967022
+    },
+    "mean_abs_nll_difference": 0.0075803022286168135,
+    "scored": {
+      "positions": 512,
+      "argmax_agreement": 0.970703125,
+      "mean_kl_nats": 5.872362589375901e-05,
+      "median_kl_nats": 5.052247433388055e-05,
+      "max_kl_nats": 0.0009852229862744345,
+      "median_relative_l2": 0.003143063452175643
+    }
+  },
+  {
+    "run": "merged_p8192_fast-1024-r0",
+    "method": "merged_p8192_fast",
+    "prompt_tokens": 1024,
+    "meta": {
+      "method": "merged_ffn_p8192",
+      "heterogeneity": "gpu",
+      "merged": true,
+      "prompt_tokens": 1024,
+      "new_tokens": 64,
+      "load_s": 28.781501277000643,
+      "torch": "2.11.0+rocm7.2"
+    },
+    "step1": {
+      "max_abs_diff": 0.203125,
+      "argmax_equal": true,
+      "top5_overlap": 5
+    },
+    "step1_relative_l2": 0.006526855452145973,
+    "step1_kl_nats": 0.0008806016890468174,
+    "within_process_repeat_max_abs": 0.0,
+    "greedy": {
+      "agree": 64,
+      "total": 64,
+      "first_disagreement": null,
+      "lengths": [
+        64,
+        64
+      ]
+    },
+    "perplexity": {
+      "tokens": 512,
+      "mean_nll": 10.124145065640846,
+      "perplexity": 24937.92623560773
+    },
+    "reference_perplexity": {
+      "tokens": 512,
+      "mean_nll": 10.123329086974962,
+      "perplexity": 24917.58571967022
+    },
+    "mean_abs_nll_difference": 0.007764872273765613,
+    "scored": {
+      "positions": 512,
+      "argmax_agreement": 0.974609375,
+      "mean_kl_nats": 6.085768305129588e-05,
+      "median_kl_nats": 5.07153747010792e-05,
+      "max_kl_nats": 0.0008806016890468174,
+      "median_relative_l2": 0.0031872396706398897
+    }
+  }
+]

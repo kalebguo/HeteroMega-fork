@@ -1,0 +1,136 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 06:23:51 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 42.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.005
+
+=== 06:23:51 UTC gpu-i1
+]
+gpu_original,1024,5,1441.931501030922,1436.763913021423
+
+=== 06:24:56 UTC p8192-i2
+subprocess.CalledProcessError: Command '['/notebooks/heteromosaic-venv/bin/python3', '-u', '/notebooks/hm-gemm/kernels/gpu/tools/run_model_ffn.py', '--ref', '/n
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 55, in <module>
+    main()
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 47, in main
+    report = dict(files=[p.name for p in paths], skip=args.skip) | summarize(load(paths, args.skip))
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 34, in summarize
+    return dict(all=medians(rows), groups={k: medians(v) for k, v in sorted(groups.items())},
+                    ^^^^^^^^^^^^^
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 22, in medians
+    fields = [k for k in rows[0] if k.endswith('_ns')]
+                         ~~~~^^^
+IndexError: list index out of range
+cut: /notebooks/hm-results/2026-11-02/gemm-stages/p8192-i2/summary.csv: No such file or directory
+
+=== 06:25:27 UTC p6400-i2
+subprocess.CalledProcessError: Command '['/notebooks/heteromosaic-venv/bin/python3', '-u', '/notebooks/hm-gemm/kernels/gpu/tools/run_model_ffn.py', '--ref', '/n
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 55, in <module>
+    main()
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 47, in main
+    report = dict(files=[p.name for p in paths], skip=args.skip) | summarize(load(paths, args.skip))
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 34, in summarize
+    return dict(all=medians(rows), groups={k: medians(v) for k, v in sorted(groups.items())},
+                    ^^^^^^^^^^^^^
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 22, in medians
+    fields = [k for k in rows[0] if k.endswith('_ns')]
+                         ~~~~^^^
+IndexError: list index out of range
+cut: /notebooks/hm-results/2026-11-02/gemm-stages/p6400-i2/summary.csv: No such file or directory
+
+=== 06:25:56 UTC p7168-i2
+subprocess.CalledProcessError: Command '['/notebooks/heteromosaic-venv/bin/python3', '-u', '/notebooks/hm-gemm/kernels/gpu/tools/run_model_ffn.py', '--ref', '/n
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 55, in <module>
+    main()
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 47, in main
+    report = dict(files=[p.name for p in paths], skip=args.skip) | summarize(load(paths, args.skip))
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 34, in summarize
+    return dict(all=medians(rows), groups={k: medians(v) for k, v in sorted(groups.items())},
+                    ^^^^^^^^^^^^^
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 22, in medians
+    fields = [k for k in rows[0] if k.endswith('_ns')]
+                         ~~~~^^^
+IndexError: list index out of range
+cut: /notebooks/hm-results/2026-11-02/gemm-stages/p7168-i2/summary.csv: No such file or directory
+
+=== 06:26:27 UTC p8192-i1
+subprocess.CalledProcessError: Command '['/notebooks/heteromosaic-venv/bin/python3', '-u', '/notebooks/hm-gemm/kernels/gpu/tools/run_model_ffn.py', '--ref', '/n
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 55, in <module>
+    main()
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 47, in main
+    report = dict(files=[p.name for p in paths], skip=args.skip) | summarize(load(paths, args.skip))
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 34, in summarize
+    return dict(all=medians(rows), groups={k: medians(v) for k, v in sorted(groups.items())},
+                    ^^^^^^^^^^^^^
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 22, in medians
+    fields = [k for k in rows[0] if k.endswith('_ns')]
+                         ~~~~^^^
+IndexError: list index out of range
+cut: /notebooks/hm-results/2026-11-02/gemm-stages/p8192-i1/summary.csv: No such file or directory
+
+=== 06:26:56 UTC p6400-i1
+subprocess.CalledProcessError: Command '['/notebooks/heteromosaic-venv/bin/python3', '-u', '/notebooks/hm-gemm/kernels/gpu/tools/run_model_ffn.py', '--ref', '/n
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 55, in <module>
+    main()
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 47, in main
+    report = dict(files=[p.name for p in paths], skip=args.skip) | summarize(load(paths, args.skip))
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 34, in summarize
+    return dict(all=medians(rows), groups={k: medians(v) for k, v in sorted(groups.items())},
+                    ^^^^^^^^^^^^^
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 22, in medians
+    fields = [k for k in rows[0] if k.endswith('_ns')]
+                         ~~~~^^^
+IndexError: list index out of range
+cut: /notebooks/hm-results/2026-11-02/gemm-stages/p6400-i1/summary.csv: No such file or directory
+
+=== 06:27:26 UTC p6400-i1-ser
+subprocess.CalledProcessError: Command '['/notebooks/heteromosaic-venv/bin/python3', '-u', '/notebooks/hm-gemm/kernels/gpu/tools/run_model_ffn.py', '--ref', '/n
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 55, in <module>
+    main()
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 47, in main
+    report = dict(files=[p.name for p in paths], skip=args.skip) | summarize(load(paths, args.skip))
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 34, in summarize
+    return dict(all=medians(rows), groups={k: medians(v) for k, v in sorted(groups.items())},
+                    ^^^^^^^^^^^^^
+  File "/notebooks/hm-gemm/experiments/ffn_deploy/phase_report.py", line 22, in medians
+    fields = [k for k in rows[0] if k.endswith('_ns')]
+                         ~~~~^^^
+IndexError: list index out of range
+cut: /notebooks/hm-results/2026-11-02/gemm-stages/p6400-i1-ser/summary.csv: No such file or directory
+
+=== 06:27:55 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 56.0
+GPU[0]		: sclk clock level: 1: (1142Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 18.062
+
+=== 06:27:55 UTC done
+exit=0

@@ -1,0 +1,6 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+    GEM_CREATE 32.0 MB: VRAM +32.0 GTT +0.0
+    import: VRAM +0.0 GTT +32.0
+    mapped: VRAM +0.0 GTT +32.0
+    after first GPU use: VRAM +0.0 GTT +32.0
+exit=0

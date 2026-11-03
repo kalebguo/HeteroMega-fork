@@ -1,0 +1,68 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 10:01:24 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 38.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.009
+
+=== 10:01:24 UTC seed 1
+--- gpu_original-1024-r0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- gpu_fast-1024-r0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- gpu_sdpa-1024-r0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- merged_p8192_all-1024-r0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+--- merged_p7168_all-1024-r0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+--- merged_p6400_all-1024-r0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+--- gpu_original-1024-r1
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+
+=== 10:09:51 UTC seed 1: comparison
+gpu_fast-1024-r0 max_abs=0.0938 rel_l2=0.00426 kl=0.000072 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29298.4822 scored_argmax=0.9883 scored_kl=0.000083
+gpu_original-1024-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29289.9934 scored_argmax=1.0000 scored_kl=0.000000
+gpu_original-1024-r1 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29289.9934 scored_argmax=1.0000 scored_kl=0.000000
+gpu_sdpa-1024-r0 max_abs=0.1250 rel_l2=0.00563 kl=0.000115 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29321.3861 scored_argmax=0.9863 scored_kl=0.000080
+merged_p6400_all-1024-r0 max_abs=0.1875 rel_l2=0.00792 kl=0.000231 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29322.2489 scored_argmax=0.9883 scored_kl=0.000083
+merged_p7168_all-1024-r0 max_abs=0.1875 rel_l2=0.00758 kl=0.000260 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29318.6007 scored_argmax=0.9863 scored_kl=0.000081
+merged_p8192_all-1024-r0 max_abs=0.2188 rel_l2=0.00950 kl=0.000409 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=29338.5115 scored_argmax=0.9844 scored_kl=0.000084
+
+=== 10:09:55 UTC seed 2
+--- gpu_original-1024-r0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- gpu_fast-1024-r0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- gpu_sdpa-1024-r0
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+--- merged_p8192_all-1024-r0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+--- merged_p7168_all-1024-r0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+--- merged_p6400_all-1024-r0
+IOCTL_COUNTS ctx_ok=1 exec_ok=256 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=256 timeline_fail=0
+--- gpu_original-1024-r1
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+
+=== 10:18:14 UTC seed 2: comparison
+gpu_fast-1024-r0 max_abs=0.1641 rel_l2=0.01099 kl=0.000323 argmax_equal=True top5=5 repeat=0.0000 greedy=9/64 ppl=24937.6152 scored_argmax=0.9688 scored_kl=0.000055
+gpu_original-1024-r0 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24917.5857 scored_argmax=1.0000 scored_kl=0.000000
+gpu_original-1024-r1 max_abs=0.0000 rel_l2=0.00000 kl=0.000000 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24917.5857 scored_argmax=1.0000 scored_kl=0.000000
+gpu_sdpa-1024-r0 max_abs=0.1562 rel_l2=0.00540 kl=0.000339 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24934.6638 scored_argmax=0.9785 scored_kl=0.000055
+merged_p6400_all-1024-r0 max_abs=0.1875 rel_l2=0.00988 kl=0.000400 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24916.9116 scored_argmax=0.9707 scored_kl=0.000060
+merged_p7168_all-1024-r0 max_abs=0.1602 rel_l2=0.00596 kl=0.000430 argmax_equal=True top5=5 repeat=0.0000 greedy=18/64 ppl=24921.8955 scored_argmax=0.9766 scored_kl=0.000060
+merged_p8192_all-1024-r0 max_abs=0.1875 rel_l2=0.00584 kl=0.000547 argmax_equal=True top5=5 repeat=0.0000 greedy=64/64 ppl=24941.7693 scored_argmax=0.9707 scored_kl=0.000060
+
+=== 10:18:18 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 60.0
+GPU[0]		: sclk clock level: 1: (629Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 19.011
+
+=== 10:18:18 UTC done status=0
+exit=0

@@ -1,0 +1,68 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 07:38:20 UTC build
+mem_info_vram_total 8589934592 
+mem_info_vram_used 179634176 
+mem_info_gtt_total 12392415232 
+mem_info_gtt_used 33337344 
+THP always [madvise] never
+AnonHugePages:         0 kB
+HugePages_Total:       0
+Hugepagesize:       2048 kB
+
+=== 07:38:23 UTC where the VRAM allocation goes
+
+=== 07:38:24 UTC round 1: NPU idle
+  C120_now     median   5.432 ms  p10   5.106  p90   5.448
+  C60          median   5.429 ms  p10   5.104  p90   5.444
+  C40          median   5.435 ms  p10   5.123  p90   5.450
+  C24          median   5.512 ms  p10   5.207  p90   5.533
+  C12          median   5.532 ms  p10   5.244  p90   5.569
+  C8           median   5.518 ms  p10   4.774  p90   5.530
+  C4           median   5.429 ms  p10   4.689  p90   5.444
+  C2           median   5.445 ms  p10   4.721  p90   5.464
+  C1           median   5.617 ms  p10   5.125  p90   5.691
+  C120_W64k    median   5.519 ms  p10   4.764  p90   5.540
+
+=== 07:38:32 UTC round 1: NPU loop, P8192
+during run: mem_info_vram_used 179916800 
+during run: mem_info_gtt_used 243224576 
+  C120_now     median   7.020 ms  p10   6.760  p90   7.437
+  C60          median   7.001 ms  p10   6.791  p90   7.470
+  C40          median   6.984 ms  p10   6.776  p90   7.559
+  C24          median   7.073 ms  p10   7.003  p90   7.554
+  C12          median   6.987 ms  p10   6.802  p90   7.466
+  C8           median   6.684 ms  p10   6.511  p90   7.236
+  C4           median   6.957 ms  p10   6.732  p90   7.474
+  C2           median   7.073 ms  p10   6.922  p90   7.674
+  C1           median   7.606 ms  p10   7.374  p90   8.083
+  C120_W64k    median   5.051 ms  p10   4.970  p90   5.951
+
+=== 07:38:47 UTC round 2: NPU idle
+  C120_now     median   4.751 ms  p10   4.666  p90   4.757
+  C60          median   4.762 ms  p10   4.687  p90   4.768
+  C40          median   4.766 ms  p10   4.672  p90   4.773
+  C24          median   4.836 ms  p10   4.751  p90   4.841
+  C12          median   4.864 ms  p10   4.772  p90   4.867
+  C8           median   4.853 ms  p10   4.760  p90   4.869
+  C4           median   4.752 ms  p10   4.666  p90   4.767
+  C2           median   4.790 ms  p10   4.696  p90   4.798
+  C1           median   5.162 ms  p10   5.065  p90   5.235
+  C120_W64k    median   4.871 ms  p10   4.803  p90   4.884
+
+=== 07:38:55 UTC round 2: NPU loop, P8192
+during run: mem_info_vram_used 179920896 
+during run: mem_info_gtt_used 243224576 
+  C120_now     median   6.929 ms  p10   6.592  p90   7.416
+  C60          median   6.953 ms  p10   6.866  p90   7.447
+  C40          median   6.952 ms  p10   6.710  p90   7.516
+  C24          median   7.052 ms  p10   6.768  p90   7.559
+  C12          median   6.972 ms  p10   6.728  p90   7.491
+  C8           median   6.600 ms  p10   6.362  p90   7.185
+  C4           median   6.913 ms  p10   6.795  p90   7.440
+  C2           median   7.004 ms  p10   6.904  p90   7.606
+  C1           median   7.573 ms  p10   7.164  p90   8.198
+  C120_W64k    median   5.135 ms  p10   5.090  p90   6.089
+
+=== 07:39:10 UTC done
+exit=0

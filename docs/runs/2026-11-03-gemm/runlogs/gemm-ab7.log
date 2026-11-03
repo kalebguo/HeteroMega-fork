@@ -1,0 +1,42 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 09:38:24 UTC configure kernels/gpu
+-- ROCm: /opt/rocm-7.2.0
+-- HIP architectures: gfx1150
+
+=== 09:38:26 UTC build
+[ 83%] Built target test_gpu_ffn
+[ 95%] Built target bench_ffn_ablation
+
+=== 09:39:14 UTC new kernel: instruction mix per kernel
+419:0000000000003500 <_ZN10heteromega12_GLOBAL__N_117gemm_w4a16_kernelILb0EEEvPtPKtPKfPKhiiiiPf>:
+2807:0000000000007200 <_ZN10heteromega12_GLOBAL__N_117gemm_w4a16_kernelILb1EEEvPtPKtPKfPKhiiiiPf>:
+scratch ops in the file: 0   wmma: 256
+
+=== 09:39:15 UTC test_gpu_ffn
+ALL PASS (0 failed)
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 09:39:36 UTC build unified_llm_w4a16_hetero_libtorch
+[ 69%] Linking HIP static library libheteromega_gpu_ffn.a
+[ 75%] Linking HIP static library libheteromega_merged_ffn.a
+[ 80%] Linking HIP static library libunified_llm_w4a16_hetero_lib.a
+[ 94%] Built target unified_llm_w4a16_hetero_lib
+[ 97%] Linking HIP shared module ../../py/unified_llm_w4a16/unified_llm_w4a16_hetero_libtorch.so
+[100%] Built target unified_llm_w4a16_hetero_libtorch
+
+=== 09:40:35 UTC done status=0
+09:41:27 p8192-both: median,min,max 1007.4858140433207,1004.741215 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:42:20 p8192-too: median,min,max 1003.1383770983666,1002.053968 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:43:13 p7168-both: median,min,max 1052.6858140947297,1046.829225 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:44:05 p7168-too: median,min,max 1046.2099380092695,1043.900803 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:44:58 p6400-both: median,min,max 1040.3955209767446,1036.590045 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:45:50 p6400-too: median,min,max 1034.892586991191,1034.0746919 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:46:44 p8192-both: median,min,max 1012.2311130398884,1005.202859 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:47:35 p8192-too: median,min,max 1022.0521140145138,1017.393723 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:48:28 p7168-both: median,min,max 1056.162187946029,1053.1009470 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:49:20 p7168-too: median,min,max 1052.7732259361073,1051.795230 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:50:13 p6400-both: median,min,max 1039.0389290405437,1038.984433 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:51:05 p6400-too: median,min,max 1029.0440421085805,1028.086076 native exec_ok=448  fallbacks=0 sdpa_lines=2
+peak GTT MB, lowest available MB: 10951, 6167
+exit=0

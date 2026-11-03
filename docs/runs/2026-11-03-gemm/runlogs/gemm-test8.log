@@ -1,0 +1,18 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 10:18:44 UTC configure kernels/gpu
+-- ROCm: /opt/rocm-7.2.0
+-- HIP architectures: gfx1150
+
+=== 10:18:47 UTC build
+[ 68%] Built target test_gpu_ffn
+[ 76%] Built target bench_ffn_ablation
+
+=== 10:18:47 UTC new kernel: instruction mix per kernel
+419:0000000000003500 <_ZN10heteromega12_GLOBAL__N_117gemm_w4a16_kernelILb0EEEvPtPKtPKfPKhiiiiPf>:
+2807:0000000000007200 <_ZN10heteromega12_GLOBAL__N_117gemm_w4a16_kernelILb1EEEvPtPKtPKfPKhiiiiPf>:
+scratch ops in the file: 0   wmma: 256
+
+=== 10:18:48 UTC test_gpu_ffn
+ALL PASS (0 failed)
+exit=0

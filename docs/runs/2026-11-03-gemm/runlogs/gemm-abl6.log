@@ -1,0 +1,102 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 07:49:37 UTC build
+mem_info_vram_total 8589934592 
+mem_info_vram_used 179634176 
+mem_info_gtt_total 12392415232 
+mem_info_gtt_used 33337344 
+THP always [madvise] never
+AnonHugePages:         0 kB
+HugePages_Total:       0
+Hugepagesize:       2048 kB
+
+=== 07:49:41 UTC round 1: NPU idle
+    GEM_CREATE 32.0 MB: VRAM +0.0 GTT +32.0
+    import: VRAM +0.0 GTT +32.0
+    mapped: VRAM +0.0 GTT +32.0
+    GEM_CREATE 4.0 MB: VRAM +0.0 GTT +4.0
+    import: VRAM +0.0 GTT +4.0
+    mapped: VRAM +0.0 GTT +4.0
+    GEM_CREATE 2.0 MB: VRAM +0.0 GTT +2.0
+    import: VRAM +0.0 GTT +2.0
+    mapped: VRAM +0.0 GTT +2.0
+    GEM_CREATE 16.0 MB: VRAM +0.0 GTT +16.0
+    import: VRAM +0.0 GTT +16.0
+    mapped: VRAM +0.0 GTT +16.0
+  VRAM +0.0 MB, GTT +54.0 MB for the USWC copies
+  default            median   5.464 ms  p10   5.158  p90   5.476
+  default_W64k       median   5.397 ms  p10   5.091  p90   5.410
+  uswc_weights       median   5.428 ms  p10   5.128  p90   5.442
+  uswc_all           median   5.424 ms  p10   5.131  p90   5.450
+  host_weights       median   5.461 ms  p10   5.168  p90   5.476
+  uncached_weights   median   5.449 ms  p10   5.149  p90   5.455
+  fine_weights       median   5.424 ms  p10   5.136  p90   5.465
+
+=== 07:49:48 UTC round 1: NPU loop, P8192
+    GEM_CREATE 32.0 MB: VRAM +0.0 GTT +32.0
+    import: VRAM +0.0 GTT +32.0
+    mapped: VRAM +0.0 GTT +32.0
+    GEM_CREATE 4.0 MB: VRAM +0.0 GTT +4.0
+    import: VRAM +0.0 GTT +4.0
+    mapped: VRAM +0.0 GTT +4.0
+    GEM_CREATE 2.0 MB: VRAM +0.0 GTT +2.0
+    import: VRAM +0.0 GTT +2.0
+    mapped: VRAM +0.0 GTT +2.0
+    GEM_CREATE 16.0 MB: VRAM +0.0 GTT +16.0
+    import: VRAM +0.0 GTT +16.0
+    mapped: VRAM +0.0 GTT +16.0
+  VRAM +0.0 MB, GTT +54.0 MB for the USWC copies
+  default            median   7.120 ms  p10   6.622  p90   7.419
+  default_W64k       median   5.578 ms  p10   4.705  p90   6.000
+  uswc_weights       median   7.076 ms  p10   6.623  p90   7.466
+  uswc_all           median   7.087 ms  p10   6.633  p90   7.406
+  host_weights       median   7.133 ms  p10   6.715  p90   7.455
+  uncached_weights   median   6.607 ms  p10   6.077  p90   6.982
+  fine_weights       median   7.065 ms  p10   6.696  p90   7.389
+
+=== 07:49:59 UTC round 2: NPU idle
+    GEM_CREATE 32.0 MB: VRAM +0.0 GTT +32.0
+    import: VRAM +0.0 GTT +32.0
+    mapped: VRAM +0.0 GTT +32.0
+    GEM_CREATE 4.0 MB: VRAM +0.0 GTT +4.0
+    import: VRAM +0.0 GTT +4.0
+    mapped: VRAM +0.0 GTT +4.0
+    GEM_CREATE 2.0 MB: VRAM +0.0 GTT +2.0
+    import: VRAM +0.0 GTT +2.0
+    mapped: VRAM +0.0 GTT +2.0
+    GEM_CREATE 16.0 MB: VRAM +0.0 GTT +16.0
+    import: VRAM +0.0 GTT +16.0
+    mapped: VRAM +0.0 GTT +16.0
+  VRAM +0.0 MB, GTT +54.0 MB for the USWC copies
+  default            median   4.766 ms  p10   4.672  p90   4.772
+  default_W64k       median   4.702 ms  p10   4.610  p90   4.714
+  uswc_weights       median   4.746 ms  p10   4.644  p90   4.748
+  uswc_all           median   4.747 ms  p10   4.644  p90   4.755
+  host_weights       median   4.803 ms  p10   4.703  p90   4.807
+  uncached_weights   median   4.776 ms  p10   4.684  p90   4.786
+  fine_weights       median   4.757 ms  p10   4.669  p90   4.762
+
+=== 07:50:04 UTC round 2: NPU loop, P8192
+    GEM_CREATE 32.0 MB: VRAM +0.0 GTT +32.0
+    import: VRAM +0.0 GTT +32.0
+    mapped: VRAM +0.0 GTT +32.0
+    GEM_CREATE 4.0 MB: VRAM +0.0 GTT +4.0
+    import: VRAM +0.0 GTT +4.0
+    mapped: VRAM +0.0 GTT +4.0
+    GEM_CREATE 2.0 MB: VRAM +0.0 GTT +2.0
+    import: VRAM +0.0 GTT +2.0
+    mapped: VRAM +0.0 GTT +2.0
+    GEM_CREATE 16.0 MB: VRAM +0.0 GTT +16.0
+    import: VRAM +0.0 GTT +16.0
+    mapped: VRAM +0.0 GTT +16.0
+  VRAM +0.0 MB, GTT +54.0 MB for the USWC copies
+  default            median   7.091 ms  p10   6.641  p90   7.400
+  default_W64k       median   5.583 ms  p10   4.722  p90   6.001
+  uswc_weights       median   7.097 ms  p10   6.613  p90   7.394
+  uswc_all           median   7.085 ms  p10   6.644  p90   7.403
+  host_weights       median   7.079 ms  p10   6.757  p90   7.426
+  uncached_weights   median   6.461 ms  p10   6.102  p90   6.993
+  fine_weights       median   7.062 ms  p10   6.610  p90   7.387
+
+=== 07:50:16 UTC done
+exit=0

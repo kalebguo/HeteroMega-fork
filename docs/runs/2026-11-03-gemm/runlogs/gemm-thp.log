@@ -1,0 +1,97 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 07:43:44 UTC build
+shmem_enabled always within_size advise [never] deny force
+
+=== 07:43:49 UTC round 1: NPU idle
+  read_dram    median  14.223 ms  p10  14.175  p90  14.262  n=122  14.7 GB/s
+  write_dram   median   7.015 ms  p10   6.981  p90   7.063  n=122  29.9 GB/s
+  read_random  median   0.737 ms  p10   0.733  p90   0.741  n=122
+  C120_now     median   5.226 ms  p10   5.018  p90   5.387
+  C8           median   5.185 ms  p10   5.150  p90   5.450
+  C120_W64k    median   5.140 ms  p10   4.934  p90   5.436
+
+=== 07:43:54 UTC round 1: NPU loop, normal buffers
+npu_load Rss:                9668 kB
+npu_load AnonHugePages:         0 kB
+  read_dram    median  16.102 ms  p10  16.046  p90  16.200  n=107  13.0 GB/s
+  write_dram   median   8.455 ms  p10   8.276  p90   8.623  n=107  24.8 GB/s
+  read_random  median   1.062 ms  p10   0.973  p90   1.076  n=107
+  C120_now     median   7.136 ms  p10   7.106  p90   7.148
+  C8           median   6.891 ms  p10   6.846  p90   7.177
+  C120_W64k    median   5.599 ms  p10   5.587  p90   5.989
+npu_load run 600: 13.92 ms
+
+=== 07:44:03 UTC round 1: NPU loop, 2 MB pages
+npu_load Rss:              118696 kB
+npu_load AnonHugePages:    108544 kB
+  read_dram    median  15.416 ms  p10  15.343  p90  15.505  n=109  13.6 GB/s
+  write_dram   median   8.637 ms  p10   8.367  p90   8.808  n=109  24.3 GB/s
+  read_random  median   1.013 ms  p10   0.986  p90   1.047  n=109
+  C120_now     median   7.146 ms  p10   7.093  p90   7.181
+  C8           median   6.782 ms  p10   6.738  p90   7.062
+  C120_W64k    median   5.719 ms  p10   5.672  p90   6.085
+npu_load run 600: 13.98 ms
+
+=== 07:44:13 UTC round 2: NPU idle
+  read_dram    median  14.180 ms  p10  14.120  p90  14.231  n=122  14.8 GB/s
+  write_dram   median   7.115 ms  p10   7.061  p90   7.178  n=122  29.5 GB/s
+  read_random  median   0.732 ms  p10   0.725  p90   0.737  n=122
+  C120_now     median   5.201 ms  p10   5.167  p90   5.245
+  C8           median   5.283 ms  p10   5.275  p90   5.488
+  C120_W64k    median   5.223 ms  p10   5.206  p90   5.507
+
+=== 07:44:18 UTC round 2: NPU loop, normal buffers
+npu_load Rss:                9636 kB
+npu_load AnonHugePages:         0 kB
+  read_dram    median  15.734 ms  p10  15.664  p90  15.809  n=108  13.3 GB/s
+  write_dram   median   8.401 ms  p10   8.221  p90   8.569  n=108  25.0 GB/s
+  read_random  median   1.063 ms  p10   1.049  p90   1.072  n=108
+  C120_now     median   7.146 ms  p10   7.100  p90   7.214
+  C8           median   6.821 ms  p10   6.790  p90   7.077
+  C120_W64k    median   5.615 ms  p10   5.596  p90   6.014
+npu_load run 600: 14.05 ms
+
+=== 07:44:27 UTC round 2: NPU loop, 2 MB pages
+npu_load Rss:              118756 kB
+npu_load AnonHugePages:    108544 kB
+  read_dram    median  15.650 ms  p10  15.571  p90  15.721  n=108  13.4 GB/s
+  write_dram   median   8.688 ms  p10   8.417  p90   8.880  n=108  24.1 GB/s
+  read_random  median   1.005 ms  p10   0.950  p90   1.046  n=108
+  C120_now     median   7.132 ms  p10   7.091  p90   7.197
+  C8           median   6.854 ms  p10   6.812  p90   7.171
+  C120_W64k    median   5.600 ms  p10   5.584  p90   5.981
+npu_load run 600: 14.00 ms
+
+=== 07:44:37 UTC round 3: NPU idle
+  read_dram    median  14.576 ms  p10  14.533  p90  14.611  n=121  14.4 GB/s
+  write_dram   median   6.945 ms  p10   6.879  p90   6.998  n=121  30.2 GB/s
+  read_random  median   0.736 ms  p10   0.734  p90   0.743  n=121
+  C120_now     median   5.209 ms  p10   5.183  p90   5.232
+  C8           median   5.222 ms  p10   5.212  p90   5.382
+  C120_W64k    median   5.283 ms  p10   5.266  p90   5.580
+
+=== 07:44:41 UTC round 3: NPU loop, normal buffers
+npu_load Rss:                9672 kB
+npu_load AnonHugePages:         0 kB
+  read_dram    median  15.803 ms  p10  15.716  p90  15.902  n=108  13.3 GB/s
+  write_dram   median   8.379 ms  p10   8.226  p90   8.523  n=108  25.0 GB/s
+  read_random  median   1.066 ms  p10   0.979  p90   1.084  n=108
+  C120_now     median   7.202 ms  p10   7.172  p90   7.226
+  C8           median   6.932 ms  p10   6.908  p90   7.224
+  C120_W64k    median   5.701 ms  p10   5.681  p90   6.119
+npu_load run 600: 14.09 ms
+
+=== 07:44:51 UTC round 3: NPU loop, 2 MB pages
+npu_load Rss:              118644 kB
+npu_load AnonHugePages:    108544 kB
+  read_dram    median  15.155 ms  p10  15.084  p90  15.250  n=110  13.8 GB/s
+  write_dram   median   8.567 ms  p10   8.284  p90   8.771  n=110  24.5 GB/s
+  read_random  median   1.004 ms  p10   0.984  p90   1.035  n=110
+  C120_now     median   7.076 ms  p10   7.007  p90   7.110
+  C8           median   6.762 ms  p10   6.696  p90   7.017
+  C120_W64k    median   5.638 ms  p10   5.602  p90   6.029
+npu_load run 600: 14.09 ms
+
+=== 07:45:00 UTC done
+exit=0

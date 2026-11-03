@@ -1,0 +1,62 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 07:35:33 UTC build
+mem_info_vram_total 8589934592 
+mem_info_vram_used 179634176 
+mem_info_gtt_total 12392415232 
+mem_info_gtt_used 33337344 
+THP always [madvise] never
+AnonHugePages:         0 kB
+HugePages_Total:       0
+Hugepagesize:       2048 kB
+
+=== 07:35:37 UTC round 1: NPU idle
+  VRAM +0.0 MB, GTT +54.0 MB for the VRAM copies
+  gtt_all              median   5.458 ms  p10   5.160  p90   5.475
+  gtt_all_W64k         median   5.508 ms  p10   5.201  p90   5.527
+  vram_weights         median   5.456 ms  p10   5.151  p90   5.466
+  vram_input           median   5.462 ms  p10   5.163  p90   5.473
+  vram_output          median   5.467 ms  p10   5.162  p90   5.474
+  vram_weights_input   median   5.456 ms  p10   5.167  p90   5.516
+  vram_all             median   5.460 ms  p10   5.157  p90   5.467
+  vram_all_W64k        median   5.422 ms  p10   5.116  p90   5.435
+
+=== 07:35:44 UTC round 1: NPU loop, P8192
+during run: mem_info_vram_used 179929088 
+during run: mem_info_gtt_used 299847680 
+  VRAM +0.0 MB, GTT +54.0 MB for the VRAM copies
+  gtt_all              median   6.940 ms  p10   6.586  p90   7.391
+  gtt_all_W64k         median   5.097 ms  p10   4.726  p90   6.059
+  vram_weights         median   6.947 ms  p10   6.664  p90   7.439
+  vram_input           median   6.953 ms  p10   6.637  p90   7.410
+  vram_output          median   7.103 ms  p10   6.732  p90   7.373
+  vram_weights_input   median   7.133 ms  p10   6.833  p90   7.421
+  vram_all             median   7.151 ms  p10   6.860  p90   7.470
+  vram_all_W64k        median   5.647 ms  p10   5.085  p90   6.052
+
+=== 07:35:56 UTC round 2: NPU idle
+  VRAM +0.0 MB, GTT +54.0 MB for the VRAM copies
+  gtt_all              median   4.742 ms  p10   4.651  p90   4.753
+  gtt_all_W64k         median   4.791 ms  p10   4.698  p90   4.812
+  vram_weights         median   4.736 ms  p10   4.638  p90   4.745
+  vram_input           median   4.767 ms  p10   4.706  p90   4.784
+  vram_output          median   4.761 ms  p10   4.653  p90   4.765
+  vram_weights_input   median   4.761 ms  p10   4.656  p90   4.764
+  vram_all             median   4.758 ms  p10   4.651  p90   4.760
+  vram_all_W64k        median   4.718 ms  p10   4.612  p90   4.727
+
+=== 07:36:02 UTC round 2: NPU loop, P8192
+during run: mem_info_vram_used 179933184 
+during run: mem_info_gtt_used 299847680 
+  VRAM +0.0 MB, GTT +54.0 MB for the VRAM copies
+  gtt_all              median   6.944 ms  p10   6.652  p90   7.401
+  gtt_all_W64k         median   5.150 ms  p10   4.759  p90   6.100
+  vram_weights         median   6.977 ms  p10   6.654  p90   7.456
+  vram_input           median   6.930 ms  p10   6.616  p90   7.436
+  vram_output          median   6.932 ms  p10   6.711  p90   7.432
+  vram_weights_input   median   7.153 ms  p10   6.888  p90   7.450
+  vram_all             median   6.959 ms  p10   6.761  p90   7.456
+  vram_all_W64k        median   5.197 ms  p10   4.864  p90   6.130
+
+=== 07:36:15 UTC done
+exit=0

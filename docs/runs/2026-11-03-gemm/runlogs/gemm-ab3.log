@@ -1,0 +1,37 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 07:54:11 UTC build unified_llm_w4a16_hetero_libtorch
+[ 51%] Linking HIP static library libheteromega_gpu_ffn.a
+[ 94%] Built target unified_llm_w4a16_hetero_lib
+[ 97%] Linking HIP shared module ../../py/unified_llm_w4a16/unified_llm_w4a16_hetero_libtorch.so
+[100%] Built target unified_llm_w4a16_hetero_libtorch
+
+=== 07:54:27 UTC done status=0
+07:55:19 p8192-off: median,min,max 1224.9257379444316,1195.964721 native exec_ok=448 
+07:56:27 p8192-reuse: median,min,max 1182.5212190160528,1178.692832 native exec_ok=448 
+07:57:30 p8192-unc: median,min,max 1127.203786978498,1121.5991259 native exec_ok=448 
+07:58:26 p6400-off: median,min,max 1199.1210859268904,1195.462038 native exec_ok=448 
+07:59:23 p6400-reuse: median,min,max 1185.7451290125027,1180.646138 native exec_ok=448 
+08:00:16 p6400-unc: median,min,max 1163.0310940090567,1162.070541 native exec_ok=448 
+08:01:10 p7168-off: median,min,max 1226.6778929624707,1226.338017 native exec_ok=448 
+08:02:02 p7168-reuse: median,min,max 1215.7444070326164,1214.344664 native exec_ok=448 
+08:02:52 p7168-unc: median,min,max 1181.633522035554,1176.8073149 native exec_ok=448 
+08:03:46 p8192-off: median,min,max 1210.9363951021805,1208.462591 native exec_ok=448 
+08:04:41 p8192-reuse: median,min,max 1187.6631270861253,1184.837564 native exec_ok=448 
+08:05:37 p8192-unc: median,min,max 1148.9155909512192,1141.212900 native exec_ok=448 
+08:06:32 p6400-off: median,min,max 1202.637951937504,1201.2432189 native exec_ok=448 
+08:07:26 p6400-reuse: median,min,max 1187.2313600033522,1185.422788 native exec_ok=448 
+p6400-unc: FAILED
+08:08:55 p7168-off: median,min,max 1223.7968370318413,1222.211297 native exec_ok=448 
+08:09:45 p7168-reuse: median,min,max 1216.6730329627171,1211.773182 native exec_ok=448 
+08:10:35 p7168-unc: median,min,max 1183.0033330479637,1180.087926 native exec_ok=448 
+08:11:28 p8192-off: median,min,max 1198.4786739340052,1180.362330 native exec_ok=448 
+08:12:22 p8192-reuse: median,min,max 1186.8196190334857,1183.808214 native exec_ok=448 
+08:13:15 p8192-unc: median,min,max 1099.7907309792936,1095.739461 native exec_ok=448 
+08:14:10 p6400-off: median,min,max 1200.6771689048037,1198.550153 native exec_ok=448 
+08:15:05 p6400-reuse: median,min,max 1192.4150860868394,1189.929248 native exec_ok=448 
+08:15:58 p6400-unc: median,min,max 1156.309304991737,1152.0358390 native exec_ok=448 
+08:16:52 p7168-off: median,min,max 1215.310250991024,1214.3097149 native exec_ok=448 
+08:17:44 p7168-reuse: median,min,max 1225.0799220055342,1224.987350 native exec_ok=448 
+08:18:37 p7168-unc: median,min,max 1177.4239209480584,1174.078490 native exec_ok=448 
+exit=0

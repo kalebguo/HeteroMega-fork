@@ -1,0 +1,68 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 05:40:55 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 50.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.007
+
+=== 05:40:55 UTC P7168: build
+  "timeout_ms": 10000,
+  "device_index": 0
+}
+
+=== 05:41:07 UTC P7168: built
+  }
+}
+
+=== 05:41:27 UTC P7168 inflight 1
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+method,prompt_tokens,dummy,samples,prefill_median_ms,prefill_min_ms,merged_ffn_verdict
+merged_ffn,1024,False,15,1371.4449129765853,1362.6456500496715,active
+merged_ffn-1024-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r2.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+
+=== 05:44:41 UTC P7168 inflight 2
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+method,prompt_tokens,dummy,samples,prefill_median_ms,prefill_min_ms,merged_ffn_verdict
+merged_ffn,1024,False,15,1224.7124660061672,1218.4263350209221,active
+merged_ffn-1024-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r2.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+
+=== 05:48:04 UTC P5120: build
+  "timeout_ms": 10000,
+  "device_index": 0
+}
+
+=== 05:48:15 UTC P5120: built
+  }
+}
+
+=== 05:48:35 UTC P5120 inflight 1
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+method,prompt_tokens,dummy,samples,prefill_median_ms,prefill_min_ms,merged_ffn_verdict
+merged_ffn,1024,False,15,1257.8746010549366,1247.3432790720835,active
+merged_ffn-1024-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r2.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+
+=== 05:51:46 UTC P5120 inflight 2
+IOCTL_COUNTS ctx_ok=0 exec_ok=0 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=0 timeline_fail=0
+method,prompt_tokens,dummy,samples,prefill_median_ms,prefill_min_ms,merged_ffn_verdict
+merged_ffn,1024,False,15,1265.3226170223206,1259.0490800794214,active
+merged_ffn-1024-r0.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r1.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+merged_ffn-1024-r2.result.log:IOCTL_COUNTS ctx_ok=1 exec_ok=704 exec_fail=0 legacy_ok=0 legacy_fail=0 timeline_ok=704 timeline_fail=0
+
+=== 05:55:11 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 62.0
+GPU[0]		: sclk clock level: 1: (1846Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 30.067
+
+=== 05:55:11 UTC done status=0
+exit=0

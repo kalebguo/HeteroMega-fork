@@ -1,0 +1,80 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 05:11:47 UTC configure kernels/gpu
+-- ROCm: /opt/rocm-7.2.0
+-- HIP architectures: gfx1150
+
+=== 05:11:49 UTC build
+[ 86%] Built target test_gpu_ffn
+[ 95%] Built target bench_ffn_ablation
+
+=== 05:12:30 UTC new kernel: instruction mix per kernel
+365:0000000000002600 <_ZN10heteromega12_GLOBAL__N_117gemm_w4a16_kernelEPtPKtPKfPKhiiii>:
+scratch ops in the file: 0   wmma: 128
+
+=== 05:12:31 UTC test_gpu_ffn
+ALL PASS (0 failed)
+
+=== 05:12:51 UTC bench_ffn_ablation --m 512 --s 7680 --variants fused,fast,dense --rounds 2 --iters 15 --warmup 3
+round,pos,variant,M,s,gemm1_ms,act_ms,down_ms,total_ms,gemm_TFLOPS,weight_GBps,act_GBps,sclk_MHz_median,sclk_M
+0,0,dense,512,7680,5.5042,0.2416,2.8155,8.5910,11.62,22.7,97.7,2433,2415,47.1,78
+0,1,fused,512,7680,6.6351,0.2412,3.3739,10.1996,9.65,5.0,97.8,2486,2461,48.1,79
+0,2,fast,512,7680,5.0316,0.2414,2.6939,7.9734,12.51,6.5,97.7,2496,2496,48.0,76
+1,0,fused,512,7680,6.9403,0.2413,3.5285,10.7310,9.23,4.8,97.8,2502,2492,47.1,73
+1,1,dense,512,7680,5.5653,0.2417,2.8223,8.6778,11.52,22.5,97.6,2520,2513,47.0,73
+1,2,fast,512,7680,5.0331,0.2413,2.6951,7.9751,12.50,6.5,97.8,2526,2524,46.5,75
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 05:12:56 UTC shared merged weights (read-only use; same 5.4 GB file as the first evaluation)
+-rw-r--r-- 1 mliraie aup 5727938512 Nov  2 17:43 Meta-Llama-3.1-8B-Instruct-AWQ-INT4.safetensors
+Torch: 2.11.0+rocm7.2 HIP: 7.2.26015
+GPU: AMD Radeon 890M
+
+=== 05:12:58 UTC cmake configure (HETEROMEGA_MERGED_FFN=ON)
+-- Configuring done (7.3s)
+-- Generating done (0.1s)
+-- Build files have been written to: /notebooks/hm-gemm/build
+
+=== 05:13:06 UTC build heteromega_ffn_deploy
+[ 14%] Linking CXX static library libnpu_matmul_func.a
+[ 14%] Built target npu_matmul_func
+[ 57%] Linking HIP static library libhipkernels.a
+[ 57%] Built target hipkernels
+[ 85%] Linking HIP static library libheteromega_gpu_ffn.a
+[ 85%] Built target heteromega_gpu_ffn
+[ 92%] Linking HIP static library libheteromega_merged_ffn.a
+[ 92%] Built target heteromega_merged_ffn
+[100%] Linking HIP shared module ../../py/heteromega_ffn_deploy.cpython-312-x86_64-linux-gnu.so
+[100%] Built target heteromega_ffn_deploy
+
+=== 05:15:31 UTC build unified_llm_w4a16_hetero_libtorch
+[  8%] Built target npu_matmul_func
+[ 45%] Built target hipkernels
+[ 68%] Built target heteromega_gpu_ffn
+[ 74%] Built target heteromega_merged_ffn
+[ 94%] Linking HIP static library libunified_llm_w4a16_hetero_lib.a
+[ 94%] Built target unified_llm_w4a16_hetero_lib
+[100%] Linking HIP shared module ../../py/unified_llm_w4a16/unified_llm_w4a16_hetero_libtorch.so
+[100%] Built target unified_llm_w4a16_hetero_libtorch
+HIP link check passed
+
+=== 05:16:13 UTC optimization flags of the merged FFN file (expect -O3, or nothing with NOOPT)
+ -O3
+
+=== 05:16:13 UTC package the retained NPU artifact -> deployment.json
+  "timeout_ms": 10000,
+  "device_index": 0
+}
+-rw-r--r-- 1 mliraie aup 178 Nov  3 05:16 deployment.json
+59
+
+=== 05:16:13 UTC ioctl counter (docs/ffn-deployment.md)
+-rwxr-xr-x 1 mliraie aup 16040 Nov  2 20:25 /notebooks/hm-results/count_ioctls.so
+
+=== 05:16:13 UTC CPU only: cost of the scan variants at the target's flags
+full                   median=0.4167 ms min=0.4077 max=1.1433
+sampled                median=0.0134 ms min=0.0131 max=0.0164
+full_branchless        median=0.1045 ms min=0.1038 max=0.1092
+
+=== 05:16:14 UTC done
+exit=0

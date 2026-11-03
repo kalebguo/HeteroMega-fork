@@ -1,0 +1,30 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 09:55:51 UTC device before
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 42.0
+GPU[0]		: sclk clock level: 0: (600Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 5.035
+
+=== 09:55:52 UTC p8192-i2
+]
+merged_ffn,1024,5,1013.7006089789793,1009.4379190122709
+
+=== 09:56:56 UTC p7168-i2
+]
+merged_ffn,1024,5,1051.930190064013,1047.2465630155057
+
+=== 09:58:00 UTC p6400-i2
+]
+merged_ffn,1024,5,1027.9294960200787,1022.1763340523466
+
+=== 09:59:05 UTC device after
+====================================== Temperature =======================================
+GPU[0]		: Temperature (Sensor edge) (C): 63.0
+GPU[0]		: sclk clock level: 1: (1827Mhz)
+=================================== Power Consumption ====================================
+GPU[0]		: Current Socket Graphics Package Power (W): 30.026
+
+=== 09:59:05 UTC done
+exit=0

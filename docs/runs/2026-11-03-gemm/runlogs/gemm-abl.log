@@ -1,0 +1,66 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 07:24:12 UTC build
+
+=== 07:24:16 UTC round 1: NPU idle
+  base  median   4.612 ms  p10   4.588  p90   5.366
+  W     median   4.483 ms  p10   4.452  p90   5.423
+  X     median  29.858 ms  p10  29.823  p90  29.900
+  O     median   4.594 ms  p10   4.582  p90   5.345
+  WX    median  28.097 ms  p10  28.045  p90  28.167
+  WO    median   4.539 ms  p10   4.521  p90   5.433
+  XO    median  26.639 ms  p10  26.612  p90  26.696
+  WXO   median  28.174 ms  p10  28.141  p90  28.251
+
+=== 07:24:51 UTC round 1: NPU loop, P8192
+  base  median   6.881 ms  p10   6.851  p90   7.236
+  W     median   5.033 ms  p10   5.007  p90   5.841
+  X     median  45.801 ms  p10  45.674  p90  45.971
+  O     median   6.697 ms  p10   6.630  p90   7.085
+  WX    median  42.264 ms  p10  41.917  p90  42.605
+  WO    median   4.889 ms  p10   4.869  p90   5.719
+  XO    median  41.163 ms  p10  40.788  p90  41.294
+  WXO   median  40.956 ms  p10  40.748  p90  41.036
+
+=== 07:25:45 UTC round 2: NPU idle
+  base  median   4.633 ms  p10   4.629  p90   4.814
+  W     median   4.579 ms  p10   4.521  p90   4.594
+  X     median  29.841 ms  p10  29.814  p90  29.866
+  O     median   4.600 ms  p10   4.597  p90   4.756
+  WX    median  28.088 ms  p10  28.011  p90  28.141
+  WO    median   4.581 ms  p10   4.572  p90   4.728
+  XO    median  26.626 ms  p10  26.598  p90  26.653
+  WXO   median  28.146 ms  p10  28.111  p90  28.194
+
+=== 07:26:20 UTC round 2: NPU loop, P8192
+  base  median   6.906 ms  p10   6.864  p90   7.250
+  W     median   4.929 ms  p10   4.889  p90   5.735
+  X     median  45.757 ms  p10  45.631  p90  45.985
+  O     median   6.701 ms  p10   6.643  p90   6.995
+  WX    median  42.393 ms  p10  42.238  p90  42.650
+  WO    median   4.907 ms  p10   4.896  p90   5.725
+  XO    median  41.240 ms  p10  41.116  p90  41.324
+  WXO   median  40.959 ms  p10  40.862  p90  41.036
+
+=== 07:27:14 UTC round 3: NPU idle
+  base  median   4.630 ms  p10   4.622  p90   5.014
+  W     median   4.565 ms  p10   4.509  p90   4.593
+  X     median  29.850 ms  p10  29.823  p90  29.886
+  O     median   4.602 ms  p10   4.598  p90   4.784
+  WX    median  28.085 ms  p10  28.032  p90  28.164
+  WO    median   4.575 ms  p10   4.566  p90   4.755
+  XO    median  26.616 ms  p10  26.597  p90  26.660
+  WXO   median  28.134 ms  p10  28.107  p90  28.266
+
+=== 07:27:49 UTC round 3: NPU loop, P8192
+  base  median   6.931 ms  p10   6.859  p90   7.272
+  W     median   4.953 ms  p10   4.924  p90   5.798
+  X     median  45.989 ms  p10  45.640  p90  46.091
+  O     median   6.704 ms  p10   6.673  p90   7.121
+  WX    median  42.496 ms  p10  42.252  p90  42.675
+  WO    median   4.909 ms  p10   4.889  p90   5.770
+  XO    median  41.409 ms  p10  41.136  p90  41.505
+  WXO   median  41.056 ms  p10  40.750  p90  41.429
+
+=== 07:28:44 UTC done
+exit=0

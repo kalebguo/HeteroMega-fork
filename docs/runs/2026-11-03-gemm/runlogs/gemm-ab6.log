@@ -1,0 +1,37 @@
+HEAD 5bd4648e Energy job: set DRIVER_PATH as the step 5 probe job does, for the coverage phase
+
+=== 09:15:33 UTC build unified_llm_w4a16_hetero_libtorch
+[ 69%] Linking HIP static library libheteromega_gpu_ffn.a
+[ 75%] Linking HIP static library libheteromega_merged_ffn.a
+[ 80%] Linking HIP static library libunified_llm_w4a16_hetero_lib.a
+[ 94%] Built target unified_llm_w4a16_hetero_lib
+[ 97%] Linking HIP shared module ../../py/unified_llm_w4a16/unified_llm_w4a16_hetero_libtorch.so
+[100%] Built target unified_llm_w4a16_hetero_libtorch
+
+=== 09:16:31 UTC done status=0
+09:17:25 p8192-base: median,min,max 1060.1370349759236,1044.154213 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:18:20 p8192-slot2: median,min,max 1038.912180927582,1037.8804100 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:19:12 p8192-fuse: median,min,max 1026.7373099923134,1012.090124 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:20:04 p8192-both: median,min,max 1006.3237089198083,1004.029682 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:20:57 p7168-base: median,min,max 1091.3798420224339,1087.271091 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:21:50 p7168-slot2: median,min,max 1085.3747009532526,1082.248631 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:22:43 p7168-fuse: median,min,max 1069.5109310327098,1069.444733 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:23:36 p7168-both: median,min,max 1045.5271860118955,1044.283061 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:24:29 p6400-base: median,min,max 1074.571778997779,1072.7817739 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:25:22 p6400-slot2: median,min,max 1058.244596933946,1055.9754910 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:26:16 p6400-fuse: median,min,max 1049.2949010804296,1047.363557 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:27:08 p6400-both: median,min,max 1038.6835769750178,1037.332613 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:28:02 p8192-base: median,min,max 1042.4566570436582,1038.300587 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:28:52 p8192-slot2: median,min,max 1040.0714840507135,1038.547883 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:29:44 p8192-fuse: median,min,max 1008.6838910356164,1002.017667 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:30:37 p8192-both: median,min,max 1011.0474160173908,1009.834529 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:31:33 p7168-base: median,min,max 1101.7247110139579,1101.177581 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:32:25 p7168-slot2: median,min,max 1076.9633590243757,1073.133273 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:33:18 p7168-fuse: median,min,max 1060.7098430627957,1055.274837 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:34:12 p7168-both: median,min,max 1052.9093639925122,1051.425802 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:35:04 p6400-base: median,min,max 1078.9553029462695,1073.778343 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:35:57 p6400-slot2: median,min,max 1058.3856709999964,1053.384247 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:36:50 p6400-fuse: median,min,max 1054.405058035627,1053.1739819 native exec_ok=448  fallbacks=0 sdpa_lines=2
+09:37:43 p6400-both: median,min,max 1037.9802250536159,1037.087612 native exec_ok=448  fallbacks=0 sdpa_lines=2
+peak GTT MB, lowest available MB: 10951, 6192
+exit=0
