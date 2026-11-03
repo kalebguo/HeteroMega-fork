@@ -7,6 +7,8 @@ source /notebooks/hm-fix/tools/aup-kit/jobs/fix-env.sh
 OUT=$RESULTS/inflight2-energy
 PREP=$RESULTS/inflight2-prep
 mkdir -p "$OUT"
+# coverage drives one native GEMM through the error probe's binding, as jobs/step5-numerics does.
+export DRIVER_PATH="$HOME_LIBS/xdna-driver-05-19-25" HETEROMEGA_PROBE_BUILD_ROOT=$RESULTS/probe-build
 export HETEROMEGA_FFN_FINITE_CHECK=sampled
 P=tools/power_probe/power_probe.py
 step "device before"; snapshot
