@@ -21,7 +21,7 @@ The `merged_ffn` rows at 2048 tokens use all switches. The rows at 4096 tokens o
 
 Native NPU calls per process: 896 at 2048 tokens and 1792 at 4096 tokens for `merged_ffn`, 8288-11200 for `heteromosaic`. Uncached fallbacks: 0 in every `merged_ffn` run reported above.
 
-The `heteromosaic` schedule drifted upward within the job, 2382.7, 2460.4 and 2586.5 ms by process. The cause is not known. Its other setting stayed within 0.4%.
+The `heteromosaic` schedule drifted upward within the job, 2382.7, 2460.4 and 2586.5 ms by process. The cause is not known. Its other setting stayed within 0.5%.
 
 Whole request, prefill plus 64 decoded tokens: 5.80 / 8.37 s for P8192, 6.22 / 8.96 s for `heteromosaic`, 7.59 / 12.19 s for `gpu_original`.
 
@@ -45,7 +45,7 @@ Against `gpu_original` at the same length and in a fresh process. `gpu_chunk*` i
 
 For comparison, archived `heteromosaic` at 1024 tokens, on the first 1024 tokens of these two prompts: relative L2 0.0204 / 0.0619, top-5 overlap 4 / 5, greedy 64 / 4, argmax agreement 93.6% / 75.2%. So its deviation already exists at 1024 tokens and is larger with the groups of the longer prompts. At 4096 tokens its greedy output repeats a two-token loop.
 
-P8192 at 2048 tokens, seed 1, first differs from the reference at token 30 and P6400 at token 0 with the other 63 positions equal. Both have a KL within a factor of 1.2 of `gpu_chunk1024`. **Hypothesis:** these are near ties, as with the 96.5% of `gpu_chunk1024`. Not separated.
+P8192 at 2048 tokens, seed 1, first differs from the reference at token 30 and P6400 at token 0 with the other 63 positions equal. Both have a KL within a factor of 1.3 of `gpu_chunk1024`. **Hypothesis:** these are near ties, as with the 96.5% of `gpu_chunk1024`. Not separated.
 
 **The cause of the `heteromosaic` deviation is not determined.** `gpu_chunk*` shows that the chunk size alone does not cause it. **Hypotheses, not tested:** the artifacts for larger chunks, `down` on the NPU in these groups, or this repository's runtime port of the original code. So this result describes `heteromosaic` on this box with this port, not necessarily the original work.
 
